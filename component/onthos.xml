@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ @package   onthos
+  ~ @copyright Copyright (c) 2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
+<extension type="component" method="upgrade">
+    <name>com_onthos</name>
+    <creationDate>2024-10-10</creationDate>
+    <author>Nicholas K. Dionysopoulos</author>
+    <authorEmail>nicholas@akeeba.com</authorEmail>
+    <authorUrl>https://www.akeeba.com</authorUrl>
+    <copyright>Copyright (c)2024-2024 Nicholas K. Dionysopoulos / Akeeba Ltd</copyright>
+    <license>GNU GPL v3 or later</license>
+    <version>0.0.0</version>
+    <description>COM_ONTHOS_XML_DESCRIPTION</description>
+    <namespace path="src">Akeeba\Component\Onthos</namespace>
+
+    <files folder="frontend">
+        <filename>.htaccess</filename>
+        <filename>web.config</filename>
+    </files>
+
+    <administration>
+        <menu view="items">COM_ONTHOS</menu>
+
+        <files folder="backend">
+            <folder>language</folder>
+            <folder>services</folder>
+            <folder>src</folder>
+            <folder>tmpl</folder>
+
+            <filename>.htaccess</filename>
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <filename>web.config</filename>
+        </files>
+
+        <languages folder="backend/language">
+            <language tag="en-GB">en-GB/com_onthos.ini</language>
+            <language tag="en-GB">en-GB/com_onthos.sys.ini</language>
+        </languages>
+
+    </administration>
+
+    <media destination="com_onthos" folder="media">
+        <folder>css</folder>
+        <folder>images</folder>
+        <folder>js</folder>
+
+        <filename>joomla.asset.json</filename>
+    </media>
+</extension>

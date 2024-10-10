@@ -1,0 +1,12 @@
+### Standard Akeeba Build
+/pkg_*.xml
+/*/.DS_Store
+/build/override.properties
+/component/backend/onthos.xml
+/release/
+
+## NPM Build Dependencies
+/node_modules/
+
+## Composer Build Dependencies
+/vendor/

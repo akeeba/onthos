@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  ~ @package   onthos
+  ~ @copyright Copyright (c) 2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
+<project name="Onthos" description="Onthos" default="all" >
+	<import file="${phing.dir}/../buildfiles/phing/common.xml" />
+
+	<!--
+	====================================================================================================
+	File sets
+	====================================================================================================
+	-->
+	<fileset dir="${dirs.component}" id="component" expandsymboliclinks="true">
+		<include name="backend/**" />
+		<include name="language/**" />
+		<include name="media/**" />
+
+		<exclude name="backend/onthos.xml" />
+
+		<include name="script.com_onthos.php" />
+		<include name="*.xml" />
+	</fileset>
+
+	<fileset dir="${dirs.release}" id="package">
+		<include name="com_*.zip" />
+		<include name="mod_*.zip" />
+		<include name="plg_*.zip" />
+		<include name="lib_*.zip" />
+		<include name="language/**"/>
+		<include name="script.onthos.php" />
+	</fileset>
+</project>

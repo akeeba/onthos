@@ -1,0 +1,9 @@
+{
+	"$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+	"name": "com_onthos",
+	"version": "0.0.0",
+	"description": "Onthos",
+	"license": "GPL-3.0-or-later",
+	"assets": [
+	]
+}

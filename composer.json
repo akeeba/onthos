@@ -1,0 +1,22 @@
+{
+	"name": "akeeba/onthos",
+	"description": "Onthos – Clean up the muck from your Joomla! site.",
+	"minimum-stability": "stable",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Nicholas K. Dionysopoulos",
+			"homepage": "https://www.akeeba.com",
+			"role": "Lead Developer"
+		}
+	],
+	"require": {
+		"php": "^8.1.0",
+		"ext-json": "*"
+	},
+	"config": {
+		"platform": {
+			"php": "8.1.999"
+		}
+	}
+}
