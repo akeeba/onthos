@@ -219,7 +219,7 @@ abstract class Extension implements ExtensionInterface
 	final public function isOrphan(): bool
 	{
 		// Packages can never be orphans
-		if ($this->type == 'package')
+		if ($this->type === 'package')
 		{
 			return false;
 		}
@@ -251,7 +251,7 @@ abstract class Extension implements ExtensionInterface
 			return;
 		}
 
-		// Extension important directories: backend, frontend, and API paths
+		// Extension important directories, autodetected
 		$this->populateExtensionImportantPaths();
 
 		// Default language files
@@ -287,6 +287,9 @@ abstract class Extension implements ExtensionInterface
 		{
 			return;
 		}
+
+		// Extension important directories, from the manifest (certain extension types only)
+		$this->populateExtensionImportantPathsFromManifest($xml);
 
 		// Language files from the manifest
 		$this->addLanguagesFromManifest($xml);
@@ -435,6 +438,12 @@ abstract class Extension implements ExtensionInterface
 		$this->mediaPaths = $this->filterDirectoriesArray($this->mediaPaths, true);
 	}
 
+	/**
+	 * Retrieves the slug for the extension based on its type and other relevant properties.
+	 *
+	 * @return  string  The generated extension slug.
+	 * @since   1.0.0
+	 */
 	final protected function getExtensionSlug(): string
 	{
 		switch ($this->type)
@@ -459,6 +468,16 @@ abstract class Extension implements ExtensionInterface
 		}
 	}
 
+	/**
+	 * Populates the media paths from default values based on the extension type and slug.
+	 *
+	 * This method sets the media paths property for the current object, constructing paths
+	 * dependent on whether the extension is a template or another type. For templates, it
+	 * handles both modern and legacy paths considering different client IDs.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
 	final protected function populateMediaPathsFromDefault()
 	{
 		$mediaPaths = [
@@ -482,5 +501,21 @@ abstract class Extension implements ExtensionInterface
 		}
 
 		$this->mediaPaths = $this->filterDirectoriesArray($mediaPaths, true);
+	}
+
+	/**
+	 * Populates the paths determining if the extension is installed from the XML manifest.
+	 *
+	 * This only applies to certain extension types, e.g. file extensions. The default is to do nothing, but it can be
+	 * overridden in children classes.
+	 *
+	 * @param   SimpleXMLElement  $xml
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
+	{
+		// Nothing by default
 	}
 }
