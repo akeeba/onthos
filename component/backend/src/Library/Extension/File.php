@@ -36,6 +36,8 @@ class File extends Extension
 
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
+		$addons = [];
+
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
 			foreach ($siteLangContainer->children() as $node)
@@ -43,9 +45,11 @@ class File extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
+				$addons[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
 			}
 		}
+
+		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)

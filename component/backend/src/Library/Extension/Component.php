@@ -55,6 +55,8 @@ class Component extends Extension
 	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
+		$addons = [];
+
 		// Admin language files
 		foreach ($xml->xpath('/extension/administration/languages') as $adminLangContainer)
 		{
@@ -66,10 +68,10 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf(
 					"%s/language/%s/%s", JPATH_ADMINISTRATOR, $tag, basename($relativePath)
 				);
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf(
 					"%s/components/%s/%s%s",
 					JPATH_ADMINISTRATOR,
 					$this->element,
@@ -90,8 +92,8 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath));
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath));
+				$addons[] = sprintf(
 					"%s/components/%s/%s%s",
 					JPATH_API,
 					$this->element,
@@ -112,8 +114,8 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
+				$addons[] = sprintf(
 					"%s/components/%s/%s%s",
 					JPATH_ROOT,
 					$this->element,
@@ -123,7 +125,7 @@ class Component extends Extension
 			}
 		}
 
-		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
+		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

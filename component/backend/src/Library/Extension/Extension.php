@@ -248,11 +248,10 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function getParentPackage(): ?ExtensionInterface
 	{
-		if (
-			$this->isDiscovered() || !$this->isInstalled()
-			|| $this->isOrphan() || $this->type == 'package'
-		    || empty($this->package_id ?? 0)
-		)
+		if ($this->isDiscovered() || !$this->isInstalled()
+		    || $this->isOrphan()
+		    || $this->type == 'package'
+		    || empty($this->package_id ?? 0))
 		{
 			return null;
 		}
@@ -261,11 +260,9 @@ abstract class Extension implements ExtensionInterface
 		$db = Factory::getContainer()->get('db');
 		/** @var DatabaseQuery $query */
 		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
-		$query
-			->select('*')
-			->from($db->quoteName('#__extensions'))
-			->where($db->quoteName('extension_id') . ' = :extension_id')
-			->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
+		$query->select('*')->from($db->quoteName('#__extensions'))->where(
+				$db->quoteName('extension_id') . ' = :extension_id'
+			)->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
 
 		$extensionInfo = $db->setQuery($query)->loadObject();
 

@@ -42,6 +42,7 @@ class Module extends Extension
 
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
+		$addons = [];
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
@@ -54,14 +55,14 @@ class Module extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf(
 					"%s/language/%s/%s",
 					$baseDir,
 					$tag,
 					basename($relativePath)
 				);
 
-				$this->languageFiles[] = sprintf(
+				$addons[] = sprintf(
 					"%s/modules/%s/%s%s",
 					$baseDir,
 					$this->element,
@@ -71,7 +72,7 @@ class Module extends Extension
 			}
 		}
 
-		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
+		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
