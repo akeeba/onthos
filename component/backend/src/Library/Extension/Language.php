@@ -15,21 +15,36 @@ class Language extends Extension
 {
 	protected function populateExtensionImportantPaths(): void
 	{
-		// TODO: Implement populateExtensionImportantPaths() method.
+		$basePath = $this->getBasePath();
+
+		$this->directories = [
+			$this->rebaseToRoot(
+				sprintf(
+					"%s/language/%s",
+					$basePath,
+					$this->element
+				)
+			),
+		];
 	}
 
 	protected function populateDefaultLanguageFiles(): void
 	{
-		// TODO: Implement populateDefaultLanguageFiles() method.
+		// Language packages don't have their own translation files.
 	}
 
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
-		// TODO: Implement addLanguagesFromManifest() method.
+		// Language packages don't have their own translation files.
 	}
 
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
-		// TODO: Implement getScriptPathFromManifest() method.
+		// Language packages do not have installation scripts.
+	}
+
+	private function getBasePath(): string
+	{
+		return [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR, 3 => JPATH_API][$this->client_id] ?? JPATH_SITE;
 	}
 }

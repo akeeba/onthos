@@ -15,7 +15,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 
-$item = $this->getModel()->getExtensionByDetails('library', 'phpass');
+$item = $this->getModel()->getExtensionByDetails('language', 'el-GR', clientId: 3);
 
 $state = !($item instanceof ExtensionInterface)
 	? 0
