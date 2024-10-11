@@ -69,6 +69,12 @@ class Dispatcher extends ComponentDispatcher
 			[$controller, $task] = explode('.', $task);
 		}
 
+		if ($view == 'items')
+		{
+			$controller = 'main';
+			$view = 'main';
+		}
+
 		$this->input->set('view', $controller);
 		$this->input->set('controller', $controller);
 		$this->input->set('task', $task);

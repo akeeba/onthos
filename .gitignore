@@ -9,4 +9,4 @@
 /node_modules/
 
 ## Composer Build Dependencies
-/vendor/
+/component/backend/vendor/

@@ -12,11 +12,15 @@
 	],
 	"require": {
 		"php": "^8.1.0",
-		"ext-json": "*"
+		"ext-json": "*",
+		"ext-simplexml": "*",
+		"greenlion/php-sql-parser": "^4.6.0"
 	},
 	"config": {
 		"platform": {
 			"php": "8.1.999"
-		}
+		},
+		"vendor-dir": "component/backend/vendor",
+		"optimize-autoloader": false
 	}
 }

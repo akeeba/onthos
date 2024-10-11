@@ -31,6 +31,6 @@ class HtmlView extends BaseHtmlView
 		/** @var Toolbar $toolbar */
 		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
 
-		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-list-alt');
+		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');
 	}
 }
