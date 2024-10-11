@@ -104,7 +104,14 @@ trait TablesHandingTrait
 
 		foreach ($sqlFiles as $sqlFile)
 		{
-			$this->populateTablesFromSQLFile($sqlFile);
+			try
+			{
+				$this->populateTablesFromSQLFile($sqlFile);
+			}
+			catch (\Throwable)
+			{
+				// It's not the end of the world. Keep going.
+			}
 		}
 
 		$this->tables = array_unique($this->tables);
@@ -203,7 +210,7 @@ trait TablesHandingTrait
 				continue;
 			}
 
-			$parser = new PHPSQLParser($statement, true);
+			$parser = new PHPSQLParser($statement, false);
 
 			if (!is_array($parser->parsed) || empty($parser->parsed) || !isset($parser->parsed['TABLE']))
 			{

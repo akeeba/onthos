@@ -11,6 +11,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOper
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\LanguageHandlingTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandingTrait;
 use InvalidArgumentException;
+use Joomla\CMS\Extension\ExtensionHelper;
 use Joomla\CMS\Factory;
 use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
 use Joomla\Database\DatabaseDriver;
@@ -50,6 +51,10 @@ abstract class Extension implements ExtensionInterface
 	use FilesystemOperationsTrait;
 	use TablesHandingTrait;
 	use LanguageHandlingTrait;
+
+	private static array $extensionIDsWithUpdateSites = [];
+
+	private static array $packageIDs = [];
 
 	/**
 	 * The `#__extensions` table row object
@@ -237,9 +242,29 @@ abstract class Extension implements ExtensionInterface
 			return false;
 		}
 
-		// TODO Check for update site
+		// If the extension has an update site it's a top-level extension, not an orphan
+		$this->populateUpdateSitesMap();
 
-		return empty($this->package_id ?? null) && !$this->locked;
+		if (in_array($this->extension_id, self::$extensionIDsWithUpdateSites))
+		{
+			return false;
+		}
+
+		// If there a package ID we need to check if it's valid
+		$this->populatePackageIDs();
+
+		if (!empty($this->package_id ?? null))
+		{
+			if (!in_array($this->package_id, self::$packageIDs))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		// At this point it's either an orphan, or a core extension (locked)
+		return !$this->isCore();
 	}
 
 	/**
@@ -249,6 +274,15 @@ abstract class Extension implements ExtensionInterface
 	final public function isDiscovered(): bool
 	{
 		return $this->state == -1;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	final public function isCore(): bool
+	{
+		return ExtensionHelper::checkIfCoreExtension($this->type, $this->element, $this->client_id, $this->folder);
 	}
 
 	/**
@@ -270,8 +304,8 @@ abstract class Extension implements ExtensionInterface
 		/** @var DatabaseQuery $query */
 		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
 		$query->select('*')->from($db->quoteName('#__extensions'))->where(
-				$db->quoteName('extension_id') . ' = :extension_id'
-			)->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
+			$db->quoteName('extension_id') . ' = :extension_id'
+		)->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
 
 		$extensionInfo = $db->setQuery($query)->loadObject();
 
@@ -487,8 +521,7 @@ abstract class Extension implements ExtensionInterface
 
 		$this->mediaPaths = array_unique(
 			array_merge(
-				$this->mediaPaths,
-				$this->filterDirectoriesArray($addons, true)
+				$this->mediaPaths, $this->filterDirectoriesArray($addons, true)
 			)
 		);
 	}
@@ -588,5 +621,69 @@ abstract class Extension implements ExtensionInterface
 	protected function onAfterManifestFound(SimpleXMLElement $xml)
 	{
 		// Nothing by default
+	}
+
+	/**
+	 * Populates the array of extension IDs with known update sites if necessary.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function populateUpdateSitesMap(): void
+	{
+		if (!empty(self::$extensionIDsWithUpdateSites))
+		{
+			return;
+		}
+
+		/** @var DatabaseDriver $db */
+		$db = Factory::getContainer()->get('db');
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query->select($db->quoteName('extension_id'))->from($db->quoteName('#__update_sites_extensions'));
+
+		try
+		{
+			self::$extensionIDsWithUpdateSites = array_unique(
+				$db->setQuery($query)->loadColumn() ?: []
+			);
+		}
+		catch (\Exception $e)
+		{
+			self::$extensionIDsWithUpdateSites = [];
+		}
+	}
+
+	/**
+	 * Populates the array of package extension IDs if necessary.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function populatePackageIDs(): void
+	{
+		if (!empty(self::$packageIDs))
+		{
+			return;
+		}
+
+		/** @var DatabaseDriver $db */
+		$db = Factory::getContainer()->get('db');
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query->select($db->quoteName('extension_id'))->from($db->quoteName('#__extensions'))->where(
+				$db->quoteName('type') . ' = ' . $db->quote('package')
+			);
+
+		try
+		{
+			self::$packageIDs = array_unique(
+				$db->setQuery($query)->loadColumn() ?: []
+			);
+		}
+		catch (\Exception $e)
+		{
+			self::$packageIDs = [];
+		}
 	}
 }
