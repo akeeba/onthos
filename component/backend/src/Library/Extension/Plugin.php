@@ -13,6 +13,10 @@ defined('_JEXEC') || die;
 
 class Plugin extends Extension
 {
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPaths(): void
 	{
 		$this->directories = [
@@ -26,6 +30,10 @@ class Plugin extends Extension
 		];
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateDefaultLanguageFiles(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
@@ -80,12 +88,8 @@ class Plugin extends Extension
 	}
 
 	/**
-	 * Returns the installation script path read from the XML manifest.
-	 *
-	 * @param   SimpleXMLElement  $xml
-	 *
-	 * @return  string|null
-	 * @since   1.0.0
+	 * @inheritDoc
+	 * @since 1.0.0
 	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{

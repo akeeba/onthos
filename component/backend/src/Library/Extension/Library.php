@@ -13,6 +13,10 @@ defined('_JEXEC') || die;
 
 class Library extends Extension
 {
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPaths(): void
 	{
 		$this->directories[] = [
@@ -22,6 +26,10 @@ class Library extends Extension
 		];
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
 	{
 		$this->directories = [];
@@ -49,6 +57,10 @@ class Library extends Extension
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateDefaultLanguageFiles(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
@@ -63,6 +75,10 @@ class Library extends Extension
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		$addons = [];
@@ -97,6 +113,10 @@ class Library extends Extension
 		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
 		$nodes = $xml->xpath('/extension/scriptfile');

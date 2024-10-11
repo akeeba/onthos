@@ -13,6 +13,10 @@ defined('_JEXEC') || die;
 
 class Module extends Extension
 {
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPaths(): void
 	{
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
@@ -23,6 +27,10 @@ class Module extends Extension
 
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateDefaultLanguageFiles(): void
 	{
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
@@ -40,6 +48,10 @@ class Module extends Extension
 
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		$addons = [];
@@ -75,6 +87,10 @@ class Module extends Extension
 		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;

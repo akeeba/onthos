@@ -13,6 +13,10 @@ defined('_JEXEC') || die;
 
 class Template extends Extension
 {
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPaths(): void
 	{
 		$basePath = $this->getBasePath();
@@ -37,6 +41,10 @@ class Template extends Extension
 		];
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateDefaultLanguageFiles(): void
 	{
 		$basePath = $this->getBasePath();
@@ -54,6 +62,10 @@ class Template extends Extension
 
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		$basePath = $this->getBasePath();
@@ -92,6 +104,10 @@ class Template extends Extension
 		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
 		$basePath = $this->getBasePath();
@@ -117,6 +133,12 @@ class Template extends Extension
 		return $this->rebaseToRoot(sprintf("%s/%s/%s", $themePath, $this->element, $fileName));
 	}
 
+	/**
+	 * Returns the base path depending on the client ID.
+	 *
+	 * @return  string  The base path which is either JPATH_SITE or JPATH_ADMINISTRATOR.
+	 * @since   1.0.0
+	 */
 	private function getBasePath(): string
 	{
 		return [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;

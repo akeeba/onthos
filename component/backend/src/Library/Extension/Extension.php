@@ -135,6 +135,15 @@ abstract class Extension implements ExtensionInterface
 		return new $className($extensionRow);
 	}
 
+	/**
+	 * Magic getter.
+	 *
+	 * Retrieves properties from the extension object.
+	 *
+	 * @param   string  $name  The property to retrieve.
+	 *
+	 * @return  null
+	 */
 	final public function __get(string $name)
 	{
 		return $this->extensionRow->{$name} ?? null;

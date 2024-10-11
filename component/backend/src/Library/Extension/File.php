@@ -13,11 +13,19 @@ defined('_JEXEC') || die;
 
 class File extends Extension
 {
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPaths(): void
 	{
 		// File extensions do not have a default installation location.
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateDefaultLanguageFiles(): void
 	{
 		$extensionSlug = $this->getExtensionSlug();
@@ -34,6 +42,10 @@ class File extends Extension
 		}
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		$addons = [];
@@ -52,6 +64,10 @@ class File extends Extension
 		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
 		$nodes = $xml->xpath('/extension/scriptfile');
@@ -84,6 +100,10 @@ class File extends Extension
 		return null;
 	}
 
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
 	{
 		$nodes = $xml->xpath('/extension/fileset/files');
