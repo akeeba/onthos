@@ -90,6 +90,11 @@ trait TablesHandingTrait
 			return;
 		}
 
+		if (!@is_dir($basePath . '/sql'))
+		{
+			return;
+		}
+
 		/**
 		 * The /sql subdirectory as the default schema location is a hardcoded default in Joomla.
 		 *

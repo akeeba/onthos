@@ -15,7 +15,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 
-$item = $this->getModel()->getExtensionByDetails('component', 'com_ats');
+$item = $this->getModel()->getExtensionByDetails('plugin', 'sociallogin', 'system');
 
 $state = !($item instanceof ExtensionInterface)
 	? 0
@@ -23,7 +23,7 @@ $state = !($item instanceof ExtensionInterface)
 
 $getFilePrintable = function ($value) use ($item): string {
 	$exists       = @file_exists(JPATH_ROOT . '/' . $value);
-	$reallyExists = $item?->fileReallyExists(JPATH_ROOT . '/' . $value) ?? false;
+	$reallyExists = $item?->fileReallyExists(JPATH_ROOT . '/' . $value);
 
 	if ($reallyExists)
 	{

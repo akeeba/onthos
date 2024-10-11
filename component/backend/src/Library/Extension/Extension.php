@@ -11,6 +11,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOper
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\LanguageHandlingTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandingTrait;
 use InvalidArgumentException;
+use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
 use Joomla\Filter\InputFilter;
 use SimpleXMLElement;
 
@@ -226,12 +227,93 @@ abstract class Extension implements ExtensionInterface
 	}
 
 	/**
-	 * Initialise the internal variables. Called from __construct(). Overridden in each class.
+	 * Initialise the internal variables. Called from __construct().
 	 *
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	abstract protected function init(): void;
+	final protected function init(): void
+	{
+		if (empty($this->element ?? null))
+		{
+			return;
+		}
+
+		// Extension important directories: backend, frontend, and API paths
+		$this->populateExtensionImportantPaths();
+
+		// Default language files
+		$this->populateDefaultLanguageFiles();
+		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
+
+		// Default media path
+		$this->populateMediaPathsFromDefault();
+
+		// Use the default SQL files to populate the tables
+		$this->populateTablesFromDefaultDirectory();
+
+		// Discover the manifest
+		$this->manifestPath = $this->getManifestXMLPath();
+
+		try
+		{
+			$xml = InstallerHelper::getInstallationXML($this->element, $this->type, $this->client_id, $this->folder);
+		}
+		catch (\Throwable $e)
+		{
+			$xml = null;
+		}
+
+		if (!$xml instanceof SimpleXMLElement)
+		{
+			return;
+		}
+
+		$this->manifestPath = $this->rebaseToRoot($this->manifestPath);
+
+		if (strtolower($this->getXMLAttribute($xml, 'type')) !== strtolower($this->type))
+		{
+			return;
+		}
+
+		// Language files from the manifest
+		$this->addLanguagesFromManifest($xml);
+
+		// Media directory from the manifest
+		$this->addMediaDirectoriesFromManifest($xml);
+
+		// Script file from the manifest
+		$this->scriptPath = $this->getScriptPathFromManifest($xml);
+
+		// Populate the tables from the manifest
+		$this->populateTablesFromManifest($xml);
+	}
+
+	/**
+	 * Populates the paths which determine whether the extension is installed.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	abstract protected function populateExtensionImportantPaths(): void;
+
+	/**
+	 * Populates the default language file paths.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	abstract protected function populateDefaultLanguageFiles(): void;
+
+	/**
+	 * Populates language file paths by reading the manifest information.
+	 *
+	 * @param   SimpleXMLElement  $xml
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	abstract protected function addLanguagesFromManifest(SimpleXMLElement $xml): void;
 
 	/**
 	 * Get the value of a named attribute of an XML node.
