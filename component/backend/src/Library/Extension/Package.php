@@ -7,23 +7,15 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Extension;
 
-use SimpleXMLElement;
-
 defined('_JEXEC') || die;
 
-class Plugin extends Extension
+use SimpleXMLElement;
+
+class Package extends Extension
 {
 	protected function populateExtensionImportantPaths(): void
 	{
-		$this->directories = [
-			// This is the expected path since Joomla! 1.5
-			$this->rebaseToRoot(sprintf("%s/%s/%s", JPATH_PLUGINS, $this->folder, $this->element)),
-		];
-
-		$this->files = [
-			// This is the legacy support dating back to Joomla! 1.0 AND IT STILL WORKS, DANG IT!
-			$this->rebaseToRoot(sprintf("%s/%s/%s", JPATH_PLUGINS, $this->folder, $this->element . '.php')),
-		];
+		// Packages do not install files of their own.
 	}
 
 	protected function populateDefaultLanguageFiles(): void
@@ -33,8 +25,8 @@ class Plugin extends Extension
 			$this->languageFiles = array_merge(
 				$this->languageFiles,
 				[
-					sprintf("%s/language/%s/plg_%s_%s.ini", JPATH_ADMINISTRATOR, $language, $this->folder, $this->element),
-					sprintf("%s/language/%s/plg_%s_%s.sys.ini", JPATH_ADMINISTRATOR, $language, $this->folder, $this->element),
+					sprintf("%s/language/%s/%s.ini", JPATH_SITE, $language, $this->element),
+					sprintf("%s/language/%s/%s.sys.ini", JPATH_SITE, $language, $this->element),
 				]
 			);
 		}
@@ -56,17 +48,9 @@ class Plugin extends Extension
 
 				$this->languageFiles[] = sprintf(
 					"%s/language/%s/%s",
-					JPATH_ADMINISTRATOR,
+					JPATH_SITE,
 					$tag,
 					basename($relativePath)
-				);
-
-				$this->languageFiles[] = sprintf(
-					"%s/plugins/%s/%s/%s",
-					JPATH_ROOT,
-					$this->folder,
-					$this->element,
-					$relativePath
 				);
 			}
 		}
@@ -92,8 +76,9 @@ class Plugin extends Extension
 		}
 
 		$fileName = (string) $nodes[0];
+		$bareName = str_starts_with($this->element, 'pkg_') ? substr($this->element, 4) : $this->element;
 
-		return $this->rebaseToRoot(JPATH_PLUGINS . '/' . $this->folder . '/' . $this->element . '/' . $fileName);
+		return dirname($this->manifestPath) . '/' . $bareName . '/' . $fileName;
 	}
 
 }

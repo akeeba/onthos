@@ -99,4 +99,27 @@ class Component extends Extension
 
 		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
 	}
+
+	/**
+	 * Returns the installation script path read from the XML manifest.
+	 *
+	 * @param   SimpleXMLElement  $xml
+	 *
+	 * @return  string|null
+	 * @since   1.0.0
+	 */
+	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
+	{
+		$nodes = $xml->xpath('/extension/scriptfile');
+
+		if (empty($nodes))
+		{
+			return null;
+		}
+
+		$fileName = (string) $nodes[0];
+
+		return $this->rebaseToRoot(JPATH_ADMINISTRATOR . '/components/' . $this->element . '/' . $fileName);
+	}
+
 }

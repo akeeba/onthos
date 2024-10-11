@@ -187,6 +187,12 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function isInstalled(): bool
 	{
+		// Packages are meta-extensions. If they are in the database, they are installed.
+		if ($this->type == 'package')
+		{
+			return true;
+		}
+
 		foreach ($this->directories as $directory)
 		{
 			if (@is_dir(JPATH_ROOT . '/' . $directory))
@@ -212,6 +218,12 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function isOrphan(): bool
 	{
+		// Packages can never be orphans
+		if ($this->type == 'package')
+		{
+			return false;
+		}
+
 		// TODO Check for update site
 
 		return empty($this->package_id ?? null) && !$this->locked;
@@ -316,6 +328,16 @@ abstract class Extension implements ExtensionInterface
 	abstract protected function addLanguagesFromManifest(SimpleXMLElement $xml): void;
 
 	/**
+	 * Returns the installation script path read from the XML manifest.
+	 *
+	 * @param   SimpleXMLElement  $xml
+	 *
+	 * @return  string|null
+	 * @since   1.0.0
+	 */
+	abstract protected function getScriptPathFromManifest(SimpleXMLElement $xml);
+
+	/**
 	 * Get the value of a named attribute of an XML node.
 	 *
 	 * This is used when parsing the XML manifests.
@@ -411,28 +433,6 @@ abstract class Extension implements ExtensionInterface
 		}
 
 		$this->mediaPaths = $this->filterDirectoriesArray($this->mediaPaths, true);
-	}
-
-	/**
-	 * Returns the installation script path read from the XML manifest.
-	 *
-	 * @param   SimpleXMLElement  $xml
-	 *
-	 * @return  string|null
-	 * @since   1.0.0
-	 */
-	final protected function getScriptPathFromManifest(SimpleXMLElement $xml)
-	{
-		$nodes = $xml->xpath('/extension/scriptfile');
-
-		if (empty($nodes))
-		{
-			return null;
-		}
-
-		$fileName = (string) $nodes[0];
-
-		return $this->rebaseToRoot(JPATH_ADMINISTRATOR . '/components/' . $this->element . '/' . $fileName);
 	}
 
 	final protected function getExtensionSlug(): string

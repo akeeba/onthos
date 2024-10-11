@@ -15,7 +15,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 
-$item = $this->getModel()->getExtensionByDetails('plugin', 'sociallogin', 'system');
+$item = $this->getModel()->getExtensionByDetails('package', 'pkg_ats');
 
 $state = !($item instanceof ExtensionInterface)
 	? 0
