@@ -11,63 +11,59 @@ use SimpleXMLElement;
 
 defined('_JEXEC') || die;
 
-class Plugin extends Extension
+class Module extends Extension
 {
 	protected function populateExtensionImportantPaths(): void
 	{
+		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
+
 		$this->directories = [
-			// This is the expected path since Joomla! 1.5
-			$this->rebaseToRoot(sprintf("%s/%s/%s", JPATH_PLUGINS, $this->folder, $this->element)),
+			$this->rebaseToRoot(sprintf("%s/modules/%s", $baseDir, $this->element)),
 		];
 
-		$this->files = [
-			// This is the legacy support dating back to Joomla! 1.0 AND IT STILL WORKS, DANG IT!
-			$this->rebaseToRoot(sprintf("%s/%s/%s", JPATH_PLUGINS, $this->folder, $this->element . '.php')),
-		];
 	}
 
 	protected function populateDefaultLanguageFiles(): void
 	{
+		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
+
 		foreach ($this->getKnownLanguages() as $language)
 		{
 			$this->languageFiles = array_merge(
 				$this->languageFiles,
 				[
-					sprintf("%s/language/%s/plg_%s_%s.ini", JPATH_ADMINISTRATOR, $language, $this->folder, $this->element),
-					sprintf("%s/language/%s/plg_%s_%s.sys.ini", JPATH_ADMINISTRATOR, $language, $this->folder, $this->element),
+					sprintf("%s/language/%s/%s.ini", $baseDir, $language, $this->element),
+					sprintf("%s/language/%s/%s.sys.ini", $baseDir, $language, $this->element),
 				]
 			);
 		}
+
 	}
 
-	/**
-	 * @inheritDoc
-	 * @since 1.0.0
-	 */
 	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
-		// Frontend language files
+		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
+
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
+			$langFolder = $this->getXMLAttribute($siteLangContainer, 'folder', '');
+			$langFolder .= empty($langFolder) ? '' : '/';
+
 			foreach ($siteLangContainer->children() as $node)
 			{
-				$langFolder = $this->getXMLAttribute($siteLangContainer, 'folder', '');
-				$langFolder .= empty($langFolder) ? '' : '/';
-
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
 				$this->languageFiles[] = sprintf(
 					"%s/language/%s/%s",
-					JPATH_ADMINISTRATOR,
+					$baseDir,
 					$tag,
 					basename($relativePath)
 				);
 
 				$this->languageFiles[] = sprintf(
-					"%s/plugins/%s/%s/%s%s",
-					JPATH_ROOT,
-					$this->folder,
+					"%s/modules/%s/%s%s",
+					$baseDir,
 					$this->element,
 					$langFolder,
 					$relativePath
@@ -78,16 +74,9 @@ class Plugin extends Extension
 		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
 	}
 
-	/**
-	 * Returns the installation script path read from the XML manifest.
-	 *
-	 * @param   SimpleXMLElement  $xml
-	 *
-	 * @return  string|null
-	 * @since   1.0.0
-	 */
 	protected function getScriptPathFromManifest(SimpleXMLElement $xml)
 	{
+		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
 		$nodes = $xml->xpath('/extension/scriptfile');
 
 		if (empty($nodes))
@@ -97,7 +86,6 @@ class Plugin extends Extension
 
 		$fileName = (string) $nodes[0];
 
-		return $this->rebaseToRoot(JPATH_PLUGINS . '/' . $this->folder . '/' . $this->element . '/' . $fileName);
+		return $this->rebaseToRoot($baseDir . '/modules/' . $this->element . '/' . $fileName);
 	}
-
 }

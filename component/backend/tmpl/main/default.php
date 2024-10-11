@@ -15,7 +15,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 
-$item = $this->getModel()->getExtensionByDetails('file', 'joomla');
+$item = $this->getModel()->getExtensionByDetails('module', 'mod_emailsetup', clientId: 1);
 
 $state = !($item instanceof ExtensionInterface)
 	? 0

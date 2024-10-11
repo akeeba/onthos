@@ -12,14 +12,18 @@ defined('_JEXEC') || die;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Extension;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 
 class MainModel extends BaseDatabaseModel
 {
-	public function getExtensionByDetails(string $type, string $element, ?string $folder = null, ?int $clientId = null): ?ExtensionInterface
+	public function getExtensionByDetails(string $type, string $element, ?string $folder = null, ?int $clientId = null
+	): ?ExtensionInterface
 	{
-		$db    = $this->getDatabase();
-		$query = $db->createQuery()
+		$db = $this->getDatabase();
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
 			->select('*')
 			->from($db->quoteName('#__extensions'))
 			->where($db->quoteName('type') . '= :type')
@@ -52,7 +56,9 @@ class MainModel extends BaseDatabaseModel
 	public function getExtensionById(int $id): ?ExtensionInterface
 	{
 		$db = $this->getDatabase();
-		$query = $db->createQuery()
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
 			->select('*')
 			->from($db->quoteName('#__extensions'))
 			->where($db->quoteName('extension_id') . '= :extension_id')

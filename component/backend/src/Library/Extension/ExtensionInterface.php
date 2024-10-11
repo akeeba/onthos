@@ -130,5 +130,11 @@ interface ExtensionInterface
 	 */
 	public function getScriptPath(): ?string;
 
-	//TODO public function getParentPackage(): ?ExtensionInterface;
+	/**
+	 * Get the parent package of the extension
+	 *
+	 * @return  ExtensionInterface|null
+	 * @since   1.0.0
+	 */
+	public function getParentPackage(): ?ExtensionInterface;
 }

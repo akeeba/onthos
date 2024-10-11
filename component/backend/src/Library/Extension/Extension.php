@@ -11,7 +11,11 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOper
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\LanguageHandlingTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandingTrait;
 use InvalidArgumentException;
+use Joomla\CMS\Factory;
 use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseQuery;
+use Joomla\Database\ParameterType;
 use Joomla\Filter\InputFilter;
 use SimpleXMLElement;
 
@@ -239,6 +243,41 @@ abstract class Extension implements ExtensionInterface
 	}
 
 	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	final public function getParentPackage(): ?ExtensionInterface
+	{
+		if (
+			$this->isDiscovered() || !$this->isInstalled()
+			|| $this->isOrphan() || $this->type == 'package'
+		    || empty($this->package_id ?? 0)
+		)
+		{
+			return null;
+		}
+
+		/** @var DatabaseDriver $db */
+		$db = Factory::getContainer()->get('db');
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select('*')
+			->from($db->quoteName('#__extensions'))
+			->where($db->quoteName('extension_id') . ' = :extension_id')
+			->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
+
+		$extensionInfo = $db->setQuery($query)->loadObject();
+
+		if ($extensionInfo->type !== 'package')
+		{
+			return null;
+		}
+
+		return self::make($extensionInfo);
+	}
+
+	/**
 	 * Initialise the internal variables. Called from __construct().
 	 *
 	 * @return  void
@@ -287,6 +326,9 @@ abstract class Extension implements ExtensionInterface
 		{
 			return;
 		}
+
+		// Extension-specific hook
+		$this->onAfterManifestFound($xml);
 
 		// Extension important directories, from the manifest (certain extension types only)
 		$this->populateExtensionImportantPathsFromManifest($xml);
@@ -515,6 +557,22 @@ abstract class Extension implements ExtensionInterface
 	 * @since   1.0.0
 	 */
 	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
+	{
+		// Nothing by default
+	}
+
+	/**
+	 * This method is called after the manifest is found and parsed.
+	 *
+	 * This is meant to be used by different extension types to retrieve and cache extension type-specific information
+	 * from the XML manifest.
+	 *
+	 * @param   SimpleXMLElement  $xml  The SimpleXMLElement object representing the manifest.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	protected function onAfterManifestFound(SimpleXMLElement $xml)
 	{
 		// Nothing by default
 	}

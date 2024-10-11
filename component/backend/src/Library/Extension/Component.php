@@ -7,7 +7,6 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Extension;
 
-use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
 use SimpleXMLElement;
 
 defined('_JEXEC') || die;
@@ -59,6 +58,9 @@ class Component extends Extension
 		// Admin language files
 		foreach ($xml->xpath('/extension/administration/languages') as $adminLangContainer)
 		{
+			$langFolder = $this->getXMLAttribute($adminLangContainer, 'folder', '');
+			$langFolder .= empty($langFolder) ? '' : '/';
+
 			foreach ($adminLangContainer->children() as $node)
 			{
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
@@ -67,33 +69,57 @@ class Component extends Extension
 				$this->languageFiles[] = sprintf(
 					"%s/language/%s/%s", JPATH_ADMINISTRATOR, $tag, basename($relativePath)
 				);
-				$this->languageFiles[] = JPATH_ADMINISTRATOR . '/components/' . $this->element . '/' . $relativePath;
+				$this->languageFiles[] = sprintf(
+					"%s/components/%s/%s%s",
+					JPATH_ADMINISTRATOR,
+					$this->element,
+					$langFolder,
+					$relativePath
+				);
 			}
 		}
 
 		// API language files
 		foreach ($xml->xpath('/extension/api/languages') as $apiLangContainer)
 		{
+			$langFolder = $this->getXMLAttribute($apiLangContainer, 'folder', '');
+			$langFolder .= empty($langFolder) ? '' : '/';
+
 			foreach ($apiLangContainer->children() as $node)
 			{
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
 				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath));
-				$this->languageFiles[] = JPATH_API . '/components/' . $this->element . '/' . $relativePath;
+				$this->languageFiles[] = sprintf(
+					"%s/components/%s/%s%s",
+					JPATH_API,
+					$this->element,
+					$langFolder,
+					$relativePath
+				);
 			}
 		}
 
 		// Frontend language files
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
+			$langFolder = $this->getXMLAttribute($siteLangContainer, 'folder', '');
+			$langFolder .= empty($langFolder) ? '' : '/';
+
 			foreach ($siteLangContainer->children() as $node)
 			{
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
 				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
-				$this->languageFiles[] = JPATH_ROOT . '/components/' . $this->element . '/' . $relativePath;
+				$this->languageFiles[] = sprintf(
+					"%s/components/%s/%s%s",
+					JPATH_ROOT,
+					$this->element,
+					$langFolder,
+					$relativePath
+				);
 			}
 		}
 
