@@ -333,6 +333,8 @@ abstract class Extension implements ExtensionInterface
 		// Language files from the manifest
 		$this->addLanguagesFromManifest($xml);
 
+		$this->languageFiles = array_unique($this->languageFiles);
+
 		// Media directory from the manifest
 		$this->addMediaDirectoriesFromManifest($xml);
 
@@ -464,17 +466,22 @@ abstract class Extension implements ExtensionInterface
 	final protected function addMediaDirectoriesFromManifest(SimpleXMLElement $xml): void
 	{
 		// Reasoning: the manifest exists and is the authoritative resource of media paths.
-		$this->mediaPaths = [];
+		$addons = [];
 
 		foreach ($xml->xpath('/extension/media') as $node)
 		{
 			$destination = $this->getXMLAttribute($node, 'destination', $this->element);
 			$folder      = $this->getXMLAttribute($node, 'folder', 'media');
 
-			$this->mediaPaths[] = sprintf("%s/%s/%s", JPATH_ROOT, $folder, $destination);
+			$addons[] = sprintf("%s/%s/%s", JPATH_ROOT, $folder, $destination);
 		}
 
-		$this->mediaPaths = $this->filterDirectoriesArray($this->mediaPaths, true);
+		$this->mediaPaths = array_unique(
+			array_merge(
+				$this->mediaPaths,
+				$this->filterDirectoriesArray($addons, true)
+			)
+		);
 	}
 
 	/**

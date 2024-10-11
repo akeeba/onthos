@@ -15,7 +15,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 
-$item = $this->getModel()->getExtensionByDetails('language', 'el-GR', clientId: 3);
+$item = $this->getModel()->getExtensionByDetails('template', 'cassiopeia', clientId: 0);
 
 $state = !($item instanceof ExtensionInterface)
 	? 0
