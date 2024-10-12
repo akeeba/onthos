@@ -18,6 +18,7 @@ use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 use Joomla\Filter\InputFilter;
+use Joomla\Registry\Registry;
 use SimpleXMLElement;
 
 defined('_JEXEC') || die;
@@ -35,8 +36,8 @@ defined('_JEXEC') || die;
  * @property-read int         $access
  * @property-read int         $protected
  * @property-read int         $locked
- * @property-read null|string $manifest_cache
- * @property-read null|string $params
+ * @property-read Registry    $manifest_cache
+ * @property-read Registry    $params
  * @property-read null|int    $checked_out
  * @property-read null|string $checked_out_time
  * @property-read int         $ordering
@@ -110,7 +111,9 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function __construct(object $extensionRow)
 	{
-		$this->extensionRow = $extensionRow;
+		$this->extensionRow                 = $extensionRow;
+		$this->extensionRow->params         = new Registry($this->extensionRow->params ?? '{}');
+		$this->extensionRow->manifest_cache = new Registry($this->extensionRow->manifest_cache ?? '{}');
 
 		$this->init();
 	}
@@ -302,14 +305,15 @@ abstract class Extension implements ExtensionInterface
 		/** @var DatabaseDriver $db */
 		$db = Factory::getContainer()->get('db');
 		/** @var DatabaseQuery $query */
-		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query     = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$packageId = $this->package_id;
 		$query->select('*')->from($db->quoteName('#__extensions'))->where(
 			$db->quoteName('extension_id') . ' = :extension_id'
-		)->bind(':extension_id', $this->package_id, ParameterType::INTEGER);
+		)->bind(':extension_id', $packageId, ParameterType::INTEGER);
 
-		$extensionInfo = $db->setQuery($query)->loadObject();
+		$extensionInfo = $db->setQuery($query)->loadObject() ?: null;
 
-		if ($extensionInfo->type !== 'package')
+		if ($extensionInfo?->type !== 'package')
 		{
 			return null;
 		}
@@ -672,8 +676,8 @@ abstract class Extension implements ExtensionInterface
 		/** @var DatabaseQuery $query */
 		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
 		$query->select($db->quoteName('extension_id'))->from($db->quoteName('#__extensions'))->where(
-				$db->quoteName('type') . ' = ' . $db->quote('package')
-			);
+			$db->quoteName('type') . ' = ' . $db->quote('package')
+		);
 
 		try
 		{

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   onthos
+  ~ @copyright Copyright (c) 2024 Nicholas K. Dionysopoulos / Akeeba Ltd
+  ~ @license   GNU General Public License version 3, or later
+  -->
+
+<form>
+    <fields name="filter">
+        <field
+                name="search"
+                type="text"
+                inputmode="search"
+                label="JSEARCH_FILTER"
+                hint="JSEARCH_FILTER"
+        />
+
+        <!-- TODO: Status (Enabled, Disabled) -->
+
+        <!-- TODO: Protected -->
+
+        <!-- TODO: Locked -->
+
+        <!-- TODO: Location (Site ID) -->
+
+        <!-- TODO: Type -->
+
+        <!-- TODO: Folder -->
+
+        <!-- TODO: Package -->
+
+        <!-- TODO: Extensions (Core vs Non-core) -->
+
+        <!-- TODO: Has problem (see below)
+        - Any
+        - Missing language files: Declared language files but one or more do not exist
+        - Orphaned: Orphan extension (check if it can be adopted, or its update site regenerated)
+        - Broken: Detected as broken (w/ uninstall option)
+        - Protected: Non-core extensions marked protected (w/ unprotect option)
+        - Locked: Non-core extensions marked locked (w/ lock option)
+        - Force-Disabled: Protected and disabled, cannot be re-enabled (w/ enable option)
+        -->
+
+    </fields>
+    <fields name="list">
+        <field
+                name="fullordering"
+                type="list"
+                label="JGLOBAL_SORT_BY"
+                statuses="*,0,1"
+                onchange="this.form.submit();"
+                default="id DESC"
+                validate="options"
+        >
+            <option value="">JGLOBAL_SORT_BY</option>
+            <option value="extension_id ASC">JGRID_HEADING_ID_ASC</option>
+            <option value="extension_id DESC">JGRID_HEADING_ID_DESC</option>
+            <option value="name ASC">JGLOBAL_TITLE_ASC</option>
+            <option value="name DESC">JGLOBAL_TITLE_DESC</option>
+        </field>
+
+        <field
+                name="limit"
+                type="limitbox"
+                label="JGLOBAL_LIST_LIMIT"
+                default="25"
+                onchange="this.form.submit();"
+        />
+    </fields>
+</form>

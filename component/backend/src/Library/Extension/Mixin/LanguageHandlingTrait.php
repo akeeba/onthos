@@ -32,6 +32,8 @@ trait LanguageHandlingTrait
 	 */
 	protected array $languageFiles = [];
 
+	private ?string $extensionName;
+
 	/**
 	 * @inheritDoc
 	 * @since 1.0.0
@@ -47,22 +49,12 @@ trait LanguageHandlingTrait
 	 */
 	final public function getName(): ?string
 	{
-		static $name = null;
-		static $detected = false;
-
-		if ($detected)
+		if (isset($this->extensionName))
 		{
-			return $name;
+			return $this->extensionName;
 		}
 
-		$detected = true;
-		$name     = null;
-
-		// No point trying to load language files which don't exist, eh?
-		if ($this->isMissingLanguages(true))
-		{
-			return null;
-		}
+		$this->extensionName = $this->getExtensionSlug();
 
 		$lang      = Factory::getApplication()->getLanguage();
 		$path      = $this->client_id ? JPATH_ADMINISTRATOR : JPATH_SITE;
@@ -106,10 +98,10 @@ trait LanguageHandlingTrait
 				break;
 		}
 
-		$key  = strtoupper($this->name);
-		$name = Text::_($key);
+		$key                 = strtoupper($this->name);
+		$this->extensionName = Text::_($key);
 
-		return $name == $key ? null : $name;
+		return $this->extensionName;
 	}
 
 	/**
@@ -118,6 +110,18 @@ trait LanguageHandlingTrait
 	 */
 	final public function isMissingLanguages(bool $onlySystem = false): bool
 	{
+		/**
+		 * Exemptions.
+		 * 1. Language extensions cannot be missing language files because they don't have any per se.
+		 * 2. Package, Library, and File extensions can optionally have language files; no problem if they don't.
+		 */
+
+		//
+		if (in_array($this->type, ['language', 'package', 'file', 'library']))
+		{
+			return false;
+		}
+
 		$languages = $this->getLanguageFiles();
 
 		if (empty($languages))

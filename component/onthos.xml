@@ -27,6 +27,7 @@
         <menu view="items">COM_ONTHOS</menu>
 
         <files folder="backend">
+            <folder>forms</folder>
             <folder>language</folder>
             <folder>services</folder>
             <folder>src</folder>

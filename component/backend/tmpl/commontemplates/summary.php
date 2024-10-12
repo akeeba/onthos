@@ -174,7 +174,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 					</p>
 				<?php else: ?>
 					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_BROKEN_TOOLTIP') ?>">
-						<span class="fa fa-circle-exclamation" aria-hidden="true"></span>
+						<span class="fa fa-explosion" aria-hidden="true"></span>
 						<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_BROKEN') ?>
 					</p>
 				<?php endif; ?>

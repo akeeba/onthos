@@ -2,10 +2,11 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/composer" />
-      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/greenlion/php-sql-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/composer"/>
+      <excludeFolder url="file://$MODULE_DIR$/component/backend/vendor/greenlion/php-sql-parser"/>
+      <sourceFolder url="file://$MODULE_DIR$/component/backend/src" packagePrefix="Akeeba\Component\Onthos\Administrator\" isTestSource="false"/>
     </content>
-    <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk"/>
+    <orderEntry type="sourceFolder" forTests="false"/>
   </component>
 </module>
