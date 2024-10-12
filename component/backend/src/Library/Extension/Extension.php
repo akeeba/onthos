@@ -9,7 +9,7 @@ namespace Akeeba\Component\Onthos\Administrator\Library\Extension;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOperationsTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\LanguageHandlingTrait;
-use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandingTrait;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandlingTrait;
 use InvalidArgumentException;
 use Joomla\CMS\Extension\ExtensionHelper;
 use Joomla\CMS\Factory;
@@ -51,7 +51,7 @@ defined('_JEXEC') || die;
 abstract class Extension implements ExtensionInterface
 {
 	use FilesystemOperationsTrait;
-	use TablesHandingTrait;
+	use TablesHandlingTrait;
 	use LanguageHandlingTrait;
 
 	private static array $extensionIDsWithUpdateSites = [];

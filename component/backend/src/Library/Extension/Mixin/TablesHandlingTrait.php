@@ -19,7 +19,7 @@ use SimpleXMLElement;
  *
  * @since  1.0.0
  */
-trait TablesHandingTrait
+trait TablesHandlingTrait
 {
 	/**
 	 * Possible tables which need checking.
