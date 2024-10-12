@@ -203,7 +203,14 @@ trait TablesHandingTrait
 				continue;
 			}
 
-			$parser = new PHPSQLParser($statement, true);
+			try
+			{
+				$parser = new PHPSQLParser($statement, false);
+			}
+			catch (\Throwable $e)
+			{
+				continue;
+			}
 
 			if (!is_array($parser->parsed) || empty($parser->parsed) || !isset($parser->parsed['TABLE']))
 			{
