@@ -19,7 +19,7 @@ use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 use Throwable;
 
-class MainModel extends ListModel
+class ItemsModel extends ListModel
 {
 	private int $total;
 

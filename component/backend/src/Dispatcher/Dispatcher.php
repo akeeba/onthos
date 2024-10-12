@@ -14,7 +14,7 @@ use Throwable;
 
 class Dispatcher extends ComponentDispatcher
 {
-	protected $defaultController = 'main';
+	protected $defaultController = 'items';
 
 	public function dispatch()
 	{
@@ -60,19 +60,13 @@ class Dispatcher extends ComponentDispatcher
 		// Handle a custom default controller name
 		$view       = $this->input->getCmd('view', $this->defaultController);
 		$controller = $this->input->getCmd('controller', $view);
-		$task       = $this->input->getCmd('task', 'main');
+		$task       = $this->input->getCmd('task', 'items');
 
 		// Check for a controller.task command.
 		if (str_contains($task, '.'))
 		{
 			// Explode the controller.task command.
 			[$controller, $task] = explode('.', $task);
-		}
-
-		if ($view == 'items')
-		{
-			$controller = 'main';
-			$view = 'main';
 		}
 
 		$this->input->set('view', $controller);

@@ -7,8 +7,36 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Extension;
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') || die;
 
+/**
+ * Interface to an extension object.
+ *
+ * @property-read int         $extension_id
+ * @property-read int         $package_id
+ * @property-read string      $name
+ * @property-read string      $type
+ * @property-read string      $element
+ * @property-read null|string $changelogurl
+ * @property-read null|string $folder
+ * @property-read int         $client_id
+ * @property-read int         $enabled
+ * @property-read int         $access
+ * @property-read int         $protected
+ * @property-read int         $locked
+ * @property-read Registry    $manifest_cache
+ * @property-read Registry    $params
+ * @property-read null|int    $checked_out
+ * @property-read null|string $checked_out_time
+ * @property-read int         $ordering
+ * @property-read int         $state
+ * @property-read null|string $note
+ * @property-read null|string $custom_data
+ *
+ * @since 1.0.0
+ */
 interface ExtensionInterface
 {
 	/**
@@ -148,4 +176,15 @@ interface ExtensionInterface
 	 * @since   1.0.0
 	 */
 	public function getParentPackage(): ?ExtensionInterface;
+
+	/**
+	 * Magic getter.
+	 *
+	 * Retrieves properties from the extension object.
+	 *
+	 * @param   string  $name  The property to retrieve.
+	 *
+	 * @return  null
+	 */
+	public function __get(string $name);
 }

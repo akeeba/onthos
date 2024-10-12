@@ -5,13 +5,13 @@
  * @license   GNU General Public License version 3, or later
  */
 
-namespace Akeeba\Component\Onthos\Administrator\View\Main;
+namespace Akeeba\Component\Onthos\Administrator\View\Items;
 
 defined('_JEXEC') || die;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
-use Akeeba\Component\Onthos\Administrator\Model\MainModel;
+use Akeeba\Component\Onthos\Administrator\Model\ItemsModel;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
@@ -80,7 +80,7 @@ class HtmlView extends BaseHtmlView
 	 */
 	public function display($tpl = null)
 	{
-		/** @var MainModel $model */
+		/** @var ItemsModel $model */
 		$model               = $this->getModel();
 		$this->items         = $model->getItems();
 		$this->pagination    = $model->getPagination();

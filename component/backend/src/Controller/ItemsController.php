@@ -14,7 +14,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
 
-class MainController extends BaseController
+class ItemsController extends BaseController
 {
 	public function __construct(
 		$config = [], ?MVCFactoryInterface $factory = null, ?CMSApplicationInterface $app = null, ?Input $input = null
@@ -23,7 +23,7 @@ class MainController extends BaseController
 		parent::__construct(
 			array_merge(
 				[
-					'default_view' => 'main',
+					'default_view' => 'items',
 					'default_task' => 'default',
 				],
 				$config
@@ -36,8 +36,6 @@ class MainController extends BaseController
 
 	public function default(): void
 	{
-		// TODO
-
 		$this->display();
 	}
 }

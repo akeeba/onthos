@@ -6,7 +6,7 @@
  */
 
 /**
- * @var  \Joomla\CMS\MVC\View\HtmlView $this
+ * @var  \Akeeba\Component\Onthos\Administrator\View\Item\HtmlView $this
  * @var  ExtensionInterface  $item  The extension item to summarize.
  */
 
@@ -51,7 +51,7 @@ HTML;
 $printArray = function ($array) use ($item, $getFilePrintable): void {
 	if (empty($array))
 	{
-		$text = Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE');
+		$text = Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE');
 		echo <<<HTML
 <span class="small text-muted">$text</span>
 HTML;
@@ -75,20 +75,20 @@ HTML;
 	echo "</ul>";
 };
 
-$unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
+$unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 ?>
 
 <div class="card">
 	<h2 class="card-header bg-secondary text-white">
-		<?= Text::_('COM_ONTHOS_COMMON_ID_TOP_HEADER') ?>
+		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?>
 		<span class="fs-3 ms-2 text-tertiary">
 		<?= $this->escape($item?->getName() ?? strtoupper($item?->name ?? 'UNKNOWN')) ?>
 		</span>
 	</h2>
 	<div class="card-body">
 		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
-			<?= Text::_('COM_ONTHOS_COMMON_ID_HEAD_BASIC') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_HEAD_BASIC') ?>
 		</h3>
 
 		<?php
@@ -102,7 +102,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 		<div class="row row-cols-1 row-cols-sm-<?= intval(ceil($minRows/2)) ?> row-cols-md-<?= $minRows ?>">
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_TYPE') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_TYPE') ?>
 				</h4>
 				<p>
 					<?= Text::_('COM_INSTALLER_TYPE_' . ($item?->type ?? 'NONAPPLICABLE')) ?>
@@ -110,7 +110,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 			</div>
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_ELEMENT') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_ELEMENT') ?>
 				</h4>
 				<p class="font-monospace">
 					<?= $this->escape($item?->element ?? $unknownText) ?>
@@ -119,7 +119,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 			<?php if ($isPlugin): ?>
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_FOLDER') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_FOLDER') ?>
 				</h4>
 				<p>
 					<?= $this->escape($item?->folder ?? $unknownText) ?>
@@ -129,7 +129,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 			<?php if ($hasClientId): ?>
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_APPLICATION') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_APPLICATION') ?>
 				</h4>
 				<?php if ($item?->client_id === 1): ?>
 					<p>
@@ -158,57 +158,57 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_INSTALLATION') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_INSTALLATION') ?>
 				</h4>
 				<?php if ($state == 1): ?>
-					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_INSTALLED_TOOLTIP') ?>">
+					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_INSTALLED_TOOLTIP') ?>">
 						<span class="fa fa-circle-check" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_INSTALLED') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_INSTALLED') ?>
 						</strong>
 					</p>
 				<?php elseif ($state == -1): ?>
-					<p class="text-warning hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_DISCOVERED_TOOLTIP') ?>">
+					<p class="text-warning hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_DISCOVERED_TOOLTIP') ?>">
 						<span class="fa fa-triangle-exclamation" aria-hidden="true"></span>
-						<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_DISCOVERED') ?>
+						<?= Text::_('COM_ONTHOS_ITEM_LBL_DISCOVERED') ?>
 					</p>
 				<?php else: ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_BROKEN_TOOLTIP') ?>">
+					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN_TOOLTIP') ?>">
 						<span class="fa fa-explosion" aria-hidden="true"></span>
-						<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_BROKEN') ?>
+						<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN') ?>
 					</p>
 				<?php endif; ?>
 			</div>
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_PACKAGELINK') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGELINK') ?>
 				</h4>
 				<?php if ($item->isCore()): ?>
-					<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_CORE_TOOLTIP') ?>">
+					<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE_TOOLTIP') ?>">
 						<span class="fa fa-joomla" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_CORE') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
 						</strong>
 					</p>
 				<?php elseif (!empty($item?->package_id ?? null)): ?>
-					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LINKED_TOOLTIP') ?>">
+					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
 						<span class="fa fa-link" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LINKED') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?>
 						</strong>
 					</p>
 				<?php elseif(!($item?->isOrphan() ?? true)): ?>
-					<p class="text-muted hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_TOPLEVEL_TOOLTIP') ?>">
+					<p class="text-muted hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_TOPLEVEL_TOOLTIP') ?>">
 						<span class="fa fa-square-up-right" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_TOPLEVEL') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_TOPLEVEL') ?>
 						</strong>
 					</p>
 				<?php else: ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_ORPHANED_TOOLTIP') ?>">
+					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED_TOOLTIP') ?>">
 						<span class="fa fa-link-slash" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_ORPHANED') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED') ?>
 						</strong>
 					</p>
 				<?php endif; ?>
@@ -231,55 +231,55 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 				<?php endif ?>
 			</div>
 			<div class="col">
-				<h4><?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_LOCKED') ?></h4>
+				<h4><?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LOCKED') ?></h4>
 				<?php if ($item?->locked): ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LOCKED_TOOLTIP') ?>">
+					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LOCKED_TOOLTIP') ?>">
 						<span class="fa fa-lock" aria-hidden="true"></span>
-						<strong><?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LOCKED') ?></strong>
+						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_LOCKED') ?></strong>
 					</p>
 				<?php else: ?>
-					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_UNLOCKED_TOOLTIP') ?>">
+					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_UNLOCKED_TOOLTIP') ?>">
 						<span class="fa fa-lock-open" aria-hidden="true"></span>
-						<strong><?= Text::_('COM_ONTHOS_COMMON_ID_LBL_UNLOCKED') ?></strong>
+						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_UNLOCKED') ?></strong>
 					</p>
 				<?php endif ?>
 			</div>
 		</div>
 
 		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
-			<?= Text::_('COM_ONTHOS_COMMON_ID_HEAD_MANDATORY') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_HEAD_MANDATORY') ?>
 		</h3>
 
 		<div class="alert alert-info small">
 			<span class="fa fa-info-circle" aria-hidden="true"></span>
-			<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_NA_IS_OK') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_LBL_NA_IS_OK') ?>
 		</div>
 
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
-				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_XML_MANIFEST_TOOLTIP') ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_XML_MANIFEST') ?>
+				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_XML_MANIFEST_TOOLTIP') ?>">
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_XML_MANIFEST') ?>
 				</h4>
 				<p>
 					<?php if ($item?->getManifestPath()): ?>
 						<?= $getFilePrintable($item?->getManifestPath()) ?>
 					<?php else: ?>
 						<span class="small text-muted">
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 						</span>
 					<?php endif; ?>
 				</p>
 			</div>
 			<div class="col">
-				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_SCRIPT_TOOLTIP') ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_SCRIPT') ?>
+				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_SCRIPT_TOOLTIP') ?>">
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_SCRIPT') ?>
 				</h4>
 				<p>
 					<?php if ($item?->getScriptPath()): ?>
 						<?= $getFilePrintable($item?->getScriptPath()) ?>
 					<?php else: ?>
 						<span class="small text-muted">
-							<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 						</span>
 					<?php endif; ?>
 				</p>
@@ -288,44 +288,44 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
-				<?php $key = 'COM_ONTHOS_COMMON_ID_SUBHEAD_DIRECTORIES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
+				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_DIRECTORIES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
 				<h4 class="hasTooltip" title="<?= Text::_($key) ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_DIRECTORIES') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_DIRECTORIES') ?>
 				</h4>
 				<?php $printArray($item?->getDirectories()) ?>
 			</div>
 			<div class="col">
-				<?php $key = 'COM_ONTHOS_COMMON_ID_SUBHEAD_FILES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
+				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_FILES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
 				<h4 class="hasTooltip" title="<?= Text::_($key) ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_FILES') ?>
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_FILES') ?>
 				</h4>
 				<?php $printArray($item?->getFiles()) ?>
 			</div>
 		</div>
 
 		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
-			<?= Text::_('COM_ONTHOS_COMMON_ID_HEAD_OPTIONAL') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_HEAD_OPTIONAL') ?>
 		</h3>
 
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
-				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_LANGFILES_TOOLTIP') ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_LANGFILES') ?>
+				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LANGFILES_TOOLTIP') ?>">
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LANGFILES') ?>
 				</h4>
 				<?php $printArray($item?->getLanguageFiles()) ?>
 			</div>
 			<div class="col">
-				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_MEDIADIRS_TOOLTIP') ?>">
-					<?= Text::_('COM_ONTHOS_COMMON_ID_SUBHEAD_MEDIADIRS') ?>
+				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_MEDIADIRS_TOOLTIP') ?>">
+					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_MEDIADIRS') ?>
 				</h4>
 				<?php $printArray($item?->getMediaPaths()) ?>
 			</div>
 		</div>
 
 		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2 hasTooltip"
-			title="<?= Text::_('COM_ONTHOS_COMMON_ID_HEAD_DATABASE_TOOLTIP') ?>"
+			title="<?= Text::_('COM_ONTHOS_ITEM_HEAD_DATABASE_TOOLTIP') ?>"
 		>
-			<?= Text::_('COM_ONTHOS_COMMON_ID_HEAD_DATABASE') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_HEAD_DATABASE') ?>
 		</h3>
 
 		<div class="row row-cols-1 row-cols-md-2">
@@ -345,7 +345,7 @@ $unknownText = Text::_('COM_ONTHOS_COMMON_ID_APP_UNKNOWN');
 				</ul>
 				<?php else: ?>
 					<span class="small text-muted">
-						<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+						<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 					</span>
 				<?php endif ?>
 			</div>

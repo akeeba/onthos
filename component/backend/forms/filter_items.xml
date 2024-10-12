@@ -31,10 +31,11 @@
 
         <!-- TODO: Extensions (Core vs Non-core) -->
 
-        <!-- TODO: Has problem (see below)
+        <!-- TODO: Has problem (see the Issues sub-package)
         - Any
         - Missing language files: Declared language files but one or more do not exist
         - Orphaned: Orphan extension (check if it can be adopted, or its update site regenerated)
+        - Missing Children
         - Broken: Detected as broken (w/ uninstall option)
         - Protected: Non-core extensions marked protected (w/ unprotect option)
         - Locked: Non-core extensions marked locked (w/ lock option)

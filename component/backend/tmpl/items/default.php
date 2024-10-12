@@ -7,7 +7,7 @@
 
 defined('_JEXEC') || die;
 
-/** @var \Akeeba\Component\Onthos\Administrator\View\Main\HtmlView $item */
+/** @var \Akeeba\Component\Onthos\Administrator\View\Items\HtmlView $item */
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
@@ -32,7 +32,7 @@ $nullDate  = Factory::getDbo()->getNullDate();
 $baseUri   = Uri::root();
 $i         = 0;
 ?>
-<form action="<?= Route::_('index.php?option=com_onthos&view=main'); ?>"
+<form action="<?= Route::_('index.php?option=com_onthos&view=items'); ?>"
       method="post" name="adminForm" id="adminForm">
 
 	<div class="row">
@@ -43,7 +43,7 @@ $i         = 0;
 
 			<table class="table table-striped" id="extensionsList">
 				<caption class="visually-hidden">
-					<?= Text::_('COM_ONTHOS_MAIN_TABLE_CAPTION'); ?>,
+					<?= Text::_('COM_ONTHOS_ITEMS_TABLE_CAPTION'); ?>,
 					<span id="orderedBy"><?= Text::_('JGLOBAL_SORTED_BY'); ?> </span>,
 					<span id="filteredBy"><?= Text::_('JGLOBAL_FILTERED_BY'); ?> </span>
 				</caption>
@@ -58,7 +58,7 @@ $i         = 0;
 					</th>
 
 					<th scope="col">
-						<?= HTMLHelper::_('searchtools.sort', 'COM_ONTHOS_MAIN_FIELD_NAME', 'name', $listDirn, $listOrder); ?>
+						<?= HTMLHelper::_('searchtools.sort', 'COM_ONTHOS_ITEMS_FIELD_NAME', 'name', $listDirn, $listOrder); ?>
 					</th>
 
 					<!-- TODO -->
@@ -118,7 +118,7 @@ $i         = 0;
 						<div class="mb-1 pb-1 border-bottom">
 							<?php if ($item->isCore()): ?>
 							<span class="fa fa-joomla fa-fw me-1 text-secondary hasTooltip" aria-hidden="true"
-								  title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_CORE') ?>"
+								  title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>"
 							></span>
 							<?php endif; ?>
 
@@ -139,7 +139,7 @@ $i         = 0;
 									  title="<?= Text::_('JVERSION') ?>"
 								></span>
 								<span class="visually-hidden"><?= Text::_('JVERSION') ?></span>
-								<?= $this->escape($version) ?: Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+								<?= $this->escape($version) ?: Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 							</div>
 
 							<div style="min-width: 9em">
@@ -147,7 +147,7 @@ $i         = 0;
 									  title="<?= Text::_('JDATE') ?>"
 								></span>
 								<span class="visually-hidden"><?= Text::_('JDATE') ?></span>
-								<?= $this->escape($creationDate) ?: Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+								<?= $this->escape($creationDate) ?: Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 							</div>
 
 							<div>
@@ -161,16 +161,16 @@ $i         = 0;
 									   target="_blank"
 									   class="link-secondary"
 									>
-										<?= $this->escape($author) ?: Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+										<?= $this->escape($author) ?: Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 									</a>
 								<?php elseif (!empty($author) && !empty($authorEmail)): ?>
 									<a href="email:<?= $this->escape($authorEmail) ?>"
 									   class="link-secondary"
 									>
-										<?= $this->escape($author) ?: Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+										<?= $this->escape($author) ?: Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 									</a>
 								<?php else: ?>
-									<?= $this->escape($author) ?: Text::_('COM_ONTHOS_COMMON_ID_LBL_NOT_APPLICABLE') ?>
+									<?= $this->escape($author) ?: Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 								<?php endif; ?>
 							</div>
 						</div>
@@ -178,9 +178,9 @@ $i         = 0;
 						<?php if ($item->getParentPackage() instanceof ExtensionInterface):?>
 						<div>
 							<span class="fa fa-arrows-split-up-and-left hasTooltip" aria-hidden="true"
-								  title="<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LINKED') ?>"
+								  title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?>"
 							></span>
-							<span class="visually-hidden"><?= Text::_('COM_ONTHOS_COMMON_ID_LBL_LINKED') ?></span>
+							<span class="visually-hidden"><?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?></span>
 							<?= $this->escape($item->getParentPackage()->getName()) ?>
 							<span class="small muted">
 								(#<?= $this->escape($item->getParentPackage()->extension_id) ?>)
@@ -193,13 +193,13 @@ $i         = 0;
 						<div class="<?= $class ?> fw-bold">
 							<?php if ($isBroken): ?>
 								<span class="fa fa fa-explosion" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_BROKEN') ?>
+								<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN') ?>
 							<?php elseif ($isOrphan): ?>
 								<span class="fa fa-link-slash" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_COMMON_ID_LBL_ORPHANED') ?>
+								<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED') ?>
 							<?php elseif ($isMissingLang): ?>
 								<span class="fa fa-language" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_MAIN_LBL_MISSING_LANG') ?>
+								<?= Text::_('COM_ONTHOS_ITEMS_LBL_MISSING_LANG') ?>
 							<?php endif ?>
 						</div>
 						<?php endif ?>

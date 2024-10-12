@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 /**
  * Empty state. If you see this, something has really gone incredibly wrong with your site. My condolences.
  *
- * @var \Akeeba\Component\Onthos\Administrator\View\Main\HtmlView $this
+ * @var \Akeeba\Component\Onthos\Administrator\View\Items\HtmlView $this
  */
 
 use Joomla\CMS\Factory;
@@ -18,7 +18,7 @@ use Joomla\CMS\Layout\LayoutHelper;
 
 $displayData = [
 	'textPrefix' => 'COM_ONTHOS_MAIN',
-	'formURL'    => 'index.php?option=com_onthos&view=main',
+	'formURL'    => 'index.php?option=com_onthos&view=items',
 	'icon'       => 'fa fa-poo-storm',
 ];
 

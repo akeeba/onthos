@@ -144,13 +144,8 @@ abstract class Extension implements ExtensionInterface
 	}
 
 	/**
-	 * Magic getter.
-	 *
-	 * Retrieves properties from the extension object.
-	 *
-	 * @param   string  $name  The property to retrieve.
-	 *
-	 * @return  null
+	 * @inheritdoc
+	 * @since 1.0.0
 	 */
 	final public function __get(string $name)
 	{
