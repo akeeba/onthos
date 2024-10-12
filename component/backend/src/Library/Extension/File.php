@@ -17,7 +17,7 @@ class File extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		// File extensions do not have a default installation location.
 	}
@@ -26,7 +26,7 @@ class File extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		$extensionSlug = $this->getExtensionSlug();
 
@@ -46,9 +46,9 @@ class File extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->languageFiles = [];
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
@@ -57,11 +57,9 @@ class File extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
+				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**
@@ -104,7 +102,7 @@ class File extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
 		$nodes = $xml->xpath('/extension/fileset/files');
 

@@ -17,7 +17,7 @@ class Component extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$this->directories = [
 			sprintf("components/%s", $this->element),
@@ -31,7 +31,7 @@ class Component extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
 		{
@@ -53,9 +53,73 @@ class Component extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->directories = [];
+		$this->files = [];
+
+		if ($items = $xml->xpath('/extension/files'))
+		{
+			$base                = sprintf("%s/components/%s", JPATH_ROOT, $this->element);
+			$this->directories[] = $base;
+
+			foreach ($items[0]->children() as $item)
+			{
+				if ($item->getName() === 'file' || $item->getName() === 'filename')
+				{
+					$this->files[] = $base . '/' . (string) $item;
+				}
+				elseif ($item->getName() === 'folder')
+				{
+					$this->directories[] = $base . '/' . (string) $item;
+				}
+			}
+		}
+
+		if ($items = $xml->xpath('/extension/administration/files'))
+		{
+			$base                = sprintf("%s/components/%s", JPATH_ADMINISTRATOR, $this->element);
+			$this->directories[] = $base;
+
+			foreach ($items[0]->children() as $item)
+			{
+				if ($item->getName() === 'file' || $item->getName() === 'filename')
+				{
+					$this->files[] = $base . '/' . (string) $item;
+				}
+				elseif ($item->getName() === 'folder')
+				{
+					$this->directories[] = $base . '/' . (string) $item;
+				}
+			}
+		}
+
+		if ($items = $xml->xpath('/extension/api/files'))
+		{
+			$base                = sprintf("%s/components/%s", JPATH_API, $this->element);
+			$this->directories[] = $base;
+
+			foreach ($items[0]->children() as $item)
+			{
+				if ($item->getName() === 'file' || $item->getName() === 'filename')
+				{
+					$this->files[] = $base . '/' . (string) $item;
+				}
+				elseif ($item->getName() === 'folder')
+				{
+					$this->directories[] = $base . '/' . (string) $item;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
+	{
+		$this->languageFiles = [];
 
 		// Admin language files
 		foreach ($xml->xpath('/extension/administration/languages') as $adminLangContainer)
@@ -68,15 +132,17 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf(
-					"%s/language/%s/%s", JPATH_ADMINISTRATOR, $tag, basename($relativePath)
-				);
-				$addons[] = sprintf(
-					"%s/components/%s/%s%s",
-					JPATH_ADMINISTRATOR,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf(
+						"%s/language/%s/%s", JPATH_ADMINISTRATOR, $tag, basename($relativePath)
+					),
+					sprintf(
+						"%s/components/%s/%s%s",
+						JPATH_ADMINISTRATOR,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
@@ -92,13 +158,15 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath));
-				$addons[] = sprintf(
-					"%s/components/%s/%s%s",
-					JPATH_API,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath)),
+					sprintf(
+						"%s/components/%s/%s%s",
+						JPATH_API,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
@@ -114,18 +182,18 @@ class Component extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
-				$addons[] = sprintf(
-					"%s/components/%s/%s%s",
-					JPATH_ROOT,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath)),
+					sprintf(
+						"%s/components/%s/%s%s",
+						JPATH_ROOT,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

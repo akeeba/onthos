@@ -17,7 +17,7 @@ class Language extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$basePath = $this->getBasePath();
 
@@ -36,7 +36,7 @@ class Language extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		// Language packages don't have their own translation files.
 	}
@@ -45,7 +45,7 @@ class Language extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		// Language packages don't have their own translation files.
 	}

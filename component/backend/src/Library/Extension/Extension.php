@@ -19,6 +19,7 @@ use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 use Joomla\Filter\InputFilter;
 use Joomla\Registry\Registry;
+use RuntimeException;
 use SimpleXMLElement;
 
 defined('_JEXEC') || die;
@@ -330,11 +331,10 @@ abstract class Extension implements ExtensionInterface
 		}
 
 		// Extension important directories, autodetected
-		$this->populateExtensionImportantPaths();
+		$this->populateDefaultExtensionPaths();
 
 		// Default language files
-		$this->populateDefaultLanguageFiles();
-		$this->languageFiles = $this->filterFilesArray($this->languageFiles, true);
+		$this->populateDefaultLanguages();
 
 		// Default media path
 		$this->populateMediaPathsFromDefault();
@@ -348,21 +348,24 @@ abstract class Extension implements ExtensionInterface
 		try
 		{
 			$xml = InstallerHelper::getInstallationXML($this->element, $this->type, $this->client_id, $this->folder);
+
+			if (!$xml instanceof SimpleXMLElement)
+			{
+				throw new RuntimeException('XML parsing failed');
+			}
+
+			$this->manifestPath = $this->rebaseToRoot($this->manifestPath);
+
+			if (strtolower($this->getXMLAttribute($xml, 'type')) !== strtolower($this->type))
+			{
+				throw new RuntimeException('Invalid XML manifest');
+			}
 		}
 		catch (\Throwable $e)
 		{
-			$xml = null;
-		}
+			$this->languageFiles = $this->filterDirectoriesArray($this->languageFiles, true);
+			$this->mediaPaths    = $this->filterDirectoriesArray($this->mediaPaths, true);
 
-		if (!$xml instanceof SimpleXMLElement)
-		{
-			return;
-		}
-
-		$this->manifestPath = $this->rebaseToRoot($this->manifestPath);
-
-		if (strtolower($this->getXMLAttribute($xml, 'type')) !== strtolower($this->type))
-		{
 			return;
 		}
 
@@ -370,15 +373,21 @@ abstract class Extension implements ExtensionInterface
 		$this->onAfterManifestFound($xml);
 
 		// Extension important directories, from the manifest (certain extension types only)
-		$this->populateExtensionImportantPathsFromManifest($xml);
+		$this->populateExtensionPathsFromManifest($xml);
+		$this->directories = array_map([$this, 'rebaseToRoot'], $this->directories);
+		$this->files       = array_map([$this, 'rebaseToRoot'], $this->files);
 
 		// Language files from the manifest
-		$this->addLanguagesFromManifest($xml);
+		$this->populateLanguagesFromManifest($xml);
 
+		$this->languageFiles = array_map([$this, 'rebaseToRoot'], $this->languageFiles);
 		$this->languageFiles = array_unique($this->languageFiles);
 
 		// Media directory from the manifest
 		$this->addMediaDirectoriesFromManifest($xml);
+
+		$this->mediaPaths = array_map([$this, 'rebaseToRoot'], $this->mediaPaths);
+		$this->mediaPaths = array_unique($this->mediaPaths);
 
 		// Script file from the manifest
 		$this->scriptPath = $this->getScriptPathFromManifest($xml);
@@ -393,7 +402,7 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	abstract protected function populateExtensionImportantPaths(): void;
+	abstract protected function populateDefaultExtensionPaths(): void;
 
 	/**
 	 * Populates the default language file paths.
@@ -401,7 +410,7 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	abstract protected function populateDefaultLanguageFiles(): void;
+	abstract protected function populateDefaultLanguages(): void;
 
 	/**
 	 * Populates language file paths by reading the manifest information.
@@ -411,7 +420,7 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	abstract protected function addLanguagesFromManifest(SimpleXMLElement $xml): void;
+	abstract protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void;
 
 	/**
 	 * Returns the installation script path read from the XML manifest.
@@ -488,6 +497,7 @@ abstract class Extension implements ExtensionInterface
 				$path .= '/language/' . $this->element . '/install.xml';
 				break;
 		}
+
 		if (file_exists($path) === false)
 		{
 			return null;
@@ -507,22 +517,15 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final protected function addMediaDirectoriesFromManifest(SimpleXMLElement $xml): void
 	{
-		// Reasoning: the manifest exists and is the authoritative resource of media paths.
-		$addons = [];
+		$this->mediaPaths = [];
 
 		foreach ($xml->xpath('/extension/media') as $node)
 		{
 			$destination = $this->getXMLAttribute($node, 'destination', $this->element);
 			$folder      = $this->getXMLAttribute($node, 'folder', 'media');
 
-			$addons[] = sprintf("%s/%s/%s", JPATH_ROOT, $folder, $destination);
+			$this->mediaPaths[] = sprintf("%s/%s/%s", JPATH_ROOT, $folder, $destination);
 		}
-
-		$this->mediaPaths = array_unique(
-			array_merge(
-				$this->mediaPaths, $this->filterDirectoriesArray($addons, true)
-			)
-		);
 	}
 
 	/**
@@ -565,9 +568,9 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	final protected function populateMediaPathsFromDefault()
+	final protected function populateMediaPathsFromDefault(): void
 	{
-		$mediaPaths = [
+		$this->mediaPaths = [
 			sprintf("%s/media/%s", JPATH_ROOT, $this->getExtensionSlug()),
 		];
 
@@ -578,7 +581,7 @@ abstract class Extension implements ExtensionInterface
 			$clientPath       = [0 => 'site', 1 => 'administrator'][$this->client_id] ?? 'invalid';
 			$bareName         = str_starts_with($this->element, 'tpl_') ? substr($this->element, 4) : $this->element;
 
-			$mediaPaths = [
+			$this->mediaPaths = [
 				// Modern path
 				JPATH_ROOT . '/media/' . $clientPath . '/' . $bareName,
 				// Legacy path, coincides with installation path which makes things VERY confusing!
@@ -586,8 +589,6 @@ abstract class Extension implements ExtensionInterface
 					: ($templateBasePath . '/templates/' . $bareName),
 			];
 		}
-
-		$this->mediaPaths = $this->filterDirectoriesArray($mediaPaths, true);
 	}
 
 	/**
@@ -601,7 +602,7 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
 		// Nothing by default
 	}
@@ -620,6 +621,36 @@ abstract class Extension implements ExtensionInterface
 	protected function onAfterManifestFound(SimpleXMLElement $xml)
 	{
 		// Nothing by default
+	}
+
+	/**
+	 * Add one of the alternative language files to the list of wanted language files.
+	 *
+	 * This method will check if any of the files it is given exist. If none of them exists, all will be added. If only
+	 * some (but at least one) of them exists, then only the existing ones will be added.
+	 *
+	 * The idea is that you may have a language file either in your extension, or in the relevant Joomla's language
+	 * folder. If AT LEAST ONE of these files exists you're fine. If we added both alternative locations it is possible
+	 * that one (usually the one in the extension-specific folder) will be missing, which would be making us falsely
+	 * report missing lang files.
+	 *
+	 * @param   string  ...$files
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	final protected function addAlternativeLanguageFiles(string ...$files): void
+	{
+		$existingFiles = array_filter($files, fn($file) => @is_file($file));
+
+		if (empty($existingFiles))
+		{
+			$this->languageFiles = array_merge($this->languageFiles, $files);
+
+			return;
+		}
+
+		$this->languageFiles = array_merge($this->languageFiles, $existingFiles);
 	}
 
 	/**

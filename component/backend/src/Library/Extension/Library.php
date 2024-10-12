@@ -17,7 +17,7 @@ class Library extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$this->directories[] = [
 			$this->rebaseToRoot(
@@ -30,7 +30,7 @@ class Library extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPathsFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
 		$this->directories = [];
 		$this->files       = [];
@@ -61,7 +61,7 @@ class Library extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
 		{
@@ -79,9 +79,9 @@ class Library extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->languageFiles = [];
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
@@ -93,24 +93,23 @@ class Library extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf(
-					"%s/language/%s/%s",
-					JPATH_ROOT,
-					$tag,
-					basename($relativePath)
-				);
-
-				$addons[] = sprintf(
-					"%s/modules/%s/%s%s",
-					JPATH_ROOT,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf(
+						"%s/language/%s/%s",
+						JPATH_ROOT,
+						$tag,
+						basename($relativePath)
+					),
+					sprintf(
+						"%s/modules/%s/%s%s",
+						JPATH_ROOT,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

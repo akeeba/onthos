@@ -91,7 +91,7 @@ class Package extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		// Packages do not install files of their own.
 	}
@@ -100,7 +100,7 @@ class Package extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
 		{
@@ -118,9 +118,9 @@ class Package extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->languageFiles = [];
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
@@ -132,7 +132,7 @@ class Package extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf(
+				$this->languageFiles[] = sprintf(
 					"%s/language/%s/%s%s",
 					JPATH_SITE,
 					$tag,
@@ -141,8 +141,6 @@ class Package extends Extension
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

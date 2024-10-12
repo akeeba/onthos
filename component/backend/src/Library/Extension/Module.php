@@ -17,7 +17,7 @@ class Module extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
 
@@ -25,13 +25,16 @@ class Module extends Extension
 			$this->rebaseToRoot(sprintf("%s/modules/%s", $baseDir, $this->element)),
 		];
 
+		$this->files = [
+			$this->rebaseToRoot(sprintf("%s/modules/%s.php", $baseDir, $this->element)),
+		];
 	}
 
 	/**
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
 
@@ -45,16 +48,45 @@ class Module extends Extension
 				]
 			);
 		}
-
 	}
 
 	/**
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->directories = [];
+		$this->files       = [];
+
+		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
+
+		if ($items = $xml->xpath('/extension/files'))
+		{
+			$base                = sprintf("%s/modules/%s", $baseDir, $this->element);
+			$this->directories[] = $base;
+
+			foreach ($items[0]->children() as $item)
+			{
+				if ($item->getName() === 'file' || $item->getName() === 'filename')
+				{
+					$this->files[] = $base . '/' . (string) $item;
+				}
+				elseif ($this->getName() === 'folder')
+				{
+					$this->directories[] = $base . '/' . (string) $item;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
+	{
+		$this->languageFiles = [];
 		$baseDir = [0 => JPATH_SITE, 1 => JPATH_ADMINISTRATOR][$this->client_id] ?? JPATH_SITE;
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
@@ -67,24 +99,23 @@ class Module extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf(
-					"%s/language/%s/%s",
-					$baseDir,
-					$tag,
-					basename($relativePath)
-				);
-
-				$addons[] = sprintf(
-					"%s/modules/%s/%s%s",
-					$baseDir,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf(
+						"%s/language/%s/%s",
+						$baseDir,
+						$tag,
+						basename($relativePath)
+					),
+					sprintf(
+						"%s/modules/%s/%s%s",
+						$baseDir,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

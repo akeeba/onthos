@@ -17,7 +17,7 @@ class Template extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$basePath = $this->getBasePath();
 
@@ -45,7 +45,7 @@ class Template extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		$basePath = $this->getBasePath();
 
@@ -66,10 +66,10 @@ class Template extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
 	{
 		$basePath = $this->getBasePath();
-		$addons = [];
+		$this->languageFiles = [];
 
 		if ($basePath === JPATH_BASE)
 		{
@@ -90,18 +90,18 @@ class Template extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf("%s/language/%s/%s", $basePath, $tag, basename($relativePath));
-				$addons[] = sprintf(
-					"%s/%s/%s%s",
-					$themePath,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf("%s/language/%s/%s", $basePath, $tag, basename($relativePath)),
+					sprintf(
+						"%s/%s/%s%s",
+						$themePath,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**

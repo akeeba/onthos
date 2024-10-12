@@ -17,7 +17,7 @@ class Plugin extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateExtensionImportantPaths(): void
+	protected function populateDefaultExtensionPaths(): void
 	{
 		$this->directories = [
 			// This is the expected path since Joomla! 1.5
@@ -34,7 +34,7 @@ class Plugin extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function populateDefaultLanguageFiles(): void
+	protected function populateDefaultLanguages(): void
 	{
 		foreach ($this->getKnownLanguages() as $language)
 		{
@@ -52,9 +52,37 @@ class Plugin extends Extension
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	protected function addLanguagesFromManifest(SimpleXMLElement $xml): void
+	protected function populateExtensionPathsFromManifest(SimpleXMLElement $xml): void
 	{
-		$addons = [];
+		$this->directories = [];
+		$this->files       = [];
+
+		if ($items = $xml->xpath('/extension/files'))
+		{
+			$base                = sprintf("%s/%s/%s", JPATH_PLUGINS, $this->folder, $this->element);
+			$this->directories[] = $base;
+
+			foreach ($items[0]->children() as $item)
+			{
+				if ($item->getName() === 'file' || $item->getName() === 'filename')
+				{
+					$this->files[] = $base . '/' . (string) $item;
+				}
+				elseif ($this->getName() === 'folder')
+				{
+					$this->directories[] = $base . '/' . (string) $item;
+				}
+			}
+		}
+	}
+
+		/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	protected function populateLanguagesFromManifest(SimpleXMLElement $xml): void
+	{
+		$this->languageFiles = [];
 
 		foreach ($xml->xpath('/extension/languages') as $siteLangContainer)
 		{
@@ -66,25 +94,24 @@ class Plugin extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$addons[] = sprintf(
-					"%s/language/%s/%s",
-					JPATH_ADMINISTRATOR,
-					$tag,
-					basename($relativePath)
-				);
-
-				$addons[] = sprintf(
-					"%s/plugins/%s/%s/%s%s",
-					JPATH_ROOT,
-					$this->folder,
-					$this->element,
-					$langFolder,
-					$relativePath
+				$this->addAlternativeLanguageFiles(
+					sprintf(
+						"%s/language/%s/%s",
+						JPATH_ADMINISTRATOR,
+						$tag,
+						basename($relativePath)
+					),
+					sprintf(
+						"%s/plugins/%s/%s/%s%s",
+						JPATH_ROOT,
+						$this->folder,
+						$this->element,
+						$langFolder,
+						$relativePath
+					)
 				);
 			}
 		}
-
-		$this->languageFiles = array_merge($this->languageFiles, $this->filterFilesArray($addons, true));
 	}
 
 	/**
