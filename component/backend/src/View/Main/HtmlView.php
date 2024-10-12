@@ -9,6 +9,7 @@ namespace Akeeba\Component\Onthos\Administrator\View\Main;
 
 defined('_JEXEC') || die;
 
+use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -17,6 +18,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 
 class HtmlView extends BaseHtmlView
 {
+	use ViewLoadAnyTemplateTrait;
+
 	public function display($tpl = null)
 	{
 		// TODO

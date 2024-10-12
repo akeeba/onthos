@@ -104,7 +104,14 @@ trait TablesHandingTrait
 
 		foreach ($sqlFiles as $sqlFile)
 		{
-			$this->populateTablesFromSQLFile($sqlFile);
+			try
+			{
+				$this->populateTablesFromSQLFile($sqlFile);
+			}
+			catch (\Throwable)
+			{
+				// It's not the end of the world. Keep going.
+			}
 		}
 
 		$this->tables = array_unique($this->tables);

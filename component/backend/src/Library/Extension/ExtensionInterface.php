@@ -53,7 +53,18 @@ interface ExtensionInterface
 	public function isDiscovered(): bool;
 
 	/**
+	 * Is this a core extension?
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 * @see     \Joomla\CMS\Extension\ExtensionHelper::checkIfCoreExtension()
+	 */
+	public function isCore(): bool;
+
+	/**
 	 * Does this extension miss any language files?
+	 *
+	 * @param   bool  $onlySystem  Only check for .sys.ini language files.
 	 *
 	 * @return  bool
 	 * @since   1.0.0
