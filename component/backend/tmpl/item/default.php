@@ -7,7 +7,6 @@
 
 /**
  * @var  \Akeeba\Component\Onthos\Administrator\View\Item\HtmlView $this
- * @var  ExtensionInterface  $item  The extension item to summarize.
  */
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
@@ -18,13 +17,13 @@ use Joomla\Database\DatabaseInterface;
 
 HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
 
-$state = !($item instanceof ExtensionInterface)
+$state = !($this->item instanceof ExtensionInterface)
 	? 0
-	: ($item?->isDiscovered() ? -1 : ($item?->isInstalled() ? 1 : 0));
+	: ($this->item?->isDiscovered() ? -1 : ($this->item?->isInstalled() ? 1 : 0));
 
-$getFilePrintable = function ($value) use ($item): string {
+$getFilePrintable = function ($value): string {
 	$exists       = @file_exists(JPATH_ROOT . '/' . $value);
-	$reallyExists = $item?->fileReallyExists(JPATH_ROOT . '/' . $value);
+	$reallyExists = $this->item?->fileReallyExists(JPATH_ROOT . '/' . $value);
 
 	if ($reallyExists)
 	{
@@ -48,7 +47,7 @@ $getFilePrintable = function ($value) use ($item): string {
 HTML;
 };
 
-$printArray = function ($array) use ($item, $getFilePrintable): void {
+$printArray = function ($array) use ($getFilePrintable): void {
 	if (empty($array))
 	{
 		$text = Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE');
@@ -83,7 +82,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 	<h2 class="card-header bg-secondary text-white">
 		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?>
 		<span class="fs-3 ms-2 text-tertiary">
-		<?= $this->escape($item?->getName() ?? strtoupper($item?->name ?? 'UNKNOWN')) ?>
+		<?= $this->escape($this->item?->getName() ?? strtoupper($this->item?->name ?? 'UNKNOWN')) ?>
 		</span>
 	</h2>
 	<div class="card-body">
@@ -93,8 +92,8 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 		<?php
 		$minRows     = 2;
-		$isPlugin    = $item?->type === 'plugin';
-		$hasClientId = !in_array($item?->type, ['component', 'file', 'files', 'library', 'package', 'plugin']);
+		$isPlugin    = $this->item?->type === 'plugin';
+		$hasClientId = !in_array($this->item?->type, ['component', 'file', 'files', 'library', 'package', 'plugin']);
 
 		if ($isPlugin) $minRows++;
 		if ($hasClientId) $minRows++;
@@ -105,7 +104,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_TYPE') ?>
 				</h4>
 				<p>
-					<?= Text::_('COM_INSTALLER_TYPE_' . ($item?->type ?? 'NONAPPLICABLE')) ?>
+					<?= Text::_('COM_INSTALLER_TYPE_' . ($this->item?->type ?? 'NONAPPLICABLE')) ?>
 				</p>
 			</div>
 			<div class="col">
@@ -113,7 +112,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_ELEMENT') ?>
 				</h4>
 				<p class="font-monospace">
-					<?= $this->escape($item?->element ?? $unknownText) ?>
+					<?= $this->escape($this->item?->element ?? $unknownText) ?>
 				</p>
 			</div>
 			<?php if ($isPlugin): ?>
@@ -122,7 +121,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_FOLDER') ?>
 				</h4>
 				<p>
-					<?= $this->escape($item?->folder ?? $unknownText) ?>
+					<?= $this->escape($this->item?->folder ?? $unknownText) ?>
 				</p>
 			</div>
 			<?php endif; ?>
@@ -131,25 +130,25 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<h4>
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_APPLICATION') ?>
 				</h4>
-				<?php if ($item?->client_id === 1): ?>
+				<?php if ($this->item?->client_id === 1): ?>
 					<p>
 						<?= Text::_('JADMINISTRATOR') ?>
 					</p>
-				<?php elseif ($item?->client_id === 0): ?>
+				<?php elseif ($this->item?->client_id === 0): ?>
 					<p>
 						<?= Text::_('JSITE') ?>
 					</p>
-				<?php elseif ($item?->client_id === 3): ?>
+				<?php elseif ($this->item?->client_id === 3): ?>
 					<p>
 						<?= Text::_('JAPI') ?>
 					</p>
-				<?php elseif (empty($item?->client_id ?? null)): ?>
+				<?php elseif (empty($this->item?->client_id ?? null)): ?>
 					<p>
 						<?= $unknownText ?>
 					</p>
 				<?php else: ?>
 
-					#<?= $this->escape($item?->client_id ?? $unknownText) ?>
+					#<?= $this->escape($this->item?->client_id ?? $unknownText) ?>
 				<?php endif ?>
 			</div>
 			<?php endif ?>
@@ -183,21 +182,21 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<h4>
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGELINK') ?>
 				</h4>
-				<?php if ($item->isCore()): ?>
+				<?php if ($this->item->isCore()): ?>
 					<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE_TOOLTIP') ?>">
 						<span class="fa fa-joomla" aria-hidden="true"></span>
 						<strong>
 							<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
 						</strong>
 					</p>
-				<?php elseif (!empty($item?->package_id ?? null)): ?>
+				<?php elseif (!empty($this->item?->package_id ?? null)): ?>
 					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
 						<span class="fa fa-link" aria-hidden="true"></span>
 						<strong>
 							<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?>
 						</strong>
 					</p>
-				<?php elseif(!($item?->isOrphan() ?? true)): ?>
+				<?php elseif(!($this->item?->isOrphan() ?? true)): ?>
 					<p class="text-muted hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_TOPLEVEL_TOOLTIP') ?>">
 						<span class="fa fa-square-up-right" aria-hidden="true"></span>
 						<strong>
@@ -218,7 +217,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
 				<h4>State</h4>
-				<?php if ($item?->enabled): ?>
+				<?php if ($this->item?->enabled): ?>
 					<p class="text-success">
 						<span class="fa fa-circle-check" aria-hidden="true"></span>
 						<strong><?= Text::_('JENABLED') ?></strong>
@@ -232,7 +231,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 			<div class="col">
 				<h4><?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LOCKED') ?></h4>
-				<?php if ($item?->locked): ?>
+				<?php if ($this->item?->locked): ?>
 					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LOCKED_TOOLTIP') ?>">
 						<span class="fa fa-lock" aria-hidden="true"></span>
 						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_LOCKED') ?></strong>
@@ -261,8 +260,8 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_XML_MANIFEST') ?>
 				</h4>
 				<p>
-					<?php if ($item?->getManifestPath()): ?>
-						<?= $getFilePrintable($item?->getManifestPath()) ?>
+					<?php if ($this->item?->getManifestPath()): ?>
+						<?= $getFilePrintable($this->item?->getManifestPath()) ?>
 					<?php else: ?>
 						<span class="small text-muted">
 							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
@@ -275,8 +274,8 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_SCRIPT') ?>
 				</h4>
 				<p>
-					<?php if ($item?->getScriptPath()): ?>
-						<?= $getFilePrintable($item?->getScriptPath()) ?>
+					<?php if ($this->item?->getScriptPath()): ?>
+						<?= $getFilePrintable($this->item?->getScriptPath()) ?>
 					<?php else: ?>
 						<span class="small text-muted">
 							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
@@ -288,18 +287,18 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
-				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_DIRECTORIES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
+				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_DIRECTORIES_TOOLTIP' . ($this->item?->getManifestPath() ? '' : '_NO_XML') ?>
 				<h4 class="hasTooltip" title="<?= Text::_($key) ?>">
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_DIRECTORIES') ?>
 				</h4>
-				<?php $printArray($item?->getDirectories()) ?>
+				<?php $printArray($this->item?->getDirectories()) ?>
 			</div>
 			<div class="col">
-				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_FILES_TOOLTIP' . ($item?->getManifestPath() ? '' : '_NO_XML') ?>
+				<?php $key = 'COM_ONTHOS_ITEM_SUBHEAD_FILES_TOOLTIP' . ($this->item?->getManifestPath() ? '' : '_NO_XML') ?>
 				<h4 class="hasTooltip" title="<?= Text::_($key) ?>">
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_FILES') ?>
 				</h4>
-				<?php $printArray($item?->getFiles()) ?>
+				<?php $printArray($this->item?->getFiles()) ?>
 			</div>
 		</div>
 
@@ -312,13 +311,13 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LANGFILES_TOOLTIP') ?>">
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LANGFILES') ?>
 				</h4>
-				<?php $printArray($item?->getLanguageFiles()) ?>
+				<?php $printArray($this->item?->getLanguageFiles()) ?>
 			</div>
 			<div class="col">
 				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_MEDIADIRS_TOOLTIP') ?>">
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_MEDIADIRS') ?>
 				</h4>
-				<?php $printArray($item?->getMediaPaths()) ?>
+				<?php $printArray($this->item?->getMediaPaths()) ?>
 			</div>
 		</div>
 
@@ -330,9 +329,9 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
-				<?php if ($item?->getTables()): ?>
+				<?php if ($this->item?->getTables()): ?>
 				<ul class="list-unstyled">
-					<?php foreach($item?->getTables() as $table): ?>
+					<?php foreach($this->item?->getTables() as $table): ?>
 					<li>
 						<span class="font-monospace">
 							<?= $this->escape($table) ?>
@@ -350,9 +349,9 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?php endif ?>
 			</div>
 			<div class="col d-none d-md-block">
-				<?php if ($item?->getTables()): ?>
+				<?php if ($this->item?->getTables()): ?>
 					<ul class="list-unstyled">
-						<?php foreach($item?->getTables() as $table): ?>
+						<?php foreach($this->item?->getTables() as $table): ?>
 							<li>
 								<span class="text-muted font-monospace">
 									<?= $this->escape(Factory::getContainer()->get(DatabaseInterface::class)->replacePrefix($table)) ?>

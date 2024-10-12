@@ -22,6 +22,11 @@ use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\Registry\Registry;
 
+/**
+ * View controller for displaying a list of extensions
+ *
+ * @since   1.0.0
+ */
 class HtmlView extends BaseHtmlView
 {
 	use ViewLoadAnyTemplateTrait;

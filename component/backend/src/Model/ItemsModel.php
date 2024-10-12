@@ -9,7 +9,6 @@ namespace Akeeba\Component\Onthos\Administrator\Model;
 
 defined('_JEXEC') || die;
 
-use Akeeba\Component\Onthos\Administrator\Library\Extension\Extension;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
@@ -21,8 +20,22 @@ use Throwable;
 
 class ItemsModel extends ListModel
 {
+	use GetExtensionByIdTrait;
+
+	/**
+	 * The total number of available extensions to display after applying all filters.
+	 *
+	 * @var   int
+	 * @since 1.0.0
+	 */
 	private int $total;
 
+	/**
+	 * The filtered extension objects.
+	 *
+	 * @var   array<ExtensionInterface>
+	 * @since 1.0.0
+	 */
 	private array $extensions;
 
 	/**
@@ -94,7 +107,6 @@ class ItemsModel extends ListModel
 			}
 		}
 
-
 		// Apply pagination and return
 		$offset = min(max($this->getState('list.start'), 0), count($this->extensions) - 1);
 		$length = max($this->getState('list.limit'), 5);
@@ -137,90 +149,6 @@ class ItemsModel extends ListModel
 		{
 			return 0;
 		}
-	}
-
-
-	/**
-	 * Get an extension object given the extension selection criteria.
-	 *
-	 * The $type and $element parameters are always required.
-	 *
-	 * Only for plugins you need to provide the $folder parameter.
-	 *
-	 * Only for language, module, and template extensions you need to provide $clientId. The acceptable values are 0 for
-	 * the frontend, 1 for the backend, and 3 for the API application.
-	 *
-	 * @param   string       $type      Extension type.
-	 * @param   string       $element   The `element` column in `#__extensions`.
-	 * @param   string|null  $folder    Only for plugins. The plugin group.
-	 * @param   int|null     $clientId  Only for some types. Application ID the extension applies to.
-	 *
-	 * @return  ExtensionInterface|null  Extension object, NULL if not found.
-	 * @since   1.0.0
-	 */
-	public function getExtensionByDetails(string $type, string $element, ?string $folder = null, ?int $clientId = null
-	): ?ExtensionInterface
-	{
-		$db = $this->getDatabase();
-		/** @var DatabaseQuery $query */
-		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
-		$query
-			->select('*')
-			->from($db->quoteName('#__extensions'))
-			->where($db->quoteName('type') . '= :type')
-			->where($db->quoteName('element') . ' = :element')
-			->bind(':type', $type, ParameterType::STRING)
-			->bind(':element', $element, ParameterType::STRING);
-
-		if ($type === 'plugin')
-		{
-			$query->where($db->quoteName('folder') . ' = :folder')
-				->bind(':folder', $folder, ParameterType::STRING);
-		}
-
-		if (!empty($clientId))
-		{
-			$query->where($db->quoteName('client_id') . ' = :client_id')
-				->bind(':client_id', $clientId, ParameterType::INTEGER);
-		}
-
-		$extData = $db->setQuery($query)->loadObject();
-
-		if (empty($extData))
-		{
-			return null;
-		}
-
-		return Extension::make($extData);
-	}
-
-	/**
-	 * Get an extension object given the extension ID.
-	 *
-	 * @param   int  $id  The extension ID
-	 *
-	 * @return  ExtensionInterface|null  Extension object, NULL if not found.
-	 * @since   1.0.0
-	 */
-	public function getExtensionById(int $id): ?ExtensionInterface
-	{
-		$db = $this->getDatabase();
-		/** @var DatabaseQuery $query */
-		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
-		$query
-			->select('*')
-			->from($db->quoteName('#__extensions'))
-			->where($db->quoteName('extension_id') . '= :extension_id')
-			->bind(':extension_id', $id, ParameterType::INTEGER);
-
-		$extData = $db->setQuery($query)->loadObject();
-
-		if (empty($extData))
-		{
-			return null;
-		}
-
-		return Extension::make($extData);
 	}
 
 	/**

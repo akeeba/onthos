@@ -14,6 +14,11 @@ use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Input\Input;
 
+/**
+ * Controller to display all extensions.
+ *
+ * @since   1.0.0
+ */
 class ItemsController extends BaseController
 {
 	public function __construct(

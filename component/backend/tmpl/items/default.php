@@ -54,7 +54,7 @@ $i         = 0;
 					</td>
 
 					<th scope="col">
-						<?= Text::_('COM_INSTALLER_HEADING_FOLDER') ?>
+						<?= Text::_('COM_INSTALLER_HEADING_TYPE') ?>
 					</th>
 
 					<th scope="col">
@@ -122,9 +122,10 @@ $i         = 0;
 							></span>
 							<?php endif; ?>
 
-							<span class="fw-semibold">
+							<a href="<?= Route::_('index.php?option=com_onthos&view=item&id=' . $item->extension_id) ?>"
+							   class="fw-semibold">
 								<?= $this->escape(strip_tags($item->getName())) ?>
-							</span>
+							</a>
 
 							<?php if ($description): ?>
 							<span class="hasTooltip fa fa-info-circle ms-3 text-body-tertiary" aria-hidden="true"
