@@ -15,19 +15,77 @@
                 hint="JSEARCH_FILTER"
         />
 
-        <!-- TODO: Status (Enabled, Disabled) -->
+        <!-- State (Enabled, Disabled) -->
+        <field
+                name="enabled"
+                type="list"
+                label="JSTATUS"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_STATUS"
+        >
+            <option value="0">JDISABLED</option>
+            <option value="1">JENABLED</option>
+        </field>
 
-        <!-- TODO: Protected -->
+        <!-- Protected (theoretically, whether it's a core extension) -->
+        <field
+                name="protected"
+                type="list"
+                label="JPROTECTED"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_PROTECTED"
+        >
+            <option value="0">JUNPROTECTED</option>
+            <option value="1">JPROTECTED</option>
+        </field>
 
-        <!-- TODO: Locked -->
+        <!-- Locked (Whether uninstalling and updating is enabled) -->
+        <field
+                name="locked"
+                type="list"
+                label="COM_INSTALLER_HEADING_LOCKED"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_LOCKED"
+        >
+            <option value="0">COM_ONTHOS_ITEM_LBL_UNLOCKED</option>
+            <option value="1">COM_ONTHOS_ITEM_LBL_LOCKED</option>
+        </field>
 
-        <!-- TODO: Location (Site ID) -->
+        <!-- Application (Client ID) -->
+        <field
+                name="client_id"
+                type="list"
+                label="COM_ONTHOS_ITEM_SUBHEAD_APPLICATION"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_APPLICATION"
+        >
+            <option value="0">JSITE</option>
+            <option value="1">JADMINISTRATOR</option>
+            <option value="3">JAPI</option>
+        </field>
 
-        <!-- TODO: Type -->
+        <!-- Type -->
+        <field
+                name="type"
+                type="list"
+                label="COM_INSTALLER_FIELD_TYPE_LABEL"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_TYPE"
+        >
+            <option value="component">COM_INSTALLER_TYPE_COMPONENT</option>
+            <option value="file">COM_INSTALLER_TYPE_FILE</option>
+            <option value="language">COM_INSTALLER_TYPE_LANGUAGE</option>
+            <option value="library">COM_INSTALLER_TYPE_LIBRARY</option>
+            <option value="module">COM_INSTALLER_TYPE_MODULE</option>
+            <option value="package">COM_INSTALLER_TYPE_PACKAGE</option>
+            <option value="plugin">COM_INSTALLER_TYPE_PLUGIN</option>
+            <option value="template">COM_INSTALLER_TYPE_TEMPLATE</option>
+        </field>
 
         <!-- TODO: Folder -->
 
         <!-- TODO: Package -->
+
 
         <!-- TODO: Extensions (Core vs Non-core) -->
 

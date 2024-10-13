@@ -308,7 +308,7 @@ class ItemsModel extends ListModel
 		// Filter: enabled
 		$enabled = $this->getState('filter.enabled');
 
-		if (is_integer($enabled))
+		if ($enabled !== '')
 		{
 			$query->where($db->quoteName('enabled') . ' = :enabled')
 				->bind(':enabled', $enabled, ParameterType::INTEGER);
@@ -317,7 +317,7 @@ class ItemsModel extends ListModel
 		// Filter: access
 		$access = $this->getState('filter.access');
 
-		if (!empty($access) && is_integer($access))
+		if ($access !== '')
 		{
 			$query->where($db->quoteName('access') . ' = :access')
 				->bind(':access', $access, ParameterType::INTEGER);
@@ -326,7 +326,7 @@ class ItemsModel extends ListModel
 		// Filter: protected
 		$protected = $this->getState('filter.protected');
 
-		if (is_integer($protected))
+		if ($protected !== '')
 		{
 			$query->where($db->quoteName('protected') . ' = :protected')
 				->bind(':protected', $protected, ParameterType::INTEGER);
@@ -335,7 +335,7 @@ class ItemsModel extends ListModel
 		// Filter: locked
 		$locked = $this->getState('filter.locked');
 
-		if (is_integer($locked))
+		if ($locked !== '')
 		{
 			$query->where($db->quoteName('locked') . ' = :locked')
 				->bind(':locked', $locked, ParameterType::INTEGER);
@@ -344,7 +344,7 @@ class ItemsModel extends ListModel
 		// Filter: state
 		$state = $this->getState('filter.state');
 
-		if (is_integer($state))
+		if ($state !== '')
 		{
 			$query->where($db->quoteName('state') . ' = :state')
 				->bind(':state', $state, ParameterType::INTEGER);
