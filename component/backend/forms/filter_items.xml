@@ -5,7 +5,7 @@
   ~ @license   GNU General Public License version 3, or later
   -->
 
-<form>
+<form addfieldprefix="\Akeeba\Component\Onthos\Administrator\Field">
     <fields name="filter">
         <field
                 name="search"
@@ -82,12 +82,38 @@
             <option value="template">COM_INSTALLER_TYPE_TEMPLATE</option>
         </field>
 
-        <!-- TODO: Folder -->
+        <!-- Folder -->
+        <field
+                name="folder"
+                type="folder"
+                label="COM_INSTALLER_HEADING_FOLDER"
+                class="js-select-submit-on-change"
+        >
+            <option value="">COM_INSTALLER_VALUE_FOLDER_SELECT</option>
+        </field>
 
-        <!-- TODO: Package -->
+        <!-- Package -->
+        <field
+                name="package_id"
+                type="package"
+                label="COM_INSTALLER_MANAGE_FILTER_PACKAGE_ID_LABEL"
+                description="COM_INSTALLER_MANAGE_FILTER_PACKAGE_ID_DESC"
+                class="js-select-submit-on-change"
+        >
+            <option value="">COM_INSTALLER_VALUE_PACKAGE_ID_SELECT</option>
+        </field>
 
-
-        <!-- TODO: Extensions (Core vs Non-core) -->
+        <!-- Extensions (Core vs Non-core) -->
+        <field
+                name="isCore"
+                type="list"
+                label="JSTATUS"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_ISCORE"
+        >
+            <option value="0">COM_ONTHOS_ITEMS_FILTER_OPT_ISCORE_3PD</option>
+            <option value="1">COM_ONTHOS_ITEMS_FILTER_OPT_ISCORE_CORE</option>
+        </field>
 
         <!-- TODO: Has problem (see the Issues sub-package)
         - Any

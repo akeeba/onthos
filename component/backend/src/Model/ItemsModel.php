@@ -60,6 +60,7 @@ class ItemsModel extends ListModel
 				'locked',
 				'state',
 				'search',
+				'isCore'
 			];
 
 		parent::__construct($config, $factory);
@@ -75,13 +76,23 @@ class ItemsModel extends ListModel
 		{
 			$this->extensions = $this->processAllExtensions();
 
-			$search = trim($this->getState('filter.search') ?: '');
+			$search = trim($this->getState('filter.search', '') ?: '');
 
 			if (!empty($search))
 			{
 				$this->extensions = array_filter(
 					$this->extensions,
 					fn($extension) => stripos($extension->getName(), $search) !== false
+				);
+			}
+
+			$isCore = $this->getState('filter.isCore', '0');
+
+			if ($isCore !== '')
+			{
+				$this->extensions = array_filter(
+					$this->extensions,
+					fn($extension) => $extension->isCore() === boolval($isCore)
 				);
 			}
 
@@ -244,18 +255,18 @@ class ItemsModel extends ListModel
 			->from($db->quoteName('#__extensions'));
 
 		// Filter: Extension ID
-		$id = $this->getState('filter.extension_id');
+		$id = $this->getState('filter.extension_id', '');
 
-		if (is_int($id) && $id > 0)
+		if ($id !== '' && intval($id) > 0)
 		{
 			$query->where($db->quoteName('extension_id') . ' = :id')
 				->bind(':id', $id, ParameterType::INTEGER);
 		}
 
 		// Filter: Package ID
-		$package_id = $this->getState('filter.extension_id');
+		$package_id = $this->getState('filter.package_id', '');
 
-		if (is_int($package_id) && $package_id == 0)
+		if ($package_id === '0')
 		{
 			$query->where(
 				'(' .
@@ -263,14 +274,14 @@ class ItemsModel extends ListModel
 				$db->quoteName('package_id') . ' = 0'
 			);
 		}
-		elseif (is_int($package_id))
+		elseif ($package_id !== '')
 		{
 			$query->where($db->quoteName('package_id') . ' = :package_id')
 				->bind(':package_id', $package_id, ParameterType::INTEGER);
 		}
 
 		// Filter: type
-		$type = $this->getState('filter.type');
+		$type = $this->getState('filter.type', '');
 
 		if (!empty($type))
 		{
@@ -279,7 +290,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: element
-		$element = $this->getState('filter.element');
+		$element = $this->getState('filter.element', '');
 
 		if (!empty($element))
 		{
@@ -288,7 +299,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: folder
-		$folder = $this->getState('filter.folder');
+		$folder = $this->getState('filter.folder', '');
 
 		if (!empty($folder))
 		{
@@ -297,7 +308,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: client_id
-		$client_id = $this->getState('filter.client_id');
+		$client_id = $this->getState('filter.client_id', '');
 
 		if (!empty($client_id))
 		{
@@ -306,7 +317,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: enabled
-		$enabled = $this->getState('filter.enabled');
+		$enabled = $this->getState('filter.enabled', '');
 
 		if ($enabled !== '')
 		{
@@ -315,7 +326,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: access
-		$access = $this->getState('filter.access');
+		$access = $this->getState('filter.access', '');
 
 		if ($access !== '')
 		{
@@ -324,7 +335,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: protected
-		$protected = $this->getState('filter.protected');
+		$protected = $this->getState('filter.protected', '');
 
 		if ($protected !== '')
 		{
@@ -333,7 +344,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: locked
-		$locked = $this->getState('filter.locked');
+		$locked = $this->getState('filter.locked', '');
 
 		if ($locked !== '')
 		{
@@ -342,7 +353,7 @@ class ItemsModel extends ListModel
 		}
 
 		// Filter: state
-		$state = $this->getState('filter.state');
+		$state = $this->getState('filter.state', '');
 
 		if ($state !== '')
 		{

@@ -79,14 +79,6 @@ class HtmlView extends BaseHtmlView
 	protected bool $isUnreliableCore = false;
 
 	/**
-	 * Is this view an Empty State
-	 *
-	 * @var   boolean
-	 * @since 1.0.0
-	 */
-	private bool $isEmptyState = false;
-
-	/**
 	 * @inheritdoc
 	 * @since 1.0.0
 	 */
@@ -99,7 +91,6 @@ class HtmlView extends BaseHtmlView
 		$this->state            = $model->getState();
 		$this->filterForm       = $model->getFilterForm();
 		$this->activeFilters    = $model->getActiveFilters();
-		$this->isEmptyState     = $this->get('IsEmptyState');
 		$this->isUnreliableCore = array_reduce(
 			$this->items,
 			fn(bool $carry, ExtensionInterface $extension) => $carry || $extension->isCore(),
@@ -110,11 +101,6 @@ class HtmlView extends BaseHtmlView
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new GenericDataException(implode("\n", $errors), 500);
-		}
-
-		if (!\count($this->items) && $this->isEmptyState)
-		{
-			$this->setLayout('emptystate');
 		}
 
 		$this->addToolbar();
