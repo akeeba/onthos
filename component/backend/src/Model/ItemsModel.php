@@ -87,7 +87,7 @@ class ItemsModel extends ListModel
 				);
 			}
 
-			$isCore = $this->getState('filter.isCore', '0');
+			$isCore = $this->getState('filter.isCore', '');
 
 			if ($isCore !== '')
 			{
@@ -97,7 +97,7 @@ class ItemsModel extends ListModel
 				);
 			}
 
-			$issues = $this->getState('filter.issues', '*');
+			$issues = $this->getState('filter.issues', '');
 
 			if ($issues === '*')
 			{
@@ -247,6 +247,14 @@ class ItemsModel extends ListModel
 		// Filter: search
 		$search = $app->getUserStateFromRequest($this->context . 'filter.search', 'filter_search', '', 'string');
 		$this->setState('filter.search', $search);
+
+		// Filter: isCore
+		$isCore = $app->getUserStateFromRequest($this->context . 'filter.isCore', 'filter_isCore', '', 'string');
+		$this->setState('filter.isCore', $isCore === '' ? $state : intval($state));
+
+		// Filter: issues
+		$issues = $app->getUserStateFromRequest($this->context . 'filter.issues', 'filter_issues', '', 'string');
+		$this->setState('filter.issues', $issues);
 
 		// Side note: this is more elegant than Joomla's way of changing the method signature.
 		$ordering  ??= 'extension_id';
