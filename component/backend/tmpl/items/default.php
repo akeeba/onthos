@@ -182,7 +182,11 @@ $i         = 0;
 								  title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?>"
 							></span>
 							<span class="visually-hidden"><?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?></span>
+							<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $item->getParentPackage()->extension_id) ?>"
+							   class="link-info"
+							>
 							<?= $this->escape($item->getParentPackage()->getName()) ?>
+							</a>
 							<span class="small muted">
 								(#<?= $this->escape($item->getParentPackage()->extension_id) ?>)
 							</span>

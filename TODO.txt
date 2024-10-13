@@ -2,9 +2,9 @@
 --------------------------------------------------------------------------------
 ✔️ Add a Big Warning to the top of the Items page. It can be disabled in the Options page.
 
-Refactor items page
+✅ Refactor items page
 --------------------------------------------------------------------------------
-Make the package the extension belongs to a link which filters by package
+✔️ Make the package the extension belongs to a link which filters by package
 
 Refactor item page
 --------------------------------------------------------------------------------
@@ -22,18 +22,37 @@ Show a list of Issues with their descriptions, and their proposed solutions
 Issues
 --------------------------------------------------------------------------------
 
-IsMissingUpdateSite
+Broken -> fa-ghost
+
+    CHANGE: NONE of the files and directories are present.
+
+PartiallyInstalled [fa-file-circle-question]
+
+    There are missing files or directories, but at least ONE of them is present.
+
+NoUpdateSite [fa-arrows-rotate]
 
     The manifest has an update site, but it is currently missing in Joomla's database.
 
-DisabledUpdateSite
+DisabledUpdateSite [fa-ban]
 
     The manifest has an update site, it exists in the database, but it's currently disabled.
 
-Adoptable
+CanBeLinked [fa-paperclip]
 
     A package claims to have installed this extension, but the extension claims to not belong to that package.
 
+Orphaned [fa-link-slash]
+
+    ADD: And there is no other package which can claim this extension
+
+NoScript [fa-scroll]
+
+    The script file is missing
+
+NoXMLManifest [fa-file-code]
+
+    The XML manifest is missing
 
 How to go about fixing problems
 --------------------------------------------------------------------------------
