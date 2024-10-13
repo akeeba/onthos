@@ -8,13 +8,13 @@
 
 Refactor item page
 --------------------------------------------------------------------------------
-Remove installation status
-Replace Link to Package with an actual link if the package exists, otherwise display N/A
-On the state, lock state line also add Protected
-Remove Optional Elements heading
-Change Mandatory Elements to Files and Directories
+✔️ Remove installation status
+✔️ Replace Link to Package with an actual link if the package exists, otherwise display N/A
+✔️ On the state, lock state line also add Protected
+✔️ Remove Optional Elements heading
+✔️ Change Mandatory Elements to Files and Directories
+✔️ Database tables: check if they exist
 Clean up our component language strings
-Database tables: check if they exist
 
 Show a list of Issues with their descriptions, and their proposed solutions
     Requires the "How to go about fixing problems" to be implemented first.
@@ -22,11 +22,15 @@ Show a list of Issues with their descriptions, and their proposed solutions
 Issues
 --------------------------------------------------------------------------------
 
-Broken -> fa-ghost
+Broken [fa-skull]
 
     CHANGE: NONE of the files and directories are present.
 
-PartiallyInstalled [fa-file-circle-question]
+Orphaned [fa-link-slash]
+
+    ADD: And there is no other package which can claim this extension
+
+PartiallyInstalled [fa-ghost]
 
     There are missing files or directories, but at least ONE of them is present.
 
@@ -42,10 +46,6 @@ CanBeLinked [fa-paperclip]
 
     A package claims to have installed this extension, but the extension claims to not belong to that package.
 
-Orphaned [fa-link-slash]
-
-    ADD: And there is no other package which can claim this extension
-
 NoScript [fa-scroll]
 
     The script file is missing
@@ -53,6 +53,14 @@ NoScript [fa-scroll]
 NoXMLManifest [fa-file-code]
 
     The XML manifest is missing
+
+MissingTables [fa-database]
+
+    Only if the extension defines tables. One or more tables are missing.
+
+SchemaOutOfDate [fa-table-list]
+
+    Only if the extension defines tables. Joomla! reports one or more database schema issues for the extension.
 
 How to go about fixing problems
 --------------------------------------------------------------------------------

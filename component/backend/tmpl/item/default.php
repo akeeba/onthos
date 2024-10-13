@@ -13,6 +13,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\Database\DatabaseInterface;
 
 HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
@@ -82,7 +83,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 <div class="card">
 	<h2 class="card-header bg-secondary text-white">
-		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?>
+		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?> &ndash;
 		<span class="fs-3 ms-2 text-tertiary">
 		<?= $this->escape($this->item?->getName() ?? strtoupper($this->item?->name ?? 'UNKNOWN')) ?>
 		</span>
@@ -163,29 +164,6 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
 				<h4>
-					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_INSTALLATION') ?>
-				</h4>
-				<?php if ($state == 1): ?>
-					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_INSTALLED_TOOLTIP') ?>">
-						<span class="fa fa-circle-check" aria-hidden="true"></span>
-						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_INSTALLED') ?>
-						</strong>
-					</p>
-				<?php elseif ($state == -1): ?>
-					<p class="text-warning hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_DISCOVERED_TOOLTIP') ?>">
-						<span class="fa fa-triangle-exclamation" aria-hidden="true"></span>
-						<?= Text::_('COM_ONTHOS_ITEM_LBL_DISCOVERED') ?>
-					</p>
-				<?php else: ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN_TOOLTIP') ?>">
-						<span class="fa fa-explosion" aria-hidden="true"></span>
-						<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN') ?>
-					</p>
-				<?php endif; ?>
-			</div>
-			<div class="col">
-				<h4>
 					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGELINK') ?>
 				</h4>
 				<?php if ($this->item->isCore()): ?>
@@ -198,29 +176,27 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?php elseif (!empty($this->item?->package_id ?? null)): ?>
 					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
 						<span class="fa fa-link" aria-hidden="true"></span>
-						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED') ?>
-						</strong>
-					</p>
-				<?php elseif(!($this->item?->isOrphan() ?? true)): ?>
-					<p class="text-muted hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_TOPLEVEL_TOOLTIP') ?>">
-						<span class="fa fa-square-up-right" aria-hidden="true"></span>
-						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_TOPLEVEL') ?>
-						</strong>
+						<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>"
+						   class="link-info"
+						>
+							<?= $this->escape($this->item->getParentPackage()->getName()) ?>
+						</a>
+						<span class="small muted">
+							(#<?= $this->escape($this->item->getParentPackage()->extension_id) ?>)
+						</span>
 					</p>
 				<?php else: ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED_TOOLTIP') ?>">
+					<p class="text-danger hasTooltip">
 						<span class="fa fa-link-slash" aria-hidden="true"></span>
 						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED') ?>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 						</strong>
 					</p>
 				<?php endif; ?>
 			</div>
 		</div>
 
-		<div class="row row-cols-1 row-cols-md-2">
+		<div class="row row-cols-1 row-cols-md-3">
 			<div class="col">
 				<h4>State</h4>
 				<?php if ($this->item?->enabled): ?>
@@ -249,10 +225,29 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					</p>
 				<?php endif ?>
 			</div>
+			<div class="col">
+				<h4><?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PROTECTED') ?></h4>
+				<?php if ($this->item?->protected && $this->item?->isCore()): ?>
+					<p class="text-succecss hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP') ?>">
+						<span class="fa fa-shield" aria-hidden="true"></span>
+						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED') ?></strong>
+					</p>
+				<?php elseif ($this->item?->protected): ?>
+					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP_NAUGHTY') ?>">
+						<span class="fa fa-shield" aria-hidden="true"></span>
+						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED') ?></strong>
+					</p>
+				<?php else: ?>
+					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_UNPROTECTED_TOOLTIP') ?>">
+						<span class="fa fa-shield-halved" data-fa-transform="shrink-6" aria-hidden="true"></span>
+						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_UNPROTECTED') ?></strong>
+					</p>
+				<?php endif ?>
+			</div>
 		</div>
 
 		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
-			<?= Text::_('COM_ONTHOS_ITEM_HEAD_MANDATORY') ?>
+			<?= Text::_('COM_ONTHOS_ITEM_HEAD_FILES_AND_DIRS') ?>
 		</h3>
 
 		<div class="alert alert-info small">
@@ -308,10 +303,6 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 		</div>
 
-		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
-			<?= Text::_('COM_ONTHOS_ITEM_HEAD_OPTIONAL') ?>
-		</h3>
-
 		<div class="row row-cols-1 row-cols-md-2">
 			<div class="col">
 				<h4 class="hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_LANGFILES_TOOLTIP') ?>">
@@ -338,8 +329,14 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?php if ($this->item?->getTables()): ?>
 				<ul class="list-unstyled">
 					<?php foreach($this->item?->getTables() as $table): ?>
+					<?php $exists = in_array($table, $this->existingTables) ?>
 					<li>
 						<span class="font-monospace">
+							<?php if ($exists): ?>
+							<span class="fa fa-circle-check" aria-hidden="true"></span>
+							<?php else: ?>
+							<span class="fa-circle-xmark text-danger" aria-hidden="true"></span>
+							<?php endif ?>
 							<?= $this->escape($table) ?>
 						</span>
 						<span class="ms-3 small text-muted font-monospace d-block d-md-none">

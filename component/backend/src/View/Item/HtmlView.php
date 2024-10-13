@@ -29,21 +29,40 @@ class HtmlView extends BaseView
 	use ViewLoadAnyTemplateTrait;
 
 	/**
-	 * The ID of the extension to display
+	 * The ID of the extension to display.
 	 *
 	 * @var   int
 	 * @since 1.0.0
 	 */
 	public int $extension_id;
 
+	/**
+	 * The extension item we are working with.
+	 *
+	 * @var   ExtensionInterface|null
+	 * @since 1.0.0
+	 */
 	public ?ExtensionInterface $item;
 
+	/**
+	 * Which of the extension's tables are present in the database (even in a state of disrepair).
+	 *
+	 * @var   array
+	 * @since 1.0.0
+	 */
+	public array $existingTables;
+
+	/**
+	 * @inheritdoc
+	 * @sice 1.0.0
+	 */
 	public function display($tpl = null)
 	{
 		/** @var ItemModel $model */
-		$model      = $this->getModel();
-		$id         = $this->extension_id ?? 0;
-		$this->item = $model->getExtensionById($id);
+		$model                = $this->getModel();
+		$id                   = $this->extension_id ?? 0;
+		$this->item           = $model->getExtensionById($id);
+		$this->existingTables = $model->getExistingTables($this->item);
 
 		if ($this->item === null)
 		{
