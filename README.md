@@ -2,13 +2,21 @@
 
 Clean up the muck on your Joomla! site
 
-## ⚠️ WARNING! DANGER!
+## What does it do?
 
-This component is very powerful, but destructive by definition. It will **REMOVE** software and data from your site. In some edge cases it may remove _too much_, breaking your site in the process. 
+Onthos is an advanced, very powerful extensions manager for Joomla!. It is designed to help power users perform deep cleanup of leftover extensions in ways that previously required database surgery and/or writing custom Console plugins to achieve. 
 
-You **MUST** take a backup before using this component, and keep that backup separately from your site, e.g. on your local computer. You can use our free of charge Akeeba Backup Core to take backups of your site.
+Onthos not only lists installed extensions, it also detects common problems with them and proposes solutions – some of them can be destructive, so be careful!
 
-We take no responsibility for broken sites. You have been warned.
+Onthos will let you do things Joomla! won't let you, including forced removal of extensions with missing manifest XML files, and extensions' leftover database records.
+
+Onthos is strictly limited to Super Users with a hardcoded check, regardless of the Permissions you may set up in its Options page. This is not a bug, it's a deliberate design choice.
+
+### ⚠️ With great power comes great responsibility
+
+Unlike Joomla's “Extensions: Manage” page, there are no guardrails or protections. It will let you take catastrophic actions. Ignore this warning at your peril.
+
+**Always take a backup before using this software**. Keep your backup safely _outside_ of your site, e.g. on your local computer. Always make sure you know how to restore your site from a backup even if you cannot access your site; try it out _before you need it for real_. You can use our free of charge Akeeba Backup Core for that.
 
 ## Copyright
 

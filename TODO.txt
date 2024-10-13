@@ -1,0 +1,82 @@
+Big Ass Warning
+--------------------------------------------------------------------------------
+Add a Big Ass Warning to the top of the Items page. It can be disabled in the Options page.
+
+Refactor items page
+--------------------------------------------------------------------------------
+Make the package the extension belongs to a link which filters by package
+
+Refactor item page
+--------------------------------------------------------------------------------
+Remove installation status
+Replace Link to Package with an actual link if the package exists, otherwise display N/A
+On the state, lock state line also add Protected
+Remove Optional Elements heading
+Change Mandatory Elements to Files and Directories
+Clean up our component language strings
+Database tables: check if they exist
+
+Show a list of Issues with their descriptions, and their proposed solutions
+    Requires the "How to go about fixing problems" to be implemented first.
+
+Issues
+--------------------------------------------------------------------------------
+
+IsMissingUpdateSite
+
+    The manifest has an update site, but it is currently missing in Joomla's database.
+
+DisabledUpdateSite
+
+    The manifest has an update site, it exists in the database, but it's currently disabled.
+
+Adoptable
+
+    A package claims to have installed this extension, but the extension claims to not belong to that package.
+
+
+How to go about fixing problems
+--------------------------------------------------------------------------------
+
+Each issue needs to provide a view template name with information on fixing the issue.
+public function getDetailsTemplate(): string // e.g. 'issues/myissue', default 'commontemplates/nofixavailable'
+We pass the $issue and $extension to the view template
+
+For issue-specific fixes, we need a handler called by ItemController::fix()
+public function fix(string $fixAction = 'default'): void
+index.php?view=com_onthos&task=item.fix&id=123&action=default
+
+Voodoo Zone
+--------------------------------------------------------------------------------
+
+Unprotect
+
+    Marks an extension unprotected (third party extension).
+
+Protect
+
+    Marks an extension protected (core extension).
+
+Unlock
+
+    Marks an extension unlocked (can be enabled, disabled, updated, and uninstalled)
+
+Lock
+
+    Marks an extension locked (cannot be enabled, disabled, updated, and uninstalled)
+
+Smart Uninstall
+
+    Marks an extension unprotected and unlocked, then calls Joomla's extensions uninstaller.
+
+No-Script Uninstall
+
+    Removes the installation script and any references to it in the XML manifest, then calls Joomla's extensions uninstaller.
+
+Forced Uninstall
+
+    Removes the update sites and TUF metadata, all detected tables (ignoring column relations), files, and directories, then removes the `#__extensions` record. DANGEROUS! MUST BE THE LAST RESORT.
+
+Record Remover
+
+    Removes the `#__extensions` record. Only available when NONE of the extension's files and directories is present, including the manifest, script, language, and media files. This is meant to remove leftover records.
