@@ -60,6 +60,7 @@ final class IssueManager
 			Orphaned::class,
 			WrongParent::class,
 			NonCoreLocked::class,
+			NoScript::class,
 			MissingLanguage::class,
 			MissingMedia::class,
 		];
