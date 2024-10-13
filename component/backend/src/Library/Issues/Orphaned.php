@@ -8,6 +8,7 @@
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
@@ -18,14 +19,25 @@ defined('_JEXEC') || die;
  *
  * @since   1.0.0
  */
-class Orphaned implements IssueInterface
+class Orphaned extends AbstractIssue implements IssueInterface
 {
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
 	 */
-	public function __invoke(ExtensionInterface $extension): bool
+	public function __construct(ExtensionInterface $extension)
 	{
-		return $extension->isOrphan();
+		parent::__construct($extension);
+
+		$this->defaultSeverity = LogLevel::WARNING;
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function doTest(): bool
+	{
+		return $this->extension->isOrphan();
 	}
 }

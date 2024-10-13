@@ -8,6 +8,7 @@
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
@@ -18,21 +19,31 @@ defined('_JEXEC') || die;
  *
  * @since   1.0.0
  */
-class MissingChildren implements IssueInterface
+class MissingChildren extends AbstractIssue implements IssueInterface
 {
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
 	 */
-	public function __invoke(ExtensionInterface $extension): bool
+	public function __construct(ExtensionInterface $extension)
 	{
-		if ($extension->type !== 'package' || $extension->getManifestPath() === null)
+		parent::__construct($extension);
+
+		$this->defaultSeverity = LogLevel::ERROR;
+	}
+
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function doTest(): bool
+	{
+		if ($this->extension->type !== 'package' || $this->extension->getManifestPath() === null)
 		{
 			return false;
 		}
 
-		// TODO
-
-		return false;
+		return $this->extension->hasMissingSubextensions();
 	}
 }

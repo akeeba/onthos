@@ -22,7 +22,7 @@ final class IssueManager
 	/**
 	 * List of known issues affecting the extension managed by the Manager
 	 *
-	 * @var   array
+	 * @var   array<IssueInterface>
 	 * @since 1.0.0
 	 */
 	private array $issues = [];
@@ -44,6 +44,25 @@ final class IssueManager
 	}
 
 	/**
+	 * Retrieves an array of all known issues which can affect a managed extension.
+	 *
+	 * @return  array  An array containing the FQNs of classes that represent known issues.
+	 * @since   1.0.0
+	 */
+	public static function getAllKnownIssues(): array
+	{
+		return [
+			Broken::class,
+			CoreForceDisabled::class,
+			MissingChildren::class,
+			MissingLanguage::class,
+			NonCoreLocked::class,
+			NonCoreProtected::class,
+			Orphaned::class,
+		];
+	}
+
+	/**
 	 * Factory method to create a new instance of the class with predefined known issues.
 	 *
 	 * @param   ExtensionInterface  $extension  An instance of ExtensionInterface.
@@ -53,23 +72,13 @@ final class IssueManager
 	 */
 	public static function make(ExtensionInterface $extension): self
 	{
-		$knownIssues = [
-			Broken::class,
-			CoreForceDisabled::class,
-			MissingChildren::class,
-			MissingLanguage::class,
-			NonCoreLocked::class,
-			NonCoreProtected::class,
-			Orphaned::class,
-		];
-
-		return new self($knownIssues, $extension);
+		return new self(self::getAllKnownIssues(), $extension);
 	}
 
 	/**
 	 * Retrieves the list of issues affecting the managed extension.
 	 *
-	 * @return  array<string>  An array of issue classes the extension is affected by.
+	 * @return  array<IssueInterface>  An array of issue classes the extension is affected by.
 	 * @since   1.0.0
 	 */
 	public function getIssues(): array
@@ -80,32 +89,71 @@ final class IssueManager
 	/**
 	 * Checks if the managed extension is affected by the specified issue.
 	 *
-	 * @param   string  $issue  The issue to check. Must be the FQN of a class implementing IssueInterface.
+	 * The issue to check can be one of the following:
+	 * - The FQN of a class implementing IssueInterface.
+	 * - The last namespace part of any issue classname known to this manager, regardless of capitalisation.
+	 *
+	 * @param   string  $issueSlug  The issue to check.
 	 *
 	 * @return  bool  True if the issue exists, false otherwise.
 	 * @since   1.0.0
 	 */
-	public function hasIssue(string $issue): bool
+	public function hasIssue(string $issueSlug): bool
 	{
-		return in_array($issue, $this->issues);
+		if (str_contains($issueSlug, '\\'))
+		{
+			$parts = explode('\\', $issueSlug);
+			$issueSlug = array_pop($parts);
+		}
+
+		$issueSlug = strtolower($issueSlug);
+
+		return array_reduce(
+			$this->issues,
+			function (bool $carry, IssueInterface $currentItem) use ($issueSlug)
+			{
+				if ($carry)
+				{
+					return true;
+				}
+
+				$parts = explode('\\', get_class($currentItem));
+
+				return $issueSlug === strtolower(array_pop($parts));
+			},
+			false
+		);
 	}
 
 	/**
 	 * Get the issue object for an issue affecting the managed extension.
 	 *
-	 * @param   string  $issue  The issue to retrieve. Must be the FQN of a class implementing IssueInterface.
+	 * @param   string  $issueSlug  The issue to retrieve. Must be the FQN of a class implementing IssueInterface.
 	 *
 	 * @return  IssueInterface|null  The issue object. NULL if not found / not affected.
 	 * @since   1.0.0
 	 */
-	public function getIssue(string $issue): ?IssueInterface
+	public function getIssue(string $issueSlug): ?IssueInterface
 	{
-		if (!$this->hasIssue($issue))
+		if (str_contains($issueSlug, '\\'))
 		{
-			return null;
+			$parts = explode('\\', $issueSlug);
+			$issueSlug = array_pop($parts);
 		}
 
-		return new $issue();
+		$issueSlug = strtolower($issueSlug);
+
+		foreach ($this->issues as $currentItem)
+		{
+			$parts = explode('\\', get_class($currentItem));
+
+			if ($issueSlug === strtolower(array_pop($parts)))
+			{
+				return $issueSlug;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -128,11 +176,11 @@ final class IssueManager
 			}
 
 			/** @var IssueInterface $issue */
-			$issue = new $possibleIssueToCheck();
+			$issue = new $possibleIssueToCheck($this->extension);
 
-			if ($issue($this->extension))
+			if ($issue())
 			{
-				$this->issues[] = $possibleIssueToCheck;
+				$this->issues[] = $issue;
 			}
 		}
 	}

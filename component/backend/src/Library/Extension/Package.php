@@ -26,6 +26,14 @@ class Package extends Extension
 	private array $subExtensionCriteria = [];
 
 	/**
+	 * All subextensions of this package, including NULL values from missing subextensions.
+	 *
+	 * @var   array
+	 * @since 1.0.0
+	 */
+	private array $subExtensions = [];
+
+	/**
 	 * Gets the subextensions of a package.
 	 *
 	 * This can be used to re-adopt orphaned extensions without having to re-install the package they came with.
@@ -35,11 +43,52 @@ class Package extends Extension
 	 */
 	public function getSubextensionObjects(): array
 	{
-		static $subExtensions = null;
+		$this->populateDefaultLanguages();
 
-		return $subExtensions ??= array_filter(
-			array_map([$this, 'criteriaToExtension'], $this->subExtensionCriteria)
+		return array_filter($this->subExtensions);
+	}
+
+	/**
+	 * Is this package missing some of its extensions altogether?
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
+	public function hasMissingSubextensions(): bool
+	{
+		$this->populateDefaultLanguages();
+
+		return !empty(array_filter($this->subExtensions, fn(?ExtensionInterface $extension) => empty($extension)));
+	}
+
+	/**
+	 * Do some extensions of this package have no, or the wrong package ID?
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
+	public function hasExtensionsToAdopt(): bool
+	{
+		$this->populateDefaultLanguages();
+
+		$extensions = array_filter($this->subExtensions);
+
+		return array_reduce(
+			$extensions,
+			fn(bool $carry, ?ExtensionInterface $extension) => $carry || $extension?->package_id != $this->extension_id,
+			false
 		);
+	}
+
+	/**
+	 * Utility method to populate the package's sub-extension objects.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function populateSubExtensions(): void
+	{
+		$this->subExtensions ??= array_map([$this, 'criteriaToExtension'], $this->subExtensionCriteria);
 	}
 
 	/**

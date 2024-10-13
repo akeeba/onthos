@@ -18,10 +18,14 @@ defined('_JEXEC') || die;
  *
  * @since   1.0.0
  */
-class MissingLanguage implements IssueInterface
+class MissingLanguage extends AbstractIssue implements IssueInterface
 {
-	public function __invoke(ExtensionInterface $extension): bool
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function doTest(): bool
 	{
-		return $extension->isMissingLanguages();
+		return $this->extension->isMissingLanguages();
 	}
 }

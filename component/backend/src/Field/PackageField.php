@@ -27,7 +27,7 @@ class PackageField extends ListField
 	 * @inheritdoc
 	 * @since 1.0.0
 	 */
-	protected $type = 'Folder';
+	protected $type = 'Package';
 
 	/**
 	 * @inheritdoc

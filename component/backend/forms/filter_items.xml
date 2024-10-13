@@ -115,16 +115,13 @@
             <option value="1">COM_ONTHOS_ITEMS_FILTER_OPT_ISCORE_CORE</option>
         </field>
 
-        <!-- TODO: Has problem (see the Issues sub-package)
-        - Any
-        - Missing language files: Declared language files but one or more do not exist
-        - Orphaned: Orphan extension (check if it can be adopted, or its update site regenerated)
-        - Missing Children
-        - Broken: Detected as broken (w/ uninstall option)
-        - Protected: Non-core extensions marked protected (w/ unprotect option)
-        - Locked: Non-core extensions marked locked (w/ lock option)
-        - Force-Disabled: Protected and disabled, cannot be re-enabled (w/ enable option)
-        -->
+        <field
+                name="issues"
+                type="issues"
+                label="JSTATUS"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_ISSUES"
+        />
 
     </fields>
     <fields name="list">

@@ -8,6 +8,7 @@
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
@@ -19,10 +20,39 @@ defined('_JEXEC') || die;
  *
  * @since   1.0.0
  */
-class Broken implements IssueInterface
+class Broken extends AbstractIssue implements IssueInterface
 {
-	public function __invoke(ExtensionInterface $extension): bool
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function __construct(ExtensionInterface $extension)
 	{
-		return !$extension->isInstalled() && !$extension->isDiscovered();
+		parent::__construct($extension);
+
+		$this->defaultSeverity = LogLevel::CRITICAL;
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function doTest(): bool
+	{
+		return !$this->extension->isInstalled() && !$this->extension->isDiscovered();
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getSeverity(): string
+	{
+		if ($this->extension->isCore())
+		{
+			return LogLevel::DEBUG;
+		}
+
+		return parent::getSeverity();
 	}
 }

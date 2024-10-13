@@ -60,7 +60,8 @@ class ItemsModel extends ListModel
 				'locked',
 				'state',
 				'search',
-				'isCore'
+				'isCore',
+				'issues',
 			];
 
 		parent::__construct($config, $factory);
@@ -96,7 +97,22 @@ class ItemsModel extends ListModel
 				);
 			}
 
-			// TODO Apply filters applicable only to processed results
+			$issues = $this->getState('filter.issues', '*');
+
+			if ($issues === '*')
+			{
+				$this->extensions = array_filter(
+					$this->extensions,
+					fn($extension) => !empty($extension->issues->getIssues())
+				);
+			}
+			elseif ($issues !== '')
+			{
+				$this->extensions = array_filter(
+					$this->extensions,
+					fn($extension) => $extension->issues->hasIssue($issues)
+				);
+			}
 		}
 
 		// Update the total
