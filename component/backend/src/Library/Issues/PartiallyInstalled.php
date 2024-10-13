@@ -13,13 +13,13 @@ use Psr\Log\LogLevel;
 defined('_JEXEC') || die;
 
 /**
- * Leftover test.
+ * Partially installed test.
  *
- * NONE of the files and directories are present.
+ * There are missing files or directories, but at least ONE of them is present.
  *
  * @since   1.0.0
  */
-class Leftover extends AbstractIssue implements IssueInterface
+class PartiallyInstalled extends AbstractIssue implements IssueInterface
 {
 	/**
 	 * @inheritdoc
@@ -29,7 +29,7 @@ class Leftover extends AbstractIssue implements IssueInterface
 	{
 		parent::__construct($extension);
 
-		$this->defaultSeverity = LogLevel::CRITICAL;
+		$this->defaultSeverity = LogLevel::ERROR;
 	}
 
 
@@ -60,6 +60,35 @@ class Leftover extends AbstractIssue implements IssueInterface
 				false
 			);
 
-		return !$existsDirs && !$existsFiles;
+		// If we are missing all directories and/or all files this test does not apply
+		if (!$existsDirs || !$existsFiles)
+		{
+			return false;
+		}
+
+		$missingDirs = !empty($dirs) && array_reduce(
+				$dirs,
+				fn(bool $carry, string $directory): bool => $carry
+				                                            && $this->extension->fileReallyExists(
+						JPATH_ROOT . '/' . $directory
+					),
+				true
+			);
+
+		if ($missingDirs)
+		{
+			return true;
+		}
+
+		$missingFiles = !empty($files) && array_reduce(
+				$files,
+				fn(bool $carry, string $file): bool => $carry
+				                                       && $this->extension->fileReallyExists(
+						JPATH_ROOT . '/' . $file
+					),
+				true
+			);
+
+		return $missingFiles;
 	}
 }

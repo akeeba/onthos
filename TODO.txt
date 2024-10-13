@@ -22,43 +22,43 @@ Show a list of Issues with their descriptions, and their proposed solutions
 Issues
 --------------------------------------------------------------------------------
 
-✔️ WrongParent [fa fa-mitten]
+✔️ WrongParent [fa fa-mitten] error
 
     The extension is claimed by a package, but the extension claims to be owned by a different package.
 
-✔️ Leftover [fa-ghost]
+✔️ Leftover [fa-ghost] critical
 
     NONE of the files and directories are present.
 
-PartiallyInstalled [fa-ghost]
+✔️ PartiallyInstalled [fa-file-circle-question] error
 
     There are missing files or directories, but at least ONE of them is present.
 
-NoUpdateSite [fa-arrows-rotate]
+NoUpdateSite [fa-arrows-rotate] critical
 
-    The manifest has an update site, but it is currently missing in Joomla's database.
+    The manifest has an update site, but it is currently missing in the database.
 
-DisabledUpdateSite [fa-ban]
+WrongUpdateSite [fa-arrow-rotate-left] notice
+
+    The manifest has an update site, but the extension has a different update site in the database.
+
+DisabledUpdateSite [fa-ban] error
 
     The manifest has an update site, it exists in the database, but it's currently disabled.
 
-CanBeLinked [fa-paperclip]
-
-    A package claims to have installed this extension, but the extension claims to not belong to that package.
-
-NoScript [fa-scroll]
+NoScript [fa-scroll] info
 
     The script file is missing
 
-NoXMLManifest [fa-file-code]
+NoXMLManifest [fa-file-code] critical
 
     The XML manifest is missing
 
-MissingTables [fa-database]
+MissingTables [fa-database] critical
 
     Only if the extension defines tables. One or more tables are missing.
 
-SchemaOutOfDate [fa-table-list]
+SchemaOutOfDate [fa-table-list] warning
 
     Only if the extension defines tables. Joomla! reports one or more database schema issues for the extension.
 
