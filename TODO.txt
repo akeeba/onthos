@@ -14,7 +14,7 @@ Refactor item page
 ✔️ Remove Optional Elements heading
 ✔️ Change Mandatory Elements to Files and Directories
 ✔️ Database tables: check if they exist
-Clean up our component language strings
+✔️ Clean up language strings
 
 Show a list of Issues with their descriptions, and their proposed solutions
     Requires the "How to go about fixing problems" to be implemented first.
@@ -22,13 +22,13 @@ Show a list of Issues with their descriptions, and their proposed solutions
 Issues
 --------------------------------------------------------------------------------
 
-Broken [fa-skull]
-
-    CHANGE: NONE of the files and directories are present.
-
 Orphaned [fa-link-slash]
 
     ADD: And there is no other package which can claim this extension
+
+Leftover [fa-ghost]
+
+    NONE of the files and directories are present.
 
 PartiallyInstalled [fa-ghost]
 
