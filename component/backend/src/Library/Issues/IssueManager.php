@@ -52,13 +52,14 @@ final class IssueManager
 	public static function getAllKnownIssues(): array
 	{
 		return [
-			Broken::class,
 			CoreForceDisabled::class,
+			Broken::class,
 			MissingChildren::class,
-			MissingLanguage::class,
-			NonCoreLocked::class,
 			NonCoreProtected::class,
 			Orphaned::class,
+			NonCoreLocked::class,
+			MissingLanguage::class,
+			MissingMedia::class,
 		];
 	}
 
