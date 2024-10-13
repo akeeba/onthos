@@ -1,6 +1,6 @@
-Big Ass Warning
+✅ Big Warning
 --------------------------------------------------------------------------------
-Add a Big Ass Warning to the top of the Items page. It can be disabled in the Options page.
+✔️ Add a Big Warning to the top of the Items page. It can be disabled in the Options page.
 
 Refactor items page
 --------------------------------------------------------------------------------

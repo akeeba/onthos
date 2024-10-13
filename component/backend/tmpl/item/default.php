@@ -78,6 +78,8 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 ?>
 
+<?= $this->loadAnyTemplate('commontemplates/warning') ?>
+
 <div class="card">
 	<h2 class="card-header bg-secondary text-white">
 		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?>

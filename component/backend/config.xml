@@ -8,6 +8,23 @@
     <inlinehelp button="show"/>
 
     <fieldset
+            name="general"
+            label="COM_ONTHOS_CONFIG_OPTIONS_GENERAL_LABEL"
+    >
+        <field
+                name="show_warning"
+                type="radio"
+                layout="joomla.form.field.radio.switcher"
+                label="COM_ONTHOS_CONFIG_SHOW_WARNING_LABEL"
+                description="COM_ONTHOS_CONFIG_SHOW_WARNING_DESC"
+                default="1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+    </fieldset>
+
+    <fieldset
             name="permissions"
             label="JCONFIG_PERMISSIONS_LABEL"
             description="JCONFIG_PERMISSIONS_DESC"

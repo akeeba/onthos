@@ -32,6 +32,8 @@ $nullDate  = Factory::getDbo()->getNullDate();
 $baseUri   = Uri::root();
 $i         = 0;
 ?>
+<?= $this->loadAnyTemplate('commontemplates/warning') ?>
+
 <form action="<?= Route::_('index.php?option=com_onthos&view=items'); ?>"
       method="post" name="adminForm" id="adminForm">
 
