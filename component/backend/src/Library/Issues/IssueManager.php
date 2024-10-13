@@ -52,6 +52,7 @@ final class IssueManager
 	public static function getAllKnownIssues(): array
 	{
 		return [
+			NoXMLManifest::class,
 			CoreForceDisabled::class,
 			Leftover::class,
 			PartiallyInstalled::class,

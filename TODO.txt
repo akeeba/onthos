@@ -38,7 +38,7 @@ Issues
 
     The script file is missing
 
-NoXMLManifest [fa-file-code] critical
+✔️ NoXMLManifest [fa-file-code] critical
 
     The XML manifest is missing
 
