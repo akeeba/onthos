@@ -65,8 +65,6 @@ $i         = 0;
 						<?= HTMLHelper::_('searchtools.sort', 'COM_ONTHOS_ITEMS_FIELD_NAME', 'name', $listDirn, $listOrder); ?>
 					</th>
 
-					<!-- TODO -->
-
 					<th scope="col" class="w-1 d-none d-md-table-cell">
 						<?= HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'extension_id', $listDirn, $listOrder); ?>
 					</th>
@@ -81,10 +79,6 @@ $i         = 0;
 					$authorEmail   = $item->manifest_cache->get('authorEmail');
 					$authorUrl     = $item->manifest_cache->get('authorUrl');
 					$description   = $item->manifest_cache->get('description');
-					$isOrphan      = $item->isOrphan();
-					$isDiscovered  = $item->isDiscovered();
-					$isBroken      = !$item->isInstalled() && !$item->isDiscovered();
-					$isMissingLang = $item->isMissingLanguages();
 					?>
 				<tr class="row<?= $i++ % 2; ?>">
 					<td class="text-center">
@@ -191,32 +185,29 @@ $i         = 0;
 								(#<?= $this->escape($item->getParentPackage()->extension_id) ?>)
 							</span>
 						</div>
-						<?php elseif ($isOrphan || $isBroken || $isMissingLang): ?>
-						<?php
-						$class = $isBroken ? 'text-danger' : ($isOrphan ? 'text-warning' : 'text-info');
-						$class = $item->isCore() ? 'text-muted' : $class;
-						?>
-						<div class="<?= $class ?> fw-bold">
-							<?php if ($isBroken): ?>
-								<span class="fa fa fa-explosion" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_ITEM_LBL_BROKEN') ?>
-							<?php elseif ($isOrphan): ?>
-								<span class="fa fa-link-slash" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_ITEM_LBL_ORPHANED') ?>
-							<?php elseif ($isMissingLang): ?>
-								<span class="fa fa-language" aria-hidden="true"></span>
-								<?= Text::_('COM_ONTHOS_ITEMS_LBL_MISSING_LANG') ?>
-							<?php endif ?>
-							<?php if ($item->isCore()): ?>
-							<span class="fw-normal small">
-								<?= Text::_('COM_ONTHOS_ITEMS_LBL_UNRELIABLE_CORE') ?>
-							</span>
-							<?php endif ?>
+						<?php endif ?>
+						<?php if ($item->issues->getIssues()): ?>
+						<div class="d-flex gap-3">
+							<?php foreach ($item->issues->getIssues() as $issue): ?>
+							<?php
+							$class = match ($issue->getSeverity()) {
+								'emergency', 'alert' => 'text-danger fw-bold',
+								'critical'  => 'text-danger fw-semibold',
+								'error'     => 'text-danger',
+								'warning'   => 'text-warning fw-semibold',
+								'notice'    => 'text-warning',
+								'info'      => 'text-info',
+								'debug'     => 'text-muted',
+							}
+							?>
+							<div class="<?= $class ?>">
+								<span class="<?= $issue->getIcon() ?>" aria-hidden="true"></span>
+								<?= $issue->getLabel() ?>
+							</div>
+							<?php endforeach; ?>
 						</div>
 						<?php endif ?>
 					</td>
-
-					<!-- TODO -->
 
 					<th scope="col" class="w-1 d-none d-md-table-cell">
 						<?= intval($item->extension_id) ?>
