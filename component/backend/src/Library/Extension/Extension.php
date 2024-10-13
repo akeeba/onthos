@@ -207,26 +207,26 @@ abstract class Extension implements ExtensionInterface
 		// Packages are meta-extensions. If they are in the database, they are installed.
 		if ($this->type == 'package')
 		{
-			return true;
+			return $this->state == 0;
 		}
 
 		foreach ($this->directories as $directory)
 		{
-			if (@is_dir(JPATH_ROOT . '/' . $directory))
+			if (!$this->fileReallyExists(JPATH_ROOT . '/' . $directory))
 			{
-				return true;
+				return false;
 			}
 		}
 
 		foreach ($this->files as $file)
 		{
-			if (@is_file(JPATH_ROOT . '/' . $file))
+			if (!$this->fileReallyExists(JPATH_ROOT . '/' . $file))
 			{
-				return true;
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -235,7 +235,7 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function isOrphan(): bool
 	{
-		// Packages can never be orphans
+		// Packages can never be orphans; they are by definition top-level extensions.
 		if ($this->type === 'package')
 		{
 			return false;
@@ -270,6 +270,15 @@ abstract class Extension implements ExtensionInterface
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
+	final public function hasUpdateSite(): bool
+	{
+		return in_array($this->extension_id, self::$extensionIDsWithUpdateSites);
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
 	final public function isDiscovered(): bool
 	{
 		return $this->state == -1;
@@ -288,7 +297,7 @@ abstract class Extension implements ExtensionInterface
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	final public function getParentPackage(): ?ExtensionInterface
+	final public function getParentPackage(): ?Package
 	{
 		if ($this->isDiscovered() || !$this->isInstalled()
 		    || $this->isOrphan()
@@ -314,7 +323,20 @@ abstract class Extension implements ExtensionInterface
 			return null;
 		}
 
-		return self::make($extensionInfo);
+		$extension = self::make($extensionInfo);
+
+		if (!$extension instanceof Package)
+		{
+			// You should never be here. We already checked the extension type.
+			if (defined('JDEBUG') && JDEBUG)
+			{
+				throw new \LogicException('Expected Package extension, got ' . ($extension === null ? 'NULL' : get_class($extension)));
+			}
+
+			return null;
+		}
+
+		return $extension;
 	}
 
 	/**
@@ -384,7 +406,7 @@ abstract class Extension implements ExtensionInterface
 		$this->languageFiles = array_unique($this->languageFiles);
 
 		// Media directory from the manifest
-		$this->addMediaDirectoriesFromManifest($xml);
+		$this->populateMediaDirectoriesFromManifest($xml);
 
 		$this->mediaPaths = array_map([$this, 'rebaseToRoot'], $this->mediaPaths);
 		$this->mediaPaths = array_unique($this->mediaPaths);
@@ -515,7 +537,7 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	final protected function addMediaDirectoriesFromManifest(SimpleXMLElement $xml): void
+	final protected function populateMediaDirectoriesFromManifest(SimpleXMLElement $xml): void
 	{
 		$this->mediaPaths = [];
 

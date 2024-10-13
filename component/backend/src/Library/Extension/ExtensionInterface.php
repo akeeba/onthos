@@ -51,11 +51,13 @@ interface ExtensionInterface
 	/**
 	 * Does the extension appear to be installed?
 	 *
-	 * Returns true if any of the extension-important files or directories exists.
+	 * For packages, it only checks the extension state.
 	 *
-	 * Extensions discovered, but not installed yet, will return true.
+	 * For any other extension, it returns true if all the extension-important files or directories exist.
 	 *
-	 * Partially installed but not working extensions will ALSO return true.
+	 * This is not a guarantee the extension works. It is only a check confirming that the extension is not missing
+	 * files. Its files may be outdated, corrupt, or there might be files / directories in subdirectories of the
+	 * declared directories in the XML file which are missing or corrupt.
 	 *
 	 * @return  bool
 	 * @since   1.0.0
@@ -83,6 +85,10 @@ interface ExtensionInterface
 	/**
 	 * Is this a core extension?
 	 *
+	 * This checks against Joomla's **hardcoded** list of core extensions which is part of Joomla! Update itself. It
+	 * does NOT rely on the possibly misleading `protected` database column. This is a huge difference from Joomla's
+	 * com_installer.
+	 *
 	 * @return  bool
 	 * @since   1.0.0
 	 * @see     \Joomla\CMS\Extension\ExtensionHelper::checkIfCoreExtension()
@@ -90,7 +96,23 @@ interface ExtensionInterface
 	public function isCore(): bool;
 
 	/**
-	 * Does this extension miss any language files?
+	 * Does this extension have an update site of its own?
+	 *
+	 * This only matters if $this->getParentPackage() returns NULL;
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 * @see     self::getParentPackage()
+	 */
+	public function hasUpdateSite(): bool;
+
+	/**
+	 * Does this extension miss any language files declared in its XML manifest?
+	 *
+	 * If the extension declares no language files this will return FALSE.
+	 *
+	 * Note that if $onlySystem is true but there are no .sys.ini files declared in the extension then the result will
+	 * always be FALSE as, technically, the system language files are not missing; they were simply never declared.
 	 *
 	 * @param   bool  $onlySystem  Only check for .sys.ini language files.
 	 *
@@ -170,12 +192,12 @@ interface ExtensionInterface
 	public function getScriptPath(): ?string;
 
 	/**
-	 * Get the parent package of the extension
+	 * Get the parent package of the extension.
 	 *
-	 * @return  ExtensionInterface|null
+	 * @return  ExtensionInterface|null  The parent package. NULL if it doesn't exist, or is invalid.
 	 * @since   1.0.0
 	 */
-	public function getParentPackage(): ?ExtensionInterface;
+	public function getParentPackage(): ?Package;
 
 	/**
 	 * Magic getter.

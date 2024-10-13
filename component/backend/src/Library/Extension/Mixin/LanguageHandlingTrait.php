@@ -110,43 +110,38 @@ trait LanguageHandlingTrait
 	 */
 	final public function isMissingLanguages(bool $onlySystem = false): bool
 	{
-		/**
-		 * Exemptions.
-		 * 1. Language extensions cannot be missing language files because they don't have any per se.
-		 * 2. Package, Library, and File extensions can optionally have language files; no problem if they don't.
-		 */
-
-		//
-		if (in_array($this->type, ['language', 'package', 'file', 'library']))
+		// If no language files have been declared then nothing is missing.
+		if (empty($this->languageFiles))
 		{
 			return false;
 		}
 
+		// Which language files should I be checking for existence?
 		$languages = $this->getLanguageFiles();
 
-		if (empty($languages))
+		if ($onlySystem)
 		{
-			return true;
-		}
+			$languages = array_filter($languages, fn($language) => str_ends_with($language, '.sys.ini'));
 
-		if (!$onlySystem)
-		{
-			return false;
-		}
-
-		foreach ($languages as $language)
-		{
-			if (str_ends_with($language, '.sys.ini'))
+			if (empty($languages))
 			{
 				return false;
 			}
 		}
 
-		return true;
+		$languages = array_filter(
+			$languages,
+			fn($language) => $this->fileReallyExists(JPATH_ROOT . '/' . $language)
+		);
+
+		return empty($languages);
 	}
 
 	/**
 	 * Returns, and optionally populates, the known installed languages on the site.
+	 *
+	 * This returns front- and backend languages. It does NOT return the `overrides` pseudo-tag used by Joomla's
+	 * language override feature.
 	 *
 	 * @return  array
 	 * @since   1.0.0
@@ -172,6 +167,11 @@ trait LanguageHandlingTrait
 					foreach (new \DirectoryIterator($path) as $file)
 					{
 						if (!$file->isDir() || $file->isDot())
+						{
+							continue;
+						}
+
+						if ($file->getFilename() === 'overrides')
 						{
 							continue;
 						}
