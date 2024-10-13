@@ -10,6 +10,7 @@ namespace Akeeba\Component\Onthos\Administrator\Library\Extension;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOperationsTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\LanguageHandlingTrait;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\TablesHandlingTrait;
+use Akeeba\Component\Onthos\Administrator\Library\Issues\IssueManager;
 use InvalidArgumentException;
 use Joomla\CMS\Extension\ExtensionHelper;
 use Joomla\CMS\Factory;
@@ -107,6 +108,14 @@ abstract class Extension implements ExtensionInterface
 	protected ?string $scriptPath = null;
 
 	/**
+	 * The Issue Manager for this extension.
+	 *
+	 * @var   IssueManager
+	 * @since 1.0.0
+	 */
+	private IssueManager $issueManager;
+
+	/**
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
@@ -150,6 +159,11 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function __get(string $name)
 	{
+		if ($name === 'issues')
+		{
+			return $this->getIssueManager();
+		}
+
 		return $this->extensionRow->{$name} ?? null;
 	}
 
@@ -737,5 +751,17 @@ abstract class Extension implements ExtensionInterface
 		{
 			self::$packageIDs = [];
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	public function getIssueManager(): IssueManager
+	{
+		// This ensures late initialisation for performance reasons
+		$this->issueManager = $this->issueManager ?? IssueManager::make($this);
+
+		return $this->issueManager;
 	}
 }
