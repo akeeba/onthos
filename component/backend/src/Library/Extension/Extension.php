@@ -111,6 +111,8 @@ abstract class Extension implements ExtensionInterface
 	 */
 	private IssueManager $issueManager;
 
+	private static array $createdObjects = [];
+
 	/**
 	 * @inheritDoc
 	 * @since 1.0.0
@@ -134,6 +136,13 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public static function make(object $extensionRow): ExtensionInterface
 	{
+		$signature = md5(json_encode($extensionRow));
+
+		if (isset(self::$createdObjects[$signature]))
+		{
+			return self::$createdObjects[$signature];
+		}
+
 		$type = $extensionRow->type ?? null;
 		$type = is_string($type) ? $type : 'invalid';
 		$type = (new InputFilter())->clean($type, 'cmd');
@@ -146,7 +155,7 @@ abstract class Extension implements ExtensionInterface
 			throw new InvalidArgumentException(sprintf('Extension type %s is not supported', $type));
 		}
 
-		return new $className($extensionRow);
+		return self::$createdObjects[$signature] = new $className($extensionRow);
 	}
 
 	/**
