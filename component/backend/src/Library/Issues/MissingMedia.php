@@ -7,15 +7,12 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
-use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
-
 defined('_JEXEC') || die;
 
 /**
  * Missing language files test.
  *
  * @since   1.0.0
- * @see     ExtensionInterface::isMissingLanguages()
  *
  */
 class MissingMedia extends AbstractIssue implements IssueInterface

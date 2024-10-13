@@ -26,6 +26,18 @@ class MissingLanguage extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
-		return $this->extension->isMissingLanguages();
+		// If no language files have been declared then nothing is missing.
+		$languageFiles = $this->extension->getLanguageFiles();
+
+		if (empty($languageFiles))
+		{
+			return false;
+		}
+
+		return array_reduce(
+			$languageFiles,
+			fn(bool $carry, string $language) => $carry || !$this->extension->fileReallyExists(JPATH_ROOT . '/' . $language),
+			false
+		);
 	}
 }

@@ -109,21 +109,6 @@ interface ExtensionInterface
 	public function hasUpdateSite(): bool;
 
 	/**
-	 * Does this extension miss any language files declared in its XML manifest?
-	 *
-	 * If the extension declares no language files this will return FALSE.
-	 *
-	 * Note that if $onlySystem is true but there are no .sys.ini files declared in the extension then the result will
-	 * always be FALSE as, technically, the system language files are not missing; they were simply never declared.
-	 *
-	 * @param   bool  $onlySystem  Only check for .sys.ini language files.
-	 *
-	 * @return  bool
-	 * @since   1.0.0
-	 */
-	public function isMissingLanguages(bool $onlySystem = false): bool;
-
-	/**
 	 * Get the human-readable name of the extension, if possible.
 	 *
 	 * @return  string|null

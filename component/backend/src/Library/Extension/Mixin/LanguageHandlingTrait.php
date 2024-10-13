@@ -105,39 +105,6 @@ trait LanguageHandlingTrait
 	}
 
 	/**
-	 * @inheritDoc
-	 * @since 1.0.0
-	 */
-	final public function isMissingLanguages(bool $onlySystem = false): bool
-	{
-		// If no language files have been declared then nothing is missing.
-		if (empty($this->languageFiles))
-		{
-			return false;
-		}
-
-		// Which language files should I be checking for existence?
-		$languages = $this->getLanguageFiles();
-
-		if ($onlySystem)
-		{
-			$languages = array_filter($languages, fn($language) => str_ends_with($language, '.sys.ini'));
-
-			if (empty($languages))
-			{
-				return false;
-			}
-		}
-
-		$languages = array_filter(
-			$languages,
-			fn($language) => $this->fileReallyExists(JPATH_ROOT . '/' . $language)
-		);
-
-		return empty($languages);
-	}
-
-	/**
 	 * Returns, and optionally populates, the known installed languages on the site.
 	 *
 	 * This returns front- and backend languages. It does NOT return the `overrides` pseudo-tag used by Joomla's
