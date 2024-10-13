@@ -169,7 +169,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 							<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
 						</strong>
 					</p>
-				<?php elseif (!empty($this->item?->package_id ?? null)): ?>
+				<?php elseif ($this->item->getParentPackage()?->extension_id): ?>
 					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
 						<span class="fa fa-link" aria-hidden="true"></span>
 						<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>"
@@ -182,11 +182,9 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 						</span>
 					</p>
 				<?php else: ?>
-					<p class="text-danger hasTooltip">
+					<p class="text-muted hasTooltip">
 						<span class="fa fa-link-slash" aria-hidden="true"></span>
-						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
-						</strong>
+						<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
 					</p>
 				<?php endif; ?>
 			</div>

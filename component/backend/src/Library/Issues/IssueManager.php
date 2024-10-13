@@ -54,6 +54,7 @@ final class IssueManager
 		return [
 			CoreForceDisabled::class,
 			Broken::class,
+			Leftover::class,
 			MissingChildren::class,
 			NonCoreProtected::class,
 			Orphaned::class,
