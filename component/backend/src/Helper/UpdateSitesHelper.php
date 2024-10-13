@@ -7,12 +7,11 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Helper;
 
+defined('_JEXEC') || die;
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseQuery;
-
-defined('_JEXEC') || die;
 
 /**
  * Helper class to get the extension IDs with known update sites (even disabled ones)

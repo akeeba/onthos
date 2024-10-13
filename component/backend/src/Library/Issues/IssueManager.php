@@ -57,6 +57,7 @@ final class IssueManager
 			MissingChildren::class,
 			NonCoreProtected::class,
 			Orphaned::class,
+			WrongParent::class,
 			NonCoreLocked::class,
 			MissingLanguage::class,
 			MissingMedia::class,

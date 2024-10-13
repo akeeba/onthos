@@ -17,6 +17,9 @@ defined('_JEXEC') || die;
 /**
  * Orphaned extension test.
  *
+ * Non-core, non-package extensions which do not have an update site of their own and they are either lacking a parent
+ * package, or claim to be owned by a non-existent package.
+ *
  * @since   1.0.0
  */
 class Orphaned extends AbstractIssue implements IssueInterface
@@ -38,30 +41,25 @@ class Orphaned extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
-		// Packages can never be orphans; they are by definition top-level extensions.
-		if ($this->extension->type === 'package')
+		// Packages and core extensions can never be orphans.
+		if ($this->extension->type === 'package' || $this->extension->isCore())
 		{
 			return false;
 		}
 
-		// If the extension has an update site it's a top-level extension, not an orphan
+		// If the extension has an update site it's a top-level extension, therefore not an orphan.
 		if (in_array($this->extension->extension_id, UpdateSitesHelper::get()))
 		{
 			return false;
 		}
 
-		// If there a package ID we need to check if it's valid
-		if (!empty($this->extension->package_id ?? null))
+		// If there is no package ID it's an orphan.
+		if (empty($this->extension->package_id ?? null))
 		{
-			if (!in_array($this->extension->package_id, PackageIDsHelper::get()))
-			{
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
-		// At this point it's either an orphan, or a core extension (locked)
-		return !$this->extension->isCore();
+		// It's an orphan only if the package ID is invalid.
+		return !in_array($this->extension->package_id, PackageIDsHelper::get());
 	}
 }

@@ -22,9 +22,9 @@ Show a list of Issues with their descriptions, and their proposed solutions
 Issues
 --------------------------------------------------------------------------------
 
-Orphaned [fa-link-slash]
+✔️ WrongParent [fa fa-mitten]
 
-    ADD: And there is no other package which can claim this extension
+    The extension is claimed by a package, but the extension claims to be owned by a different package.
 
 Leftover [fa-ghost]
 
