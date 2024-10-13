@@ -112,6 +112,24 @@ abstract class AbstractIssue implements IssueInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 * @since 1.0.0
+	 */
+	public function getDetailsTemplate(): string
+	{
+		return 'commontemplates/nofixavailable';
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since 1.0.0
+	 */
+	public function fix(string $fixAction = 'default'): void
+	{
+		// By default, nothing happens
+	}
+
+	/**
 	 * Performs the test described by this class.
 	 *
 	 * @return  bool

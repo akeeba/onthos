@@ -40,4 +40,13 @@ class MissingLanguage extends AbstractIssue implements IssueInterface
 			false
 		);
 	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getDetailsTemplate(): string
+	{
+		return 'commontemplates/reinstall';
+	}
 }

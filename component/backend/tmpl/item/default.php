@@ -240,7 +240,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 		</div>
 
-		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2">
+		<h3 class="border-bottom border-2 pb-2 my-2">
 			<?= Text::_('COM_ONTHOS_ITEM_HEAD_FILES_AND_DIRS') ?>
 		</h3>
 
@@ -312,7 +312,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 		</div>
 
-		<h3 class="border-bottom border-2 mt-0 pb-2 mb-2 hasTooltip"
+		<h3 class="border-bottom border-2 pb-2 my-2 hasTooltip"
 			title="<?= Text::_('COM_ONTHOS_ITEM_HEAD_DATABASE_TOOLTIP') ?>"
 		>
 			<?= Text::_('COM_ONTHOS_ITEM_HEAD_DATABASE') ?>
@@ -360,8 +360,42 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 		</div>
 
-		<?php foreach ($this->item->issues->getIssues() as $issue): ?>
-		<?php endforeach; ?>
+		<?php if (count($this->item->issues->getIssues())): ?>
+			<h3 class="border-bottom border-2 pb-2 my-2 hasTooltip">
+				<?= Text::_('COM_ONTHOS_ITEM_HEAD_ISSUES') ?>
+			</h3>
+
+			<?php foreach ($this->item->issues->getIssues() as $issue): ?>
+			<div class="mt-3 mb-4">
+				<?php
+				$class = match ($issue->getSeverity()) {
+					'emergency', 'alert' => 'text-danger fw-bold',
+					'critical'  => 'text-danger fw-semibold',
+					'error'     => 'text-danger',
+					'warning'   => 'text-warning fw-semibold',
+					'notice'    => 'text-warning',
+					'info'      => 'text-info',
+					'debug'     => 'text-muted',
+				}
+				?>
+				<h4 class="<?= $class ?>">
+					<span class="<?= $issue->getIcon() ?>" aria-hidden="true"></span>
+					<?= $issue->getLabel() ?>
+				</h4>
+				<p class="ps-4 text-body"><?= $issue->getDescription() ?></p>
+				<div class="ps-4 text-body">
+					<?= $this->loadAnyTemplate(
+						$issue->getDetailsTemplate(),
+						false,
+						[
+							'issue'     => $issue,
+							'extension' => $this->item,
+						]
+					) ?>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		<?php endif?>
 
 	</div>
 </div>

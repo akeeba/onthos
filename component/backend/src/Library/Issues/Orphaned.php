@@ -7,6 +7,7 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
+use Akeeba\Component\Onthos\Administrator\Helper\AdoptionHelper;
 use Akeeba\Component\Onthos\Administrator\Helper\PackageIDsHelper;
 use Akeeba\Component\Onthos\Administrator\Helper\UpdateSitesHelper;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
@@ -62,4 +63,25 @@ class Orphaned extends AbstractIssue implements IssueInterface
 		// It's an orphan only if the package ID is invalid.
 		return !in_array($this->extension->package_id, PackageIDsHelper::get());
 	}
+
+	public function getDetailsTemplate(): string
+	{
+		// Can the extension be adopted?
+		if (AdoptionHelper::whichPackageId($this->extension->extension_id))
+		{
+			// TODO Adopt
+		}
+
+		// Cannot be adopted and does not have a package.
+		if (empty($this->extension->package_id ?? null))
+		{
+			// TODO Check if it's meant to be a top-level extension. Otherwise, reinstall
+		}
+
+		// TODO The package ID is invalid and cannot be adopted. This is likely a leftover. Uninstall.
+
+		return parent::getDetailsTemplate();
+	}
+
+
 }

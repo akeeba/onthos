@@ -83,4 +83,13 @@ class Leftover extends AbstractIssue implements IssueInterface
 
 		return parent::getSeverity();
 	}
+
+	public function getDetailsTemplate(): string
+	{
+		// TODO Forcibly uninstall the extension with Onthos.
+
+		return parent::getDetailsTemplate();
+	}
+
+
 }

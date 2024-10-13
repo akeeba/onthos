@@ -46,4 +46,13 @@ class MissingChildren extends AbstractIssue implements IssueInterface
 
 		return $this->extension->hasMissingSubextensions();
 	}
+
+	public function getDetailsTemplate(): string
+	{
+		// TODO Reinstall the package
+
+		return parent::getDetailsTemplate();
+	}
+
+
 }

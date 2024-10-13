@@ -2,9 +2,18 @@
 --------------------------------------------------------------------------------
 ✔️ Add a Big Warning to the top of the Items page. It can be disabled in the Options page.
 
-✅ Refactor items page
+Refactor items page
 --------------------------------------------------------------------------------
 ✔️ Make the package the extension belongs to a link which filters by package
+
+Show Discovered extensions with a magnifying glass icon
+
+Filter by Discovered (state=-1) and Installed (state=0)
+
+Language detection
+--------------------------------------------------------------------------------
+
+If the tag in the manifest does not correspond to a known language for that application side, do not add the language file.
 
 Refactor item page
 --------------------------------------------------------------------------------
@@ -50,32 +59,48 @@ NoUpdateSite [fa-arrows-rotate] critical
 
     The manifest has an update site, but it is currently missing in the database.
 
+    Recommend: regenerate update sites
+
 WrongUpdateSite [fa-arrow-rotate-left] notice
 
     The manifest has an update site, but the extension has a different update site in the database.
+
+    Recommend: regenerate update sites
 
 DisabledUpdateSite [fa-ban] error
 
     The manifest has an update site, it exists in the database, but it's currently disabled.
 
+    Recommend: enable update site
+
 SchemaOutOfDate [fa-table-list] warning
 
-    Only if the extension defines tables. Joomla! reports one or more database schema issues for the extension.
+    Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the extension.
+
+    Recommend: Database fix (see option=com_installer&view=database)
 
 How to go about fixing problems
 --------------------------------------------------------------------------------
 
-Each issue needs to provide a view template name with information on fixing the issue.
-public function getDetailsTemplate(): string // e.g. 'issues/myissue', default 'commontemplates/nofixavailable'
-We pass the $issue and $extension to the view template
->> Why a view template and not a lang string? Because some issues may have a more nuanced approach based on additional signals. For example, orphaned extensions with the wrong package ID have a different solution than orphaned extensions with no package ID.
+✔️ Each issue needs to provide a view template name with information on fixing the issue.
+    public function getDetailsTemplate(): string // e.g. 'issues/myissue', default 'commontemplates/nofixavailable'
+    We pass the $issue and $extension to the view template
+    >> Why a view template and not a lang string? Because some issues may have a more nuanced approach based on additional signals. For example, orphaned extensions with the wrong package ID have a different solution than orphaned extensions with no package ID.
 
 For issue-specific fixes, we need a handler called by ItemController::fix()
-public function fix(string $fixAction = 'default'): void
-index.php?view=com_onthos&task=item.fix&id=123&action=default
+    public function fix(string $fixAction = 'default'): void
+    index.php?view=com_onthos&task=item.fix&id=123&action=default
 
-Voodoo Zone
+Voodoo Zone (ItemController)
 --------------------------------------------------------------------------------
+
+Publish
+
+    Enable an extension (enabled=1)
+
+Unpublish
+
+    Disable an extension (enabled=0)
 
 Unprotect
 
@@ -93,7 +118,11 @@ Lock
 
     Marks an extension locked (cannot be enabled, disabled, updated, and uninstalled)
 
-Smart Uninstall
+Remove Discovered
+
+    Only for Discovered extensions. Remove the discovered extension's files.
+
+Uninstall
 
     Marks an extension unprotected and unlocked, then calls Joomla's extensions uninstaller.
 
@@ -105,6 +134,6 @@ Forced Uninstall
 
     Removes the update sites and TUF metadata, all detected tables (ignoring column relations), files, and directories, then removes the `#__extensions` record. DANGEROUS! MUST BE THE LAST RESORT.
 
-Record Remover
+Remove Record
 
     Removes the `#__extensions` record. Only available when NONE of the extension's files and directories is present, including the manifest, script, language, and media files. This is meant to remove leftover records.

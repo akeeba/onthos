@@ -40,4 +40,13 @@ class MissingMedia extends AbstractIssue implements IssueInterface
 
 		return false;
 	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getDetailsTemplate(): string
+	{
+		return 'commontemplates/reinstall';
+	}
 }

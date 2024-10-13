@@ -40,4 +40,12 @@ class NonCoreProtected extends AbstractIssue implements IssueInterface
 	{
 		return !$this->extension->isCore() && $this->extension->protected;
 	}
+
+	public function getDetailsTemplate(): string
+	{
+		// TODO Unprotect the extension
+
+		return parent::getDetailsTemplate();
+	}
+
 }

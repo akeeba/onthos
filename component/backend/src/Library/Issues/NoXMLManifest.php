@@ -47,6 +47,15 @@ class NoXMLManifest extends AbstractIssue implements IssueInterface
 			return false;
 		}
 
-		return $this->extension->fileReallyExists($manifestPath);
+		return !$this->extension->fileReallyExists(JPATH_ROOT . '/' . $manifestPath);
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getDetailsTemplate(): string
+	{
+		return 'commontemplates/reinstall';
 	}
 }

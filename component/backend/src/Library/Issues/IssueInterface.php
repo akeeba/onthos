@@ -79,4 +79,24 @@ interface IssueInterface
 	 * @see     \Psr\Log\LogLevel
 	 */
 	public function getSeverity(): string;
+
+	/**
+	 * Returns a view template which provides further details, and recommendations for fixing this issue.
+	 *
+	 * @return  string
+	 * @since   1.0.0
+	 */
+	public function getDetailsTemplate(): string;
+
+	/**
+	 * Handles the execution of a proposed fix.
+	 *
+	 * If the fix fails it should raise an Exception. It will be reported back to the user.
+	 *
+	 * @param   string  $fixAction  An optional fix action, in case there are more than one available.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	public function fix(string $fixAction = 'default'): void;
 }

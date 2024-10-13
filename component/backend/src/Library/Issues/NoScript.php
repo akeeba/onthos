@@ -35,6 +35,15 @@ class NoScript extends AbstractIssue implements IssueInterface
 			return false;
 		}
 
-		return $this->extension->fileReallyExists($scriptPath);
+		return !$this->extension->fileReallyExists(JPATH_ROOT . '/' . $scriptPath);
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getDetailsTemplate(): string
+	{
+		return 'commontemplates/reinstall';
 	}
 }

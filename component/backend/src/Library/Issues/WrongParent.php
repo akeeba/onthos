@@ -48,4 +48,11 @@ class WrongParent extends AbstractIssue implements IssueInterface
 
 		return AdoptionHelper::hasWrongPackageId($this->extension->extension_id);
 	}
+
+	public function getDetailsTemplate(): string
+	{
+		// TODO Adopt
+
+		return parent::getDetailsTemplate();
+	}
 }
