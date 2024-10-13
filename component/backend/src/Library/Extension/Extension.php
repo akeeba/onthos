@@ -572,9 +572,8 @@ abstract class Extension implements ExtensionInterface
 		foreach ($xml->xpath('/extension/media') as $node)
 		{
 			$destination = $this->getXMLAttribute($node, 'destination', $this->element);
-			$folder      = $this->getXMLAttribute($node, 'folder', 'media');
 
-			$this->mediaPaths[] = sprintf("%s/%s/%s", JPATH_ROOT, $folder, $destination);
+			$this->mediaPaths[] = sprintf("%s/%s", JPATH_ROOT, $destination);
 		}
 	}
 
