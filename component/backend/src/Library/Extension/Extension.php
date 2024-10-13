@@ -573,7 +573,7 @@ abstract class Extension implements ExtensionInterface
 		{
 			$destination = $this->getXMLAttribute($node, 'destination', $this->element);
 
-			$this->mediaPaths[] = sprintf("%s/%s", JPATH_ROOT, $destination);
+			$this->mediaPaths[] = sprintf("%s/media/%s", JPATH_ROOT, $destination);
 		}
 	}
 
