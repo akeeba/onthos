@@ -67,16 +67,6 @@ interface ExtensionInterface
 	public function isInstalled(): bool;
 
 	/**
-	 * Is this an orphan extension?
-	 *
-	 * These are extensions which do not belong to a package, are not locked, and do not have an update site.
-	 *
-	 * @return  bool
-	 * @since   1.0.0
-	 */
-	public function isOrphan(): bool;
-
-	/**
 	 * Is this a discovered, but not yet fully installed, extension?
 	 *
 	 * @return  bool

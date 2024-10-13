@@ -18,10 +18,6 @@ use Joomla\Database\DatabaseInterface;
 
 HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
 
-$state = !($this->item instanceof ExtensionInterface)
-	? 0
-	: ($this->item?->isDiscovered() ? -1 : ($this->item?->isInstalled() ? 1 : 0));
-
 $getFilePrintable = function ($value): string {
 	$exists       = @file_exists(JPATH_ROOT . '/' . $value);
 	$reallyExists = $this->item?->fileReallyExists(JPATH_ROOT . '/' . $value);

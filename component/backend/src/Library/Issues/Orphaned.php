@@ -7,6 +7,8 @@
 
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
+use Akeeba\Component\Onthos\Administrator\Helper\PackageIDsHelper;
+use Akeeba\Component\Onthos\Administrator\Helper\UpdateSitesHelper;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Psr\Log\LogLevel;
 
@@ -14,8 +16,6 @@ defined('_JEXEC') || die;
 
 /**
  * Orphaned extension test.
- *
- * @see  ExtensionInterface::isOrphan()
  *
  * @since   1.0.0
  */
@@ -38,6 +38,30 @@ class Orphaned extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
-		return $this->extension->isOrphan();
+		// Packages can never be orphans; they are by definition top-level extensions.
+		if ($this->extension->type === 'package')
+		{
+			return false;
+		}
+
+		// If the extension has an update site it's a top-level extension, not an orphan
+		if (in_array($this->extension->extension_id, UpdateSitesHelper::get()))
+		{
+			return false;
+		}
+
+		// If there a package ID we need to check if it's valid
+		if (!empty($this->extension->package_id ?? null))
+		{
+			if (!in_array($this->extension->package_id, PackageIDsHelper::get()))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		// At this point it's either an orphan, or a core extension (locked)
+		return !$this->extension->isCore();
 	}
 }
