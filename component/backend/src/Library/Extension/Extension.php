@@ -344,13 +344,27 @@ abstract class Extension implements ExtensionInterface
 			// You should never be here. We already checked the extension type.
 			if (defined('JDEBUG') && JDEBUG)
 			{
-				throw new \LogicException('Expected Package extension, got ' . ($extension === null ? 'NULL' : get_class($extension)));
+				throw new \LogicException(
+					'Expected Package extension, got ' . ($extension === null ? 'NULL' : get_class($extension))
+				);
 			}
 
 			return null;
 		}
 
 		return $extension;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	public function getIssueManager(): IssueManager
+	{
+		// This ensures late initialisation for performance reasons
+		$this->issueManager = $this->issueManager ?? IssueManager::make($this);
+
+		return $this->issueManager;
 	}
 
 	/**
@@ -751,17 +765,5 @@ abstract class Extension implements ExtensionInterface
 		{
 			self::$packageIDs = [];
 		}
-	}
-
-	/**
-	 * @inheritDoc
-	 * @since 1.0.0
-	 */
-	public function getIssueManager(): IssueManager
-	{
-		// This ensures late initialisation for performance reasons
-		$this->issueManager = $this->issueManager ?? IssueManager::make($this);
-
-		return $this->issueManager;
 	}
 }
