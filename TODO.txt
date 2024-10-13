@@ -68,6 +68,7 @@ How to go about fixing problems
 Each issue needs to provide a view template name with information on fixing the issue.
 public function getDetailsTemplate(): string // e.g. 'issues/myissue', default 'commontemplates/nofixavailable'
 We pass the $issue and $extension to the view template
+>> Why a view template and not a lang string? Because some issues may have a more nuanced approach based on additional signals. For example, orphaned extensions with the wrong package ID have a different solution than orphaned extensions with no package ID.
 
 For issue-specific fixes, we need a handler called by ItemController::fix()
 public function fix(string $fixAction = 'default'): void

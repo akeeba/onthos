@@ -359,5 +359,9 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?php endif ?>
 			</div>
 		</div>
+
+		<?php foreach ($this->item->issues->getIssues() as $issue): ?>
+		<?php endforeach; ?>
+
 	</div>
 </div>

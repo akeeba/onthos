@@ -39,6 +39,11 @@ class PartiallyInstalled extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
+		if ($this->extension->isDiscovered())
+		{
+			return false;
+		}
+
 		$dirs   = $this->extension->getDirectories();
 		$files  = $this->extension->getFiles();
 
@@ -69,10 +74,10 @@ class PartiallyInstalled extends AbstractIssue implements IssueInterface
 		$missingDirs = !empty($dirs) && array_reduce(
 				$dirs,
 				fn(bool $carry, string $directory): bool => $carry
-				                                            && $this->extension->fileReallyExists(
+				                                            || !$this->extension->fileReallyExists(
 						JPATH_ROOT . '/' . $directory
 					),
-				true
+				false
 			);
 
 		if ($missingDirs)
@@ -83,12 +88,26 @@ class PartiallyInstalled extends AbstractIssue implements IssueInterface
 		$missingFiles = !empty($files) && array_reduce(
 				$files,
 				fn(bool $carry, string $file): bool => $carry
-				                                       && $this->extension->fileReallyExists(
+				                                       || !$this->extension->fileReallyExists(
 						JPATH_ROOT . '/' . $file
 					),
-				true
+				false
 			);
 
 		return $missingFiles;
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getSeverity(): string
+	{
+		if ($this->extension->isCore())
+		{
+			return LogLevel::DEBUG;
+		}
+
+		return parent::getSeverity();
 	}
 }

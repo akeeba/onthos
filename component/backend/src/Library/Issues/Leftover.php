@@ -39,27 +39,48 @@ class Leftover extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
-		$dirs   = $this->extension->getDirectories();
-		$files  = $this->extension->getFiles();
+		if ($this->extension->isDiscovered())
+		{
+			return false;
+		}
 
-		$existsDirs = empty($dirs) || array_reduce(
-				$dirs,
-				fn(bool $carry, string $directory): bool => $carry
-				                                            || $this->extension->fileReallyExists(
-						JPATH_ROOT . '/' . $directory
-					),
-				false
-			);
+		$dirs  = $this->extension->getDirectories();
+		$files = $this->extension->getFiles();
 
-		$existsFiles = empty($files) || array_reduce(
-				$files,
-				fn(bool $carry, string $file): bool => $carry
-				                                       || $this->extension->fileReallyExists(
-						JPATH_ROOT . '/' . $file
-					),
-				false
-			);
+		$existsDirs = empty($dirs)
+		              || array_reduce(
+			              $dirs,
+			              fn(bool $carry, string $directory): bool => $carry
+			                                                          || $this->extension->fileReallyExists(
+					              JPATH_ROOT . '/' . $directory
+				              ),
+			              false
+		              );
+
+		$existsFiles = empty($files)
+		               || array_reduce(
+			               $files,
+			               fn(bool $carry, string $file): bool => $carry
+			                                                      || $this->extension->fileReallyExists(
+					               JPATH_ROOT . '/' . $file
+				               ),
+			               false
+		               );
 
 		return !$existsDirs && !$existsFiles;
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
+	public function getSeverity(): string
+	{
+		if ($this->extension->isCore())
+		{
+			return LogLevel::DEBUG;
+		}
+
+		return parent::getSeverity();
 	}
 }

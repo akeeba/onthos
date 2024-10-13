@@ -53,7 +53,6 @@ final class IssueManager
 	{
 		return [
 			CoreForceDisabled::class,
-			Broken::class,
 			Leftover::class,
 			PartiallyInstalled::class,
 			MissingChildren::class,
