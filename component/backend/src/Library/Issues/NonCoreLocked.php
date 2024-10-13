@@ -17,8 +17,6 @@ defined('_JEXEC') || die;
  *
  * Non-core extensions marked as locked.
  *
- * @see  ExtensionInterface::isOrphan()
- *
  * @since   1.0.0
  */
 class NonCoreLocked extends AbstractIssue implements IssueInterface

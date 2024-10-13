@@ -17,8 +17,6 @@ defined('_JEXEC') || die;
  *
  * Non-core extensions marked as protected.
  *
- * @see  ExtensionInterface::isOrphan()
- *
  * @since   1.0.0
  */
 class NonCoreProtected extends AbstractIssue implements IssueInterface

@@ -17,8 +17,6 @@ defined('_JEXEC') || die;
  *
  * Core extensions which are both protected AND disabled, meaning they can never be re-enabled in the interface.
  *
- * @see  ExtensionInterface::isOrphan()
- *
  * @since   1.0.0
  */
 class CoreForceDisabled extends AbstractIssue implements IssueInterface

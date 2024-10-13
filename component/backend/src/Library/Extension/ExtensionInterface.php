@@ -98,17 +98,6 @@ interface ExtensionInterface
 	public function isCore(): bool;
 
 	/**
-	 * Does this extension have an update site of its own?
-	 *
-	 * This only matters if $this->getParentPackage() returns NULL;
-	 *
-	 * @return  bool
-	 * @since   1.0.0
-	 * @see     self::getParentPackage()
-	 */
-	public function hasUpdateSite(): bool;
-
-	/**
 	 * Get the human-readable name of the extension, if possible.
 	 *
 	 * @return  string|null

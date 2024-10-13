@@ -284,15 +284,6 @@ abstract class Extension implements ExtensionInterface
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
-	final public function hasUpdateSite(): bool
-	{
-		return in_array($this->extension_id, self::$extensionIDsWithUpdateSites);
-	}
-
-	/**
-	 * @inheritDoc
-	 * @since 1.0.0
-	 */
 	final public function isDiscovered(): bool
 	{
 		return $this->state == -1;
@@ -313,10 +304,7 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function getParentPackage(): ?Package
 	{
-		if ($this->isDiscovered() || !$this->isInstalled()
-		    || $this->isOrphan()
-		    || $this->type == 'package'
-		    || empty($this->package_id ?? 0))
+		if ($this->type == 'package' || empty($this->package_id ?? 0))
 		{
 			return null;
 		}
