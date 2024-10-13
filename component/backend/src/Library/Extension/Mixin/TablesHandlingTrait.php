@@ -231,7 +231,7 @@ trait TablesHandlingTrait
 				continue;
 			}
 
-			$tableName = trim($rawTableName, '`"');
+			$tableName = trim($rawTableName, '`"[]');
 
 			$this->tables[] = $tableName;
 		}
