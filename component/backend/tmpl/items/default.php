@@ -41,6 +41,10 @@ $i         = 0;
 				<?= LayoutHelper::render('joomla.searchtools.default', ['view' => $this]) ?>
 			</div>
 
+			<?php if($this->isUnreliableCore): ?>
+				<?= $this->loadAnyTemplate('commontemplates/jcorebug') ?>
+			<?php endif; ?>
+
 			<table class="table table-striped" id="extensionsList">
 				<caption class="visually-hidden">
 					<?= Text::_('COM_ONTHOS_ITEMS_TABLE_CAPTION'); ?>,
@@ -190,6 +194,7 @@ $i         = 0;
 						<?php elseif ($isOrphan || $isBroken || $isMissingLang): ?>
 						<?php
 						$class = $isBroken ? 'text-danger' : ($isOrphan ? 'text-warning' : 'text-info');
+						$class = $item->isCore() ? 'text-muted' : $class;
 						?>
 						<div class="<?= $class ?> fw-bold">
 							<?php if ($isBroken): ?>
@@ -201,6 +206,11 @@ $i         = 0;
 							<?php elseif ($isMissingLang): ?>
 								<span class="fa fa-language" aria-hidden="true"></span>
 								<?= Text::_('COM_ONTHOS_ITEMS_LBL_MISSING_LANG') ?>
+							<?php endif ?>
+							<?php if ($item->isCore()): ?>
+							<span class="fw-normal small">
+								<?= Text::_('COM_ONTHOS_ITEMS_LBL_UNRELIABLE_CORE') ?>
+							</span>
 							<?php endif ?>
 						</div>
 						<?php endif ?>

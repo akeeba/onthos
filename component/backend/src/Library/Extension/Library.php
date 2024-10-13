@@ -39,6 +39,17 @@ class Library extends Extension
 		{
 			$basePath = JPATH_LIBRARIES . '/' . $this->getXMLAttribute($filesNode, 'folder', $this->element);
 
+			/**
+			 * The Joomla! Platform library has the wrong paths in its XML file 😂
+			 *
+			 * So, yeah, I have to work around it... and it still appears broken because Joomla! can't get its ducks in
+			 * a row!
+			 */
+			if ($this->element === 'joomla')
+			{
+				$basePath = JPATH_LIBRARIES;
+			}
+
 			$this->directories[] = $this->rebaseToRoot($basePath);
 
 			foreach ($filesNode->children() as $fileNode)

@@ -72,6 +72,13 @@ class HtmlView extends BaseHtmlView
 	protected Registry $state;
 
 	/**
+	 * Does the listing include core extensions which have unreliable XML manifessts?
+	 *
+	 * @var  bool
+	 */
+	protected bool $isUnreliableCore = false;
+
+	/**
 	 * Is this view an Empty State
 	 *
 	 * @var   boolean
@@ -86,13 +93,18 @@ class HtmlView extends BaseHtmlView
 	public function display($tpl = null)
 	{
 		/** @var ItemsModel $model */
-		$model               = $this->getModel();
-		$this->items         = $model->getItems();
-		$this->pagination    = $model->getPagination();
-		$this->state         = $model->getState();
-		$this->filterForm    = $model->getFilterForm();
-		$this->activeFilters = $model->getActiveFilters();
-		$this->isEmptyState  = $this->get('IsEmptyState');
+		$model                  = $this->getModel();
+		$this->items            = $model->getItems();
+		$this->pagination       = $model->getPagination();
+		$this->state            = $model->getState();
+		$this->filterForm       = $model->getFilterForm();
+		$this->activeFilters    = $model->getActiveFilters();
+		$this->isEmptyState     = $this->get('IsEmptyState');
+		$this->isUnreliableCore = array_reduce(
+			$this->items,
+			fn(bool $carry, ExtensionInterface $extension) => $carry || $extension->isCore(),
+			false
+		);
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

@@ -90,6 +90,10 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			<?= Text::_('COM_ONTHOS_ITEM_HEAD_BASIC') ?>
 		</h3>
 
+		<?php if($this->item->isCore()): ?>
+		<?= $this->loadAnyTemplate('commontemplates/jcorebug') ?>
+		<?php endif ?>
+
 		<?php
 		$minRows     = 2;
 		$isPlugin    = $this->item?->type === 'plugin';
