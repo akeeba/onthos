@@ -16,12 +16,12 @@ Write the solutions view templates
     ✔️ NoXMLManifest
     ✔️ PartiallyInstalled
     ✔️ NonCoreLocked
-    NonCoreProtected
+    ✔️ NonCoreProtected
+    ✔️ SchemaOutOfDate
+    ✔️ WrongUpdateSite
+    WrongParent
     Leftover
     Orphaned
-    SchemaOutOfDate
-    WrongParent
-    WrongUpdateSite
 
 
 How to go about fixing problems

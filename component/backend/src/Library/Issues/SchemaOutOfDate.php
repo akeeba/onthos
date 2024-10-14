@@ -9,6 +9,11 @@ namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Component\Installer\Administrator\Model\DatabaseModel;
+use Joomla\Component\Joomlaupdate\Administrator\Model\UpdateModel;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
@@ -40,9 +45,44 @@ class SchemaOutOfDate extends AbstractIssue
 	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO
+		return 'issues/update_schema';
+	}
 
-		return parent::getDetailsTemplate();
+	/**
+	 * Fix schema issues in the extension
+	 *
+	 * @return  void
+	 * @throws  \Exception
+	 * @since   1.0.0
+	 * @see     \Joomla\Component\Installer\Administrator\Controller\DatabaseController::fix()
+	 */
+	protected function onFixDefault(): void
+	{
+		if (!$this->doTest())
+		{
+			return;
+		}
+
+		/** @var CMSApplication $app */
+		$app = Factory::getApplication();
+		/** @var MVCFactoryInterface $installerFactory */
+		$installerFactory = $app->bootComponent('com_installer')->getMVCFactory();
+		/** @var DatabaseModel $model */
+		$model = $installerFactory->createModel('Database', 'Administrator', ['ignore_request' => true]);
+
+		// Fix the schema
+		$model->fix([$this->extension->extension_id]);
+
+		// Purge the updates cache
+		/** @var MVCFactoryInterface $jupdateFactory */
+		$jupdateFactory = $app->bootComponent('com_joomlaupdate')
+			->getMVCFactory();
+		/** @var UpdateModel $updateModel */
+		$updateModel = $jupdateFactory->createModel('Update', 'Administrator', ['ignore_request' => true]);
+		$updateModel->purge();
+
+		// Refresh the versioned assets cache
+		$app->flushAssets();
 	}
 
 	/**
