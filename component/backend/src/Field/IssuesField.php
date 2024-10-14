@@ -55,6 +55,8 @@ class IssuesField extends ListField
 			$options[] = HTMLHelper::_('select.option', $key, Text::_('COM_ONTHOS_ISSUES_LBL_' . $key));
 		}
 
+		uasort($options, fn($a, $b) => $a->text <=> $b->text);
+
 		return $options;
 	}
 
