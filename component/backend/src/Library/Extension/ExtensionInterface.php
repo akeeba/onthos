@@ -206,6 +206,17 @@ interface ExtensionInterface
 	public function getIssueManager(): IssueManager;
 
 	/**
+	 * Set the field on the `#__extensions` record, writing it directly into the database.
+	 *
+	 * @param   string        $name
+	 * @param   int|string  $value
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
+	public function setFieldName(string $name, int|string $value): bool;
+
+	/**
 	 * Magic getter.
 	 *
 	 * Retrieves properties from the extension object.

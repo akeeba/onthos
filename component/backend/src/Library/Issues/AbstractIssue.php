@@ -124,9 +124,19 @@ abstract class AbstractIssue implements IssueInterface
 	 * @inheritdoc
 	 * @since 1.0.0
 	 */
-	public function fix(string $fixAction = 'default'): void
+	final public function fix(string $fixAction = 'default'): void
 	{
-		// By default, nothing happens
+		// Look for the fix action method
+		$methodName = 'onFix' . ucfirst($fixAction);
+
+		// No such method? You get an error!
+		if (!method_exists($this, $methodName))
+		{
+			throw new \RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_NO_SUCH_ACTION'), 500);
+		}
+
+		// Call the fix method. If it fails, we expect it to throw an exception.
+		$this->$methodName();
 	}
 
 	/**

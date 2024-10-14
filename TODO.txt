@@ -32,30 +32,30 @@ How to go about fixing problems
     public function fix(string $fixAction = 'default'): void
     index.php?view=com_onthos&task=item.fix&id=123&issue=whatever&action=default
 
-Voodoo Zone (ItemController)
+Voodoo Zone (ItemsController)
 --------------------------------------------------------------------------------
 
-Publish
+✔️ Publish
 
     Enable an extension (enabled=1)
 
-Unpublish
+✔️ Unpublish
 
     Disable an extension (enabled=0)
 
-Unprotect
+✔️ Unprotect
 
     Marks an extension unprotected (third party extension).
 
-Protect
+✔️ Protect
 
     Marks an extension protected (core extension).
 
-Unlock
+✔️ Unlock
 
     Marks an extension unlocked (can be enabled, disabled, updated, and uninstalled)
 
-Lock
+✔️ Lock
 
     Marks an extension locked (cannot be enabled, disabled, updated, and uninstalled)
 

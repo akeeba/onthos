@@ -227,6 +227,84 @@ class HtmlView extends BaseHtmlView
 		/** @var Toolbar $toolbar */
 		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
 
+		// Actions drop-down
+		$dropdown = $toolbar->dropdownButton('status-group')
+			->text('JTOOLBAR_CHANGE_STATUS')
+			->toggleSplit(false)
+			->icon('icon-ellipsis-h')
+			->buttonClass('btn btn-action')
+			->listCheck(true);
+
+		/** @var Toolbar $childBar */
+		$childBar = $dropdown->getChildToolbar();
+
+		$childBar->publish('items.publish')
+			->icon('fa fa-check-circle')
+			->text('JTOOLBAR_ENABLE')
+			->listCheck(true);
+
+		$childBar->publish('items.unpublish')
+			->icon('fa fa-times-circle')
+			->text('JTOOLBAR_DISABLE')
+			->listCheck(true);
+
+		$childBar->publish('items.protect')
+			->icon('fa fa-shield')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_PROTECT')
+			->listCheck(true);
+
+		$childBar->publish('items.unprotect')
+			->icon('fa fa-shield-halved')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNPROTECT')
+			->listCheck(true);
+
+		$childBar->publish('items.lock')
+			->icon('fa fa-lock')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_LOCK')
+			->listCheck(true);
+
+		$childBar->publish('items.unlock')
+			->icon('fa fa-lock-open')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNLOCK')
+			->listCheck(true);
+
+		// Danger Zone drop-down
+		$dropdown = $toolbar->dropdownButton('dangerzone-group')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_DANGERZONE')
+			->toggleSplit(false)
+			->icon('icon-ellipsis-h')
+			->buttonClass('btn btn-action btn-danger')
+			->listCheck(true);
+
+		/** @var Toolbar $childBar */
+		$childBar = $dropdown->getChildToolbar();
+
+		$childBar->publish('items.undiscover')
+			->icon('fa fa-eye-slash')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNDISCOVER')
+			->listCheck(true);
+
+		$childBar->publish('items.uninstall')
+			->icon('fa fa-trash-can')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNINSTALL')
+			->listCheck(true);
+
+		$childBar->publish('items.noscript')
+			->icon('fa fa-fire')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_NOSCRIPT')
+			->listCheck(true);
+
+		$childBar->publish('items.forced')
+			->icon('fa fa-skull-crossbones')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_FORCED')
+			->listCheck(true);
+
+		$childBar->publish('items.unrecord')
+			->icon('fa fa-eraser')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNRECORD')
+			->listCheck(true);
+
+
 		ToolbarHelper::preferences('com_onthos');
 
 		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');

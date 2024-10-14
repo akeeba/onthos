@@ -14,6 +14,7 @@ use Akeeba\Component\Onthos\Administrator\Library\Issues\IssueManager;
 use InvalidArgumentException;
 use Joomla\CMS\Extension\ExtensionHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
 use Joomla\Component\Installer\Administrator\Model\DatabaseModel;
@@ -432,6 +433,29 @@ abstract class Extension implements ExtensionInterface
 	final public function getCanonicalUpdateServers(): array
 	{
 		return $this->canonicalUpdateServers;
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since 1.0.0
+	 */
+	public function setFieldName(string $name, int|string $value): bool
+	{
+		$knownKeys = array_keys(get_object_vars($this->extensionRow));
+
+		if (!in_array($name, $knownKeys, true))
+		{
+			throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_INVALID_FIELD'));
+		}
+
+		// Set the value
+		$this->extensionRow->{$name} = $value;
+
+		// Save and return
+		/** @var DatabaseDriver $db */
+		$db = Factory::getContainer()->get('db');
+
+		return $db->updateObject('#__extensions', $this->extensionRow, 'extension_id');
 	}
 
 	/**

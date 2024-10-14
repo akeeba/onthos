@@ -14,7 +14,6 @@ use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
-use Joomla\CMS\Uri\Uri;
 use Joomla\Input\Input;
 use RuntimeException;
 
@@ -25,6 +24,8 @@ use RuntimeException;
  */
 class ItemController extends BaseController
 {
+	use GetRedirectionTrait;
+
 	/**
 	 * @inheritdoc
 	 * @since 1.0.0
@@ -83,12 +84,11 @@ class ItemController extends BaseController
 	{
 		$this->checkToken('get');
 
-		$eid    = intval($this->input->getInt('id', 0) ?: 0);
+		$eid    = $this->input->getInt('id', 0) ?: 0;
 		$issue  = $this->input->getString('issue', '');
 		$action = $this->input->getString('action', 'default') ?: 'default';
 
 		$redirectUri = $this->getRedirection();
-		$message     = null;
 		$messageType = null;
 
 		try
@@ -109,6 +109,8 @@ class ItemController extends BaseController
 
 			$issueObject = $extension->issues->getIssue($issue);
 			$issueObject->fix($action);
+
+			$message     = Text::_('COM_ONTHOS_ITEM_LBL_ISSUE_FIXED');
 		}
 		catch (\Throwable $e)
 		{
@@ -119,42 +121,5 @@ class ItemController extends BaseController
 		{
 			$this->setRedirect($redirectUri, $message, $messageType);
 		}
-	}
-
-	/**
-	 * Get the redirection URL.
-	 *
-	 * A base64-encoded URL is read from the `redirect` URL parameter. If it's missing, invalid, or not an internal URL
-	 * then the HTTP Referer is used. If that's empty, or not an internal URL a hardcoded URL to the component's
-	 * default view is used instead.
-	 *
-	 * @return  string
-	 * @since   1.0.0
-	 */
-	private function getRedirection(): string
-	{
-		$referrer = $this->input->server->getString('HTTP_REFERER');
-
-		if (\is_null($referrer) || !Uri::isInternal($referrer))
-		{
-			$referrer = 'index.php?option=com_onthos';
-		}
-
-		$redirect = $this->input->getBase64('redirect', base64_encode($referrer));
-		try
-		{
-			$redirect = @base64_decode($redirect);
-		}
-		catch (\Exception)
-		{
-			$redirect = $referrer;
-		}
-
-		if (!Uri::isInternal($redirect))
-		{
-			$redirect = $referrer;
-		}
-
-		return $redirect;
 	}
 }
