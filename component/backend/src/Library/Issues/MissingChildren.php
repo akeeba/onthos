@@ -49,9 +49,7 @@ class MissingChildren extends AbstractIssue implements IssueInterface
 
 	public function getDetailsTemplate(): string
 	{
-		// TODO Reinstall the package
-
-		return parent::getDetailsTemplate();
+		return 'commontemplates/reinstall';
 	}
 
 

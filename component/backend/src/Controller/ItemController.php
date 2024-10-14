@@ -82,7 +82,7 @@ class ItemController extends BaseController
 	 */
 	public function fix(): void
 	{
-		$this->checkToken('get');
+		$this->checkToken('post');
 
 		$eid    = $this->input->getInt('id', 0) ?: 0;
 		$issue  = $this->input->getString('issue', '');

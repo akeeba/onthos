@@ -41,12 +41,12 @@ class CoreForceDisabled extends AbstractIssue implements IssueInterface
 		return $this->extension->isCore() && $this->extension->protected && !$this->extension->enabled;
 	}
 
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO Forcibly re-enable the extension with Onthos.
-
-		return parent::getDetailsTemplate();
+		return 'issues/publish';
 	}
-
-
 }

@@ -2,15 +2,26 @@ Refactor items page
 --------------------------------------------------------------------------------
 Filter by Discovered (state=-1) and Installed (state=0)
 
-Refactor item page
---------------------------------------------------------------------------------
-
-Show the canonical update servers, and the current update servers.
-
 Issues
 --------------------------------------------------------------------------------
 
 Write the solutions view templates
+    ✔️ CoreForceDisabled
+    ✔️ DisabledUpdateSite
+    ✔️ MissingChildren
+    ✔️ MissingLanguage
+    ✔️ MissingMedia
+    ✔️ MissingTables
+    ✔️ NoScript
+    ✔️ NoXMLManifest
+    ✔️ PartiallyInstalled
+    Leftover
+    NonCoreLocked
+    NonCoreProtected
+    Orphaned
+    SchemaOutOfDate
+    WrongParent
+    WrongUpdateSite
 
 
 How to go about fixing problems

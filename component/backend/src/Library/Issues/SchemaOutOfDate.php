@@ -40,7 +40,9 @@ class SchemaOutOfDate extends AbstractIssue
 	 */
 	public function getDetailsTemplate(): string
 	{
-		return 'commontemplates/reinstall';
+		// TODO
+
+		return parent::getDetailsTemplate();
 	}
 
 	/**

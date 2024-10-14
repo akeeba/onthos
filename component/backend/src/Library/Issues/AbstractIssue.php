@@ -155,7 +155,7 @@ abstract class AbstractIssue implements IssueInterface
 	 * @return  string
 	 * @since   1.0.0
 	 */
-	protected function getSlug(): string
+	public function getSlug(): string
 	{
 		$parts = explode('\\', static::class);
 

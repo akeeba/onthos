@@ -158,7 +158,7 @@ final class IssueManager
 
 			if ($issueSlug === strtolower(array_pop($parts)))
 			{
-				return $issueSlug;
+				return $currentItem;
 			}
 		}
 
