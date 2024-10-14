@@ -2,11 +2,6 @@ Refactor items page
 --------------------------------------------------------------------------------
 Filter by Discovered (state=-1) and Installed (state=0)
 
-Language detection
---------------------------------------------------------------------------------
-
-If the tag in the manifest does not correspond to a known language for that application side, do not add the language file.
-
 Refactor item page
 --------------------------------------------------------------------------------
 

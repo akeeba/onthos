@@ -194,7 +194,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 		<div class="row row-cols-1 row-cols-md-3">
 			<div class="col">
-				<h4>State</h4>
+				<h4><?= Text::_('COM_ONTHOS_ITEMS_FIELD_STATE') ?></h4>
 				<?php if ($this->item?->enabled): ?>
 					<p class="text-success">
 						<span class="fa fa-circle-check" aria-hidden="true"></span>
@@ -356,6 +356,63 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?php endif ?>
 			</div>
 		</div>
+
+		<?php if($this->item->getCanonicalUpdateServers() || $this->item->getUpdateSites()): ?>
+			<h3 class="border-bottom border-2 pb-2 my-2 hasTooltip"
+				title="<?= Text::_('COM_ONTHOS_ITEM_HEAD_UPDATES_TOOLTIP') ?>"
+			>
+				<?= Text::_('COM_ONTHOS_ITEM_HEAD_UPDATES') ?>
+			</h3>
+
+			<div class="row row-cols-1 row-cols-md-2">
+				<div class="col">
+					<h4><?= Text::_('COM_ONTHOS_ITEM_HEAD_UPDATES_CANONICAL') ?></h4>
+
+					<?php if ($this->item?->getCanonicalUpdateServers()): ?>
+					<ul>
+					<?php foreach($this->item?->getCanonicalUpdateServers() as $url): ?>
+						<li>
+							<?= $this->escape($url) ?>
+						</li>
+					<?php endforeach; ?>
+					</ul>
+					<?php else: ?>
+					<div class="alert alert-info" role="alert">
+						<?= Text::_('COM_ONTHOS_ITEM_LBL_NO_CANONICAL_UPDATES') ?>
+					</div>
+					<?php endif; ?>
+				</div>
+				<div class="col">
+					<h4><?= Text::_('COM_ONTHOS_ITEM_HEAD_UPDATES_DATABASE') ?></h4>
+
+					<?php if ($this->item?->getUpdateSites()): ?>
+						<ul>
+							<?php foreach($this->item?->getUpdateSites() as $updateSite): ?>
+								<li class="<?= $updateSite->enabled ? '' : 'text-danger' ?>">
+									<?php if ($updateSite->enabled): ?>
+										<span class="fa fa-circle-check hasTooltip" aria-hidden="true"
+											  title="<?= Text::_('JENABLED') ?>"
+										></span>
+										<span class="visually-hidden"><?= Text::_('JENABLED') ?></span>
+									<?php else: ?>
+										<span class="fa fa-circle-xmark hasTooltip" aria-hidden="true"
+											  title="<?= Text::_('JDISABLED') ?>"
+										></span>
+										<span class="visually-hidden"><?= Text::_('JDISABLED') ?></span>
+									<?php endif ?>
+									<?= $this->escape($updateSite->location) ?>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					<?php else: ?>
+						<div class="alert alert-info" role="alert">
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NO_DB_UPDATES') ?>
+						</div>
+					<?php endif; ?>
+				</div>
+
+			</div>
+		<?php endif; ?>
 
 		<?php if (count($this->item->issues->getIssues())): ?>
 			<h3 class="border-bottom border-2 pb-2 my-2 hasTooltip">
