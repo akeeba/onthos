@@ -111,6 +111,10 @@ class PartiallyInstalled extends AbstractIssue implements IssueInterface
 		return parent::getSeverity();
 	}
 
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
 	public function getDetailsTemplate(): string
 	{
 		return 'commontemplates/reinstall';

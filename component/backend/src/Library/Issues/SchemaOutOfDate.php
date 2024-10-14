@@ -13,6 +13,14 @@ use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
+/**
+ * Tests for an outdated database schema.
+ *
+ * Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the
+ * extension.
+ *
+ * @since   1.0.0
+ */
 class SchemaOutOfDate extends AbstractIssue
 {
 	/**
@@ -26,7 +34,6 @@ class SchemaOutOfDate extends AbstractIssue
 		$this->defaultSeverity = LogLevel::WARNING;
 	}
 
-
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
@@ -38,6 +45,7 @@ class SchemaOutOfDate extends AbstractIssue
 
 	/**
 	 * @inheritDoc
+	 * @since  1.0.0
 	 */
 	protected function doTest(): bool
 	{

@@ -15,8 +15,21 @@ use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
+/**
+ * Test for missing database tables.
+ *
+ * Only if the extension defines tables, and there is no `#__schemas` entry. One or more tables are missing.
+ *
+ * @since   1.0.0
+ */
 class MissingTables extends AbstractIssue
 {
+	/**
+	 * All database tables known to Joomla!
+	 *
+	 * @var   array
+	 * @since 1.0.0
+	 */
 	private static array $allTables;
 
 	/**
@@ -30,7 +43,6 @@ class MissingTables extends AbstractIssue
 		$this->defaultSeverity = LogLevel::CRITICAL;
 	}
 
-
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
@@ -42,6 +54,7 @@ class MissingTables extends AbstractIssue
 
 	/**
 	 * @inheritDoc
+	 * @since  1.0.0
 	 */
 	protected function doTest(): bool
 	{

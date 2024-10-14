@@ -83,6 +83,14 @@ abstract class Extension implements ExtensionInterface
 	private static array $schemaErrors;
 
 	/**
+	 * All update sites known to Joomla!.
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
+	private static array $allUpdateSites;
+
+	/**
 	 * The `#__extensions` table row object
 	 *
 	 * @var   object
@@ -139,6 +147,14 @@ abstract class Extension implements ExtensionInterface
 	private IssueManager $issueManager;
 
 	/**
+	 * The update servers of the extension defined in its XML manifest.
+	 *
+	 * @var   array<string>
+	 * @since 1.0.0
+	 */
+	private array $canonicalUpdateServers = [];
+
+	/**
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
@@ -181,6 +197,17 @@ abstract class Extension implements ExtensionInterface
 		}
 
 		return self::$createdObjects[$signature] = new $className($extensionRow);
+	}
+
+	/**
+	 * @inheritdoc
+	 * @since   1.0.0
+	 */
+	public function getUpdateSites(): array
+	{
+		$this->populateAllUpdateSites();
+
+		return self::$allUpdateSites[$this->extension_id] ?? [];
 	}
 
 	/**
@@ -399,6 +426,15 @@ abstract class Extension implements ExtensionInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 * @since 1.0.0
+	 */
+	final public function getCanonicalUpdateServers(): array
+	{
+		return $this->canonicalUpdateServers;
+	}
+
+	/**
 	 * Initialise the internal variables. Called from __construct().
 	 *
 	 * @return  void
@@ -464,7 +500,7 @@ abstract class Extension implements ExtensionInterface
 		$this->languageFiles = array_map([$this, 'rebaseToRoot'], $this->languageFiles);
 		$this->languageFiles = array_unique($this->languageFiles);
 
-		// Media directory from the manifest
+		// Media directories from the manifest
 		$this->populateMediaDirectoriesFromManifest($xml);
 
 		$this->mediaPaths = array_map([$this, 'rebaseToRoot'], $this->mediaPaths);
@@ -472,6 +508,9 @@ abstract class Extension implements ExtensionInterface
 
 		// Script file from the manifest
 		$this->scriptPath = $this->getScriptPathFromManifest($xml);
+
+		// Populate the update servers
+		$this->populateUpdateServersFromXMLManifest($xml);
 
 		// Populate the tables from the manifest
 		$this->populateTablesFromManifest($xml);
@@ -704,6 +743,33 @@ abstract class Extension implements ExtensionInterface
 	}
 
 	/**
+	 * Populates the update servers from the XML manifest
+	 *
+	 * @param   SimpleXMLElement  $xml  The SimpleXMLElement object representing the manifest.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	final protected function populateUpdateServersFromXMLManifest(SimpleXMLElement $xml): void
+	{
+		$this->canonicalUpdateServers = [];
+
+		$updateServerNodes = $xml->xpath('/extension/updateservers/server');
+
+		if (empty($updateServerNodes))
+		{
+			return;
+		}
+
+		foreach ($updateServerNodes as $updateServerNode)
+		{
+			$this->canonicalUpdateServers[] = $updateServerNode;
+		}
+
+		$this->canonicalUpdateServers = array_unique($this->canonicalUpdateServers);
+	}
+
+	/**
 	 * Add one of the alternative language files to the list of wanted language files.
 	 *
 	 * This method will check if any of the files it is given exist. If none of them exists, all will be added. If only
@@ -731,5 +797,62 @@ abstract class Extension implements ExtensionInterface
 		}
 
 		$this->languageFiles = array_merge($this->languageFiles, $existingFiles);
+	}
+
+	/**
+	 * Populates the cache of update sites
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function populateAllUpdateSites(): void
+	{
+		if (isset(self::$allUpdateSites))
+		{
+			return;
+		}
+
+		self::$allUpdateSites = [];
+
+		/** @var DatabaseDriver $db */
+		$db = Factory::getContainer()->get('db');
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query->select(
+			[
+				$db->quoteName('e.extension_id'),
+				$db->quoteName('s.update_site_id'),
+				$db->quoteName('s.type'),
+				$db->quoteName('s.location'),
+				$db->quoteName('s.enabled'),
+			]
+		)
+			->from($db->quoteName('#__update_sites_extensions', 'e'))
+			->leftJoin(
+				$db->quoteName('#__update_sites', 's'),
+				$db->quoteName('e.update_site_id') . ' = ' . $db->quoteName('s.update_site_id')
+			)
+			->where(
+				[
+					$db->quoteName('s.update_site_id') . ' IS NOT NULL',
+					$db->quoteName('s.location') . ' IS NOT NULL',
+					$db->quoteName('s.location') . ' != ' . $db->quote(''),
+				]
+			);
+
+		try
+		{
+			$rows = $db->setQuery($query)->loadObjectList();
+		}
+		catch (\Exception $e)
+		{
+			return;
+		}
+
+		foreach ($rows as $row)
+		{
+			self::$allUpdateSites[$row->extension_id]   ??= [];
+			self::$allUpdateSites[$row->extension_id][] = $row;
+		}
 	}
 }

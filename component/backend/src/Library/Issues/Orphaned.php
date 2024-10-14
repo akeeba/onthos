@@ -72,13 +72,17 @@ class Orphaned extends AbstractIssue implements IssueInterface
 			// TODO Adopt
 		}
 
-		// Cannot be adopted and does not have a package.
-		if (empty($this->extension->package_id ?? null))
+		if (!empty($this->extension->package_id ?? null))
 		{
-			// TODO Check if it's meant to be a top-level extension. Otherwise, reinstall
+			// TODO The package ID is invalid and cannot be adopted. This is likely a leftover. Uninstall.
 		}
 
-		// TODO The package ID is invalid and cannot be adopted. This is likely a leftover. Uninstall.
+		if (count($this->extension->getCanonicalUpdateServers()) && !count($this->extension->getUpdateSites()))
+		{
+			// TODO The update site is missing. Rebuild update sites.
+		}
+
+		// TODO Reinstall
 
 		return parent::getDetailsTemplate();
 	}
