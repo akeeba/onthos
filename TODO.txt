@@ -19,10 +19,23 @@ Write the solutions view templates
     ✔️ NonCoreProtected
     ✔️ SchemaOutOfDate
     ✔️ WrongUpdateSite
-    WrongParent
+    ✔️ WrongParent
     Leftover
     Orphaned
 
+Discovered [fa fa-magnifying-glass] debug
+
+    This extension's files exist on your site, but the extension is not installed.
+
+    Solution: Either install the extension from Joomla's Discover page, or remove it.
+
+ObsoleteCore [fa fa-dumpster] debug
+
+    This extension used to be shipped with Joomla, but not anymore.
+
+    Solution: uninstall the extension
+
+    Hardcoded list of extensions. Lazy loading plugin, Google CAPTCHA plugins, sample data.
 
 How to go about fixing problems
 --------------------------------------------------------------------------------

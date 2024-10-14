@@ -22,6 +22,8 @@ defined('_JEXEC') || die;
  */
 class WrongParent extends AbstractIssue implements IssueInterface
 {
+	use AdoptionTrait;
+
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
@@ -49,10 +51,12 @@ class WrongParent extends AbstractIssue implements IssueInterface
 		return AdoptionHelper::hasWrongPackageId($this->extension->extension_id);
 	}
 
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO Adopt
-
-		return parent::getDetailsTemplate();
+		return 'issues/adopt';
 	}
 }

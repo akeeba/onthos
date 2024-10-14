@@ -25,6 +25,8 @@ defined('_JEXEC') || die;
  */
 class Orphaned extends AbstractIssue implements IssueInterface
 {
+	use AdoptionTrait;
+
 	/**
 	 * @inheritdoc
 	 * @since  1.0.0
@@ -64,12 +66,16 @@ class Orphaned extends AbstractIssue implements IssueInterface
 		return !in_array($this->extension->package_id, PackageIDsHelper::get());
 	}
 
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
 	public function getDetailsTemplate(): string
 	{
 		// Can the extension be adopted?
-		if (AdoptionHelper::whichPackageId($this->extension->extension_id))
+		if (AdoptionHelper::whichPackage($this->extension->extension_id))
 		{
-			// TODO Adopt
+			return 'issues/adopt';
 		}
 
 		if (!empty($this->extension->package_id ?? null))
@@ -82,9 +88,7 @@ class Orphaned extends AbstractIssue implements IssueInterface
 			// TODO The update site is missing. Rebuild update sites.
 		}
 
-		// TODO Reinstall
-
-		return parent::getDetailsTemplate();
+		return 'commontemplates/reinstall';
 	}
 
 

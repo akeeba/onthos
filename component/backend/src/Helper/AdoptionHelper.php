@@ -48,7 +48,7 @@ abstract class AdoptionHelper
 	 * @return  Package|null  The canonical package of the extension. NULL if none is found.
 	 * @since   1.0.0
 	 */
-	public static function whichPackageId(int $extensionId): ?Package
+	public static function whichPackage(int $extensionId): ?Package
 	{
 		self::populate();
 

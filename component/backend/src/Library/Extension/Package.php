@@ -31,7 +31,7 @@ class Package extends Extension
 	 * @var   array
 	 * @since 1.0.0
 	 */
-	private array $subExtensions = [];
+	private array $subExtensions;
 
 	/**
 	 * Gets the subextensions of a package.
