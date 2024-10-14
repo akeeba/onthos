@@ -15,13 +15,13 @@ use Psr\Log\LogLevel;
 defined('_JEXEC') || die;
 
 /**
- * Test for having the wrong update site.
+ * Test for having no canonical update site enabled.
  *
- * The manifest has an update site, but the extension has a different update site in the database marked as enabled.
+ * The manifest has an update site, it exists in the database, but it's currently disabled.
  *
  * @since   1.0.0
  */
-class WrongUpdateSite extends Issues\AbstractIssue
+class DisabledUpdateSite extends Issues\AbstractIssue
 {
 	/**
 	 * @inheritDoc
@@ -40,7 +40,7 @@ class WrongUpdateSite extends Issues\AbstractIssue
 	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO Regenerate update sites
+		// TODO Enable update site
 
 		return parent::getDetailsTemplate();
 	}
@@ -51,15 +51,6 @@ class WrongUpdateSite extends Issues\AbstractIssue
 	 */
 	protected function doTest(): bool
 	{
-		/**
-		 * This test does not apply to core extensions such as file_joomla. Users are allowed to use alternative update
-		 * sites for the core. Other core extensions do not _actually_ have update sites. They just pretend to.
-		 */
-		if ($this->extension->isCore())
-		{
-			return false;
-		}
-
 		$canonicalUpdateServers = $this->extension->getCanonicalUpdateServers();
 
 		if (empty($canonicalUpdateServers))
@@ -67,27 +58,27 @@ class WrongUpdateSite extends Issues\AbstractIssue
 			return false;
 		}
 
-		$enabledLocations = array_map(
-			fn($x) => $x->location,
-			array_filter(
-				$this->extension->getUpdateSites(),
-				fn($x) => $x->enabled
-			)
+		// First, make sure at least one canonical update server exists in the database
+		$hasCanonical = array_reduce(
+			$this->extension->getUpdateSites(),
+			fn(bool $carry, object $currentUpdateServer) => $carry
+				? $carry
+				: in_array($currentUpdateServer->location, $canonicalUpdateServers, true),
+			false
 		);
 
-		if (empty($enabledLocations))
+		if (!$hasCanonical)
 		{
 			return false;
 		}
 
-		foreach ($enabledLocations as $location)
-		{
-			if (!in_array($location, $canonicalUpdateServers, true))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		// Then, check if any canonical update server is enabled
+		return !array_reduce(
+			$this->extension->getUpdateSites(),
+			fn(bool $carry, object $currentUpdateServer) => $carry || !$currentUpdateServer->enabled
+				? $carry
+				: in_array($currentUpdateServer->location, $canonicalUpdateServers, true),
+			false
+		);
 	}
 }

@@ -60,6 +60,7 @@ final class IssueManager
 			MissingChildren::class,
 			NonCoreProtected::class,
 			WrongUpdateSite::class,
+			DisabledUpdateSite::class,
 			Orphaned::class,
 			SchemaOutOfDate::class,
 			WrongParent::class,

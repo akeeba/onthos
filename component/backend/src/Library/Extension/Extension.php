@@ -763,7 +763,7 @@ abstract class Extension implements ExtensionInterface
 
 		foreach ($updateServerNodes as $updateServerNode)
 		{
-			$this->canonicalUpdateServers[] = $updateServerNode;
+			$this->canonicalUpdateServers[] = trim((string) $updateServerNode);
 		}
 
 		$this->canonicalUpdateServers = array_unique($this->canonicalUpdateServers);

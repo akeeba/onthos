@@ -24,9 +24,10 @@ Refactor item page
 ✔️ Change Mandatory Elements to Files and Directories
 ✔️ Database tables: check if they exist
 ✔️ Clean up language strings
-
-Show a list of Issues with their descriptions, and their proposed solutions
+✔️ Show a list of Issues with their descriptions, and their proposed solutions
     Requires the "How to go about fixing problems" to be implemented first.
+
+Show the canonical update servers, and the current update servers.
 
 Issues
 --------------------------------------------------------------------------------
@@ -69,7 +70,7 @@ Issues
 
     Recommend: regenerate update sites
 
-DisabledUpdateSite [fa-ban] error
+✔️ DisabledUpdateSite [fa-ban] error
 
     The manifest has an update site, it exists in the database, but it's currently disabled.
 
