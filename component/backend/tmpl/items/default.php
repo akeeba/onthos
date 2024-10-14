@@ -89,7 +89,7 @@ $i         = 0;
 
 					<td>
 						<div>
-							<span class="fa <?= $this->getTypeIcon($item) ?> fa-fw hasTooltip" aria-hidden="true"
+							<span class="fa fs-3 <?= $this->getTypeIcon($item) ?> fa-fw hasTooltip" aria-hidden="true"
 								  title="<?= Text::_('COM_INSTALLER_TYPE_' . $item->type) ?>">
 							</span>
 							<span class="visually-hidden">
@@ -97,7 +97,7 @@ $i         = 0;
 							</span>
 
 							<?php if (in_array($item->type, ['language', 'module', 'template'])): ?>
-								<span class="fa <?= $this->getApplicationIcon($item) ?> fa-fw text-secondary ms-2 hasTooltip"
+								<span class="fa fs-4 <?= $this->getApplicationIcon($item) ?> fa-fw text-secondary ms-2 hasTooltip"
 									  aria-hidden="true"
 									  title="<?= $this->getApplicationName($item) ?>">
 								</span>
@@ -108,7 +108,7 @@ $i         = 0;
 						</div>
 
 						<?php if ($item->type === 'plugin'): ?>
-						<div class="font-monospace small mt-1 text-info">
+						<div class="font-monospace mt-1 text-info">
 							<?= $this->escape($item->folder) ?>
 						</div>
 						<?php endif; ?>
