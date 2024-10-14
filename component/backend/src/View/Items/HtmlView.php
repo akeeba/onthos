@@ -279,11 +279,6 @@ class HtmlView extends BaseHtmlView
 		/** @var Toolbar $childBar */
 		$childBar = $dropdown->getChildToolbar();
 
-		$childBar->publish('items.undiscover')
-			->icon('fa fa-eye-slash')
-			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNDISCOVER')
-			->listCheck(true);
-
 		$childBar->publish('items.uninstall')
 			->icon('fa fa-trash-can')
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNINSTALL')

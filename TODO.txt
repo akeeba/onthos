@@ -2,20 +2,6 @@ Issues
 --------------------------------------------------------------------------------
 
 Write the solutions view templates
-    ✔️ CoreForceDisabled
-    ✔️ DisabledUpdateSite
-    ✔️ MissingChildren
-    ✔️ MissingLanguage
-    ✔️ MissingMedia
-    ✔️ MissingTables
-    ✔️ NoScript
-    ✔️ NoXMLManifest
-    ✔️ PartiallyInstalled
-    ✔️ NonCoreLocked
-    ✔️ NonCoreProtected
-    ✔️ SchemaOutOfDate
-    ✔️ WrongUpdateSite
-    ✔️ WrongParent
     Leftover
     Orphaned
 
@@ -33,48 +19,8 @@ ObsoleteCore [fa fa-dumpster] debug
 
     Hardcoded list of extensions. Lazy loading plugin, Google CAPTCHA plugins, sample data.
 
-How to go about fixing problems
+Danger Zone (ItemsController)
 --------------------------------------------------------------------------------
-
-✔️ Each issue needs to provide a view template name with information on fixing the issue.
-    public function getDetailsTemplate(): string // e.g. 'issues/myissue', default 'commontemplates/nofixavailable'
-    We pass the $issue and $extension to the view template
-    >> Why a view template and not a lang string? Because some issues may have a more nuanced approach based on additional signals. For example, orphaned extensions with the wrong package ID have a different solution than orphaned extensions with no package ID.
-
-✔️ For issue-specific fixes, we need a handler called by ItemController::fix()
-    public function fix(string $fixAction = 'default'): void
-    index.php?view=com_onthos&task=item.fix&id=123&issue=whatever&action=default
-
-Voodoo Zone (ItemsController)
---------------------------------------------------------------------------------
-
-✔️ Publish
-
-    Enable an extension (enabled=1)
-
-✔️ Unpublish
-
-    Disable an extension (enabled=0)
-
-✔️ Unprotect
-
-    Marks an extension unprotected (third party extension).
-
-✔️ Protect
-
-    Marks an extension protected (core extension).
-
-✔️ Unlock
-
-    Marks an extension unlocked (can be enabled, disabled, updated, and uninstalled)
-
-✔️ Lock
-
-    Marks an extension locked (cannot be enabled, disabled, updated, and uninstalled)
-
-Remove Discovered
-
-    Only for Discovered extensions. Remove the discovered extension's files.
 
 Uninstall
 
