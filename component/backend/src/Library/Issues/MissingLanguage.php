@@ -8,6 +8,7 @@
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
 
@@ -26,6 +27,12 @@ class MissingLanguage extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
+		// If there is no manifest I cannot be sure about languages.
+		if ($this->extension->getManifestPath() === null)
+		{
+			return false;
+		}
+
 		// If no language files have been declared then nothing is missing.
 		$languageFiles = $this->extension->getLanguageFiles();
 
@@ -40,6 +47,17 @@ class MissingLanguage extends AbstractIssue implements IssueInterface
 			false
 		);
 	}
+
+	public function getSeverity(): string
+	{
+		if ($this->extension->isCore())
+		{
+			return LogLevel::DEBUG;
+		}
+
+		return parent::getSeverity();
+	}
+
 
 	/**
 	 * @inheritdoc

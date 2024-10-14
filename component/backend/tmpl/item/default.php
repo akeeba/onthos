@@ -18,6 +18,8 @@ use Joomla\Database\DatabaseInterface;
 
 HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
 
+$issues = $this->item?->issues?->getIssues() ?? [];
+
 $getFilePrintable = function ($value): string {
 	$exists       = @file_exists(JPATH_ROOT . '/' . $value);
 	$reallyExists = $this->item?->fileReallyExists(JPATH_ROOT . '/' . $value);
@@ -365,7 +367,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<?= Text::_('COM_ONTHOS_ITEM_HEAD_ISSUES') ?>
 			</h3>
 
-			<?php foreach ($this->item->issues->getIssues() as $issue): ?>
+			<?php foreach ($issues as $issue): ?>
 			<div class="mt-3 mb-4">
 				<?php
 				$class = match ($issue->getSeverity()) {

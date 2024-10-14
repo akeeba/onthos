@@ -43,7 +43,7 @@ class Package extends Extension
 	 */
 	public function getSubextensionObjects(): array
 	{
-		$this->populateDefaultLanguages();
+		$this->populateSubExtensions();
 
 		return array_filter($this->subExtensions);
 	}
@@ -56,7 +56,7 @@ class Package extends Extension
 	 */
 	public function hasMissingSubextensions(): bool
 	{
-		$this->populateDefaultLanguages();
+		$this->populateSubExtensions();
 
 		return !empty(array_filter($this->subExtensions, fn(?ExtensionInterface $extension) => empty($extension)));
 	}
@@ -69,7 +69,7 @@ class Package extends Extension
 	 */
 	public function hasExtensionsToAdopt(): bool
 	{
-		$this->populateDefaultLanguages();
+		$this->populateSubExtensions();
 
 		$extensions = array_filter($this->subExtensions);
 

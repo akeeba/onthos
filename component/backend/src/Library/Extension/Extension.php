@@ -478,7 +478,7 @@ abstract class Extension implements ExtensionInterface
 				throw new RuntimeException('Invalid XML manifest');
 			}
 		}
-		catch (\Throwable $e)
+		catch (\Throwable)
 		{
 			$this->languageFiles = $this->filterDirectoriesArray($this->languageFiles, true);
 			$this->mediaPaths    = $this->filterDirectoriesArray($this->mediaPaths, true);
