@@ -1,11 +1,5 @@
-✅ Big Warning
---------------------------------------------------------------------------------
-✔️ Add a Big Warning to the top of the Items page. It can be disabled in the Options page.
-
 Refactor items page
 --------------------------------------------------------------------------------
-✔️ Make the package the extension belongs to a link which filters by package
-
 Show Discovered extensions with a magnifying glass icon
 
 Filter by Discovered (state=-1) and Installed (state=0)
@@ -17,64 +11,14 @@ If the tag in the manifest does not correspond to a known language for that appl
 
 Refactor item page
 --------------------------------------------------------------------------------
-✔️ Remove installation status
-✔️ Replace Link to Package with an actual link if the package exists, otherwise display N/A
-✔️ On the state, lock state line also add Protected
-✔️ Remove Optional Elements heading
-✔️ Change Mandatory Elements to Files and Directories
-✔️ Database tables: check if they exist
-✔️ Clean up language strings
-✔️ Show a list of Issues with their descriptions, and their proposed solutions
-    Requires the "How to go about fixing problems" to be implemented first.
 
 Show the canonical update servers, and the current update servers.
 
 Issues
 --------------------------------------------------------------------------------
 
-✔️ WrongParent [fa fa-mitten] error
+Write the solutions view templates
 
-    The extension is claimed by a package, but the extension claims to be owned by a different package.
-
-✔️ Leftover [fa-ghost] critical
-
-    NONE of the files and directories are present.
-
-✔️ PartiallyInstalled [fa-file-circle-question] error
-
-    There are missing files or directories, but at least ONE of them is present.
-
-✔️ NoScript [fa-scroll] info
-
-    The script file is missing
-
-✔️ NoXMLManifest [fa-file-code] critical
-
-    The XML manifest is missing
-
-✔️ MissingTables [fa-database] critical
-
-    Only if the extension defines tables AND there is no #__schemas entry. One or more tables are missing.
-
-    Recommend: reinstall extension
-
-✔️ SchemaOutOfDate [fa-database] warning
-
-    Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the extension.
-
-    Recommend: Database fix (see option=com_installer&view=database)
-
-✔️ WrongUpdateSite [fa-arrow-rotate-left] error
-
-    The manifest has an update site, but the extension has a different update site in the database marked as enabled.
-
-    Recommend: regenerate update sites
-
-✔️ DisabledUpdateSite [fa-ban] error
-
-    The manifest has an update site, it exists in the database, but it's currently disabled.
-
-    Recommend: enable update site
 
 How to go about fixing problems
 --------------------------------------------------------------------------------
@@ -84,9 +28,9 @@ How to go about fixing problems
     We pass the $issue and $extension to the view template
     >> Why a view template and not a lang string? Because some issues may have a more nuanced approach based on additional signals. For example, orphaned extensions with the wrong package ID have a different solution than orphaned extensions with no package ID.
 
-For issue-specific fixes, we need a handler called by ItemController::fix()
+✔️ For issue-specific fixes, we need a handler called by ItemController::fix()
     public function fix(string $fixAction = 'default'): void
-    index.php?view=com_onthos&task=item.fix&id=123&action=default
+    index.php?view=com_onthos&task=item.fix&id=123&issue=whatever&action=default
 
 Voodoo Zone (ItemController)
 --------------------------------------------------------------------------------

@@ -9,10 +9,14 @@ namespace Akeeba\Component\Onthos\Administrator\Controller;
 
 defined('_JEXEC') || die;
 
+use Akeeba\Component\Onthos\Administrator\Model\ItemModel;
 use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Input\Input;
+use RuntimeException;
 
 /**
  * Controller to display or apply actions to a single extension.
@@ -66,5 +70,91 @@ class ItemController extends BaseController
 
 		// Display the view
 		$this->display();
+	}
+
+	/**
+	 * Fix an issue using an issue handler
+	 *
+	 * @return  void
+	 * @throws  \Exception
+	 * @since   1.0.0
+	 */
+	public function fix(): void
+	{
+		$this->checkToken('get');
+
+		$eid    = intval($this->input->getInt('id', 0) ?: 0);
+		$issue  = $this->input->getString('issue', '');
+		$action = $this->input->getString('action', 'default') ?: 'default';
+
+		$redirectUri = $this->getRedirection();
+		$message     = null;
+		$messageType = null;
+
+		try
+		{
+			/** @var ItemModel $model */
+			$model     = $this->getModel();
+			$extension = $model->getExtensionById($eid);
+
+			if (!$extension)
+			{
+				throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_INVALID_ID'), 404);
+			}
+
+			if (!$extension->issues->hasIssue($issue))
+			{
+				throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_NO_SUCH_ISSUE'), 500);
+			}
+
+			$issueObject = $extension->issues->getIssue($issue);
+			$issueObject->fix($action);
+		}
+		catch (\Throwable $e)
+		{
+			$message     = $e->getMessage();
+			$messageType = 'error';
+		}
+		finally
+		{
+			$this->setRedirect($redirectUri, $message, $messageType);
+		}
+	}
+
+	/**
+	 * Get the redirection URL.
+	 *
+	 * A base64-encoded URL is read from the `redirect` URL parameter. If it's missing, invalid, or not an internal URL
+	 * then the HTTP Referer is used. If that's empty, or not an internal URL a hardcoded URL to the component's
+	 * default view is used instead.
+	 *
+	 * @return  string
+	 * @since   1.0.0
+	 */
+	private function getRedirection(): string
+	{
+		$referrer = $this->input->server->getString('HTTP_REFERER');
+
+		if (\is_null($referrer) || !Uri::isInternal($referrer))
+		{
+			$referrer = 'index.php?option=com_onthos';
+		}
+
+		$redirect = $this->input->getBase64('redirect', base64_encode($referrer));
+		try
+		{
+			$redirect = @base64_decode($redirect);
+		}
+		catch (\Exception)
+		{
+			$redirect = $referrer;
+		}
+
+		if (!Uri::isInternal($redirect))
+		{
+			$redirect = $referrer;
+		}
+
+		return $redirect;
 	}
 }
