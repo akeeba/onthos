@@ -1,7 +1,5 @@
 Refactor items page
 --------------------------------------------------------------------------------
-Show Discovered extensions with a magnifying glass icon
-
 Filter by Discovered (state=-1) and Installed (state=0)
 
 Language detection

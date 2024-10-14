@@ -29,7 +29,7 @@ class NonCoreProtected extends AbstractIssue implements IssueInterface
 	{
 		parent::__construct($extension);
 
-		$this->defaultSeverity = LogLevel::CRITICAL;
+		$this->defaultSeverity = LogLevel::NOTICE;
 	}
 
 	/**

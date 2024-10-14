@@ -9,6 +9,7 @@ defined('_JEXEC') || die;
 
 /** @var \Akeeba\Component\Onthos\Administrator\View\Items\HtmlView $item */
 
+use Akeeba\Component\Onthos\Administrator\Helper\OnthosHelper;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -64,6 +65,10 @@ $i         = 0;
 					</th>
 
 					<th scope="col">
+						<?= Text::_('COM_ONTHOS_ITEMS_FIELD_STATE') ?>
+					</th>
+
+					<th scope="col">
 						<?= HTMLHelper::_('searchtools.sort', 'COM_ONTHOS_ITEMS_FIELD_NAME', 'name', $listDirn, $listOrder); ?>
 					</th>
 
@@ -112,6 +117,14 @@ $i         = 0;
 							<?= $this->escape($item->folder) ?>
 						</div>
 						<?php endif; ?>
+					</td>
+
+					<td>
+						<div class="d-flex gap-2 flex-wrap">
+							<?= OnthosHelper::published($item->isDiscovered() ? -1 : $item->enabled, $i, !$item->isDiscovered()) ?>
+							<?= OnthosHelper::protected($item->protected, $i, !$item->isDiscovered()) ?>
+							<?= OnthosHelper::locked($item->locked, $i, !$item->isDiscovered()) ?>
+						</div>
 					</td>
 
 					<td>

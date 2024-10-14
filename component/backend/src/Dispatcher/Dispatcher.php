@@ -9,7 +9,9 @@ namespace Akeeba\Component\Onthos\Administrator\Dispatcher;
 
 defined('_JEXEC') || die;
 
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Dispatcher\ComponentDispatcher;
+use Joomla\CMS\Document\HtmlDocument;
 use Throwable;
 
 class Dispatcher extends ComponentDispatcher
@@ -46,6 +48,8 @@ class Dispatcher extends ComponentDispatcher
 
 			$this->applyViewAndController();
 
+			$this->loadCommonStaticMedia();
+
 			parent::dispatch();
 		}
 		catch (Throwable $e)
@@ -78,4 +82,31 @@ class Dispatcher extends ComponentDispatcher
 		$this->input->set('controller', $controller);
 		$this->input->set('task', $task);
 	}
+
+	/**
+	 * Loads static media files common across all backend views
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function loadCommonStaticMedia(): void
+	{
+		// Make sure we run under a CMS application
+		if (!($this->app instanceof CMSApplication))
+		{
+			return;
+		}
+
+		// Make sure the document is HTML
+		$document = $this->app->getDocument();
+
+		if (!($document instanceof HtmlDocument))
+		{
+			return;
+		}
+
+		$webAssetManager = $document->getWebAssetManager();
+		$webAssetManager->useStyle('com_onthos.backend');
+	}
+
 }

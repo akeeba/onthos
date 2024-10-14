@@ -223,13 +223,8 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			</div>
 			<div class="col">
 				<h4><?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PROTECTED') ?></h4>
-				<?php if ($this->item?->protected && $this->item?->isCore()): ?>
-					<p class="text-succecss hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP') ?>">
-						<span class="fa fa-shield" aria-hidden="true"></span>
-						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED') ?></strong>
-					</p>
-				<?php elseif ($this->item?->protected): ?>
-					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP_NAUGHTY') ?>">
+				<?php if ($this->item?->protected): ?>
+					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP') ?>">
 						<span class="fa fa-shield" aria-hidden="true"></span>
 						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED') ?></strong>
 					</p>
