@@ -12,6 +12,7 @@ defined('_JEXEC') || die;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\DatabaseQuery;
@@ -21,6 +22,7 @@ use Throwable;
 class ItemsModel extends ListModel
 {
 	use GetExtensionByIdTrait;
+	use UninstallTrait;
 
 	/**
 	 * The total number of available extensions to display after applying all filters.
@@ -126,7 +128,9 @@ class ItemsModel extends ListModel
 
 		if ($ordering === 'name')
 		{
-			uasort($this->extensions, fn(ExtensionInterface $a, ExtensionInterface $b) => $a->getName() <=> $b->getName());
+			uasort(
+				$this->extensions, fn(ExtensionInterface $a, ExtensionInterface $b) => $a->getName() <=> $b->getName()
+			);
 
 			if ($direction === 'DESC')
 			{
@@ -261,6 +265,24 @@ class ItemsModel extends ListModel
 		$direction ??= 'asc';
 
 		parent::populateState($ordering, $direction);
+	}
+
+	/**
+	 * Clear out the Joomla Installer's object Singleton cache.
+	 *
+	 * This is VERY important when uninstalling multiple extensions. We have discovered that when uninstalling multiple
+	 * extensions of different types the cached installer may try to use the wrong adapter for subsequent
+	 * uninstallations, causing them to fail.
+	 *
+	 * This was reported to Joomla! back in 2022 and is still unfixed at the time of this writing. No worries. I can
+	 * summon the Dark Arts of PHP REFLECTION!
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function zapInstallerInstance(): void
+	{
+		(new \ReflectionClass(Installer::class))->setStaticPropertyValue('instances', []);
 	}
 
 	/**

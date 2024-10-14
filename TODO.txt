@@ -1,3 +1,12 @@
+Item
+--------------------------------------------------------------------------------
+Show included extensions for Package extensions **instead of** containing package
+
+Language detection
+--------------------------------------------------------------------------------
+
+Ignore languages with tags not corresponding to currently installed language IF AND ONLY IF the files are missing
+
 Issues
 --------------------------------------------------------------------------------
 
@@ -22,13 +31,13 @@ ObsoleteCore [fa fa-dumpster] debug
 Danger Zone (ItemsController)
 --------------------------------------------------------------------------------
 
-Uninstall
+✔️ Uninstall
 
     Marks an extension unprotected and unlocked, then calls Joomla's extensions uninstaller.
 
-No-Script Uninstall
+✔️ No-Script Uninstall
 
-    Removes the installation script and any references to it in the XML manifest, then calls Joomla's extensions uninstaller.
+    Removes the installation script, then calls Joomla's extensions uninstaller.
 
 Forced Uninstall
 

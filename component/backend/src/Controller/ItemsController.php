@@ -10,6 +10,7 @@ namespace Akeeba\Component\Onthos\Administrator\Controller;
 defined('_JEXEC') || die;
 
 use Akeeba\Component\Onthos\Administrator\Model\ItemModel;
+use Exception;
 use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
@@ -53,7 +54,7 @@ class ItemsController extends BaseController
 	 * Default task: display the list of extensions
 	 *
 	 * @return  void
-	 * @throws  \Exception
+	 * @throws  Exception
 	 * @since   1.0.0
 	 */
 	public function default(): void
@@ -125,6 +126,109 @@ class ItemsController extends BaseController
 	public function unlock(): void
 	{
 		$this->setField('locked', 0);
+	}
+
+	/**
+	 * Regular extension uninstallation.
+	 *
+	 * Politeness level: “Please uninstall”.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function uninstall(): void
+	{
+		$this->doUninstall('uninstall');
+	}
+
+	/**
+	 * Remove the installation script, then uninstall.
+	 *
+	 * Politeness level: “I hope you uninstall”.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function noscript(): void
+	{
+		$this->doUninstall('uninstallNoScript');
+	}
+
+	/**
+	 * Forcibly uninstall the extension.
+	 *
+	 * Politeness level: “I wasn't asking”.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function forced(): void
+	{
+		$this->doUninstall('uninstallForced');
+	}
+
+	/**
+	 * Remove the extension record.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function unrecord(): void
+	{
+		$this->doUninstall('removeRecord');
+	}
+
+	/**
+	 * Perform the actual uninstallation.
+	 *
+	 * @param   string  $method  Which uninstallation method should I use?
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function doUninstall(string $method = 'uninstall'): void
+	{
+		$this->checkToken('post');
+
+		$cid           = (array) $this->input->get('cid', [], 'int');
+		$cid           = ArrayHelper::toInteger(array_filter($cid));
+		$redirectUri   = $this->getRedirection();
+		$messageType   = null;
+		$numExtensions = 0;
+
+		try
+		{
+			/** @var ItemModel $model */
+			$model = $this->getModel();
+
+			foreach ($cid as $eid)
+			{
+				$extension = $model->getExtensionById($eid);
+
+				if (!$extension)
+				{
+					throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_INVALID_ID'), 404);
+				}
+
+				$model->{$method}($extension);
+			}
+
+			$message = Text::plural('COM_ONTHOS_ITEMS_LBL_UNINSTALLED_N', $numExtensions);
+		}
+		catch (\Throwable $e)
+		{
+			$message     = $e->getMessage();
+			$messageType = 'error';
+		}
+		finally
+		{
+			$this->setRedirect($redirectUri, $message, $messageType);
+		}
 	}
 
 	/**
