@@ -41,11 +41,13 @@ class NonCoreLocked extends AbstractIssue implements IssueInterface
 		return !$this->extension->isCore() && $this->extension->locked;
 	}
 
+	/**
+	 * @inheritdoc
+	 * @since  1.0.0
+	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO Unlock the extension
-
-		return parent::getDetailsTemplate();
+		return 'issues/unlock';
 	}
 
 

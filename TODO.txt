@@ -15,9 +15,9 @@ Write the solutions view templates
     ✔️ NoScript
     ✔️ NoXMLManifest
     ✔️ PartiallyInstalled
-    Leftover
-    NonCoreLocked
+    ✔️ NonCoreLocked
     NonCoreProtected
+    Leftover
     Orphaned
     SchemaOutOfDate
     WrongParent
