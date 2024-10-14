@@ -57,6 +57,12 @@ Issues
 
     Recommend: reinstall extension
 
+✔️ SchemaOutOfDate [fa-database] warning
+
+    Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the extension.
+
+    Recommend: Database fix (see option=com_installer&view=database)
+
 NoUpdateSite [fa-arrows-rotate] critical
 
     The manifest has an update site, but it is currently missing in the database.
@@ -74,12 +80,6 @@ DisabledUpdateSite [fa-ban] error
     The manifest has an update site, it exists in the database, but it's currently disabled.
 
     Recommend: enable update site
-
-SchemaOutOfDate [fa-database] warning
-
-    Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the extension.
-
-    Recommend: Database fix (see option=com_installer&view=database)
 
 How to go about fixing problems
 --------------------------------------------------------------------------------

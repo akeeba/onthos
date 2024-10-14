@@ -11,8 +11,6 @@ namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseDriver;
-use Joomla\Database\DatabaseQuery;
-use Joomla\Utilities\ArrayHelper;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
@@ -20,8 +18,6 @@ defined('_JEXEC') || die;
 class MissingTables extends AbstractIssue
 {
 	private static array $allTables;
-
-	private static array $allSchemasExtensions;
 
 	/**
 	 * @inheritdoc
@@ -50,7 +46,7 @@ class MissingTables extends AbstractIssue
 	protected function doTest(): bool
 	{
 		// If the extension has a `#__schemas` entry the SchemaOutOfDate issue is more appropriate.
-		if ($this->hasSchemasEntry())
+		if ($this->extension->hasSchemasEntry())
 		{
 			return false;
 		}
@@ -79,36 +75,4 @@ class MissingTables extends AbstractIssue
 
 		return !empty(array_diff($myTables, self::$allTables));
 	}
-
-	/**
-	 * Does this extension have a `#__schemas` entry?
-	 *
-	 * @return  bool
-	 * @since   1.0.0
-	 */
-	private function hasSchemasEntry(): bool
-	{
-		if (!isset(self::$allSchemasExtensions))
-		{
-			/** @var DatabaseDriver $db */
-			$db = Factory::getContainer()->get('db');
-			/** @var DatabaseQuery $query */
-			$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
-			$query->select($db->quoteName('extension_id'))
-				->from('#__schemas');
-
-			try
-			{
-				self::$allSchemasExtensions = $db->setQuery($query)->loadColumn();
-				self::$allSchemasExtensions = ArrayHelper::toInteger(self::$allSchemasExtensions);
-			}
-			catch (\Throwable)
-			{
-				self::$allSchemasExtensions = [];
-			}
-		}
-
-		return in_array((int) $this->extension->extension_id, self::$allSchemasExtensions, true);
-	}
-
 }

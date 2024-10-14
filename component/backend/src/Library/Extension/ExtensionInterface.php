@@ -166,6 +166,22 @@ interface ExtensionInterface
 	public function getParentPackage(): ?Package;
 
 	/**
+	 * Does the extension have an entry in Joomla's `#__schemas` table?
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
+	public function hasSchemasEntry(): bool;
+
+	/**
+	 * Returns the database schema errors detected by Joomla! (like going into the Maintainance: Database page).
+	 *
+	 * @return  array<array>
+	 * @since   1.0.0
+	 */
+	public function getSchemasErrors(): array;
+
+	/**
 	 * Returns the Issue Manager for this extension.
 	 *
 	 * @return  IssueManager

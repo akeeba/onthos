@@ -14,12 +14,15 @@ use Akeeba\Component\Onthos\Administrator\Library\Issues\IssueManager;
 use InvalidArgumentException;
 use Joomla\CMS\Extension\ExtensionHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Component\Installer\Administrator\Helper\InstallerHelper;
+use Joomla\Component\Installer\Administrator\Model\DatabaseModel;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 use Joomla\Filter\InputFilter;
 use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 use RuntimeException;
 use SimpleXMLElement;
 
@@ -54,6 +57,30 @@ abstract class Extension implements ExtensionInterface
 	use FilesystemOperationsTrait;
 	use TablesHandlingTrait;
 	use LanguageHandlingTrait;
+
+	/**
+	 * The internal cache of created extension objects.
+	 *
+	 * @var   array<self>
+	 * @since 1.0.0
+	 */
+	private static array $createdObjects = [];
+
+	/**
+	 * All extension IDs with a `#__schemas` entry.
+	 *
+	 * @var   array<int>
+	 * @since 1.0.0
+	 */
+	private static array $allSchemasExtensions;
+
+	/**
+	 * All schema errors across all extensions detected by Joomla.
+	 *
+	 * @var   array<array>
+	 * @since 1.0.0
+	 */
+	private static array $schemaErrors;
 
 	/**
 	 * The `#__extensions` table row object
@@ -110,8 +137,6 @@ abstract class Extension implements ExtensionInterface
 	 * @since 1.0.0
 	 */
 	private IssueManager $issueManager;
-
-	private static array $createdObjects = [];
 
 	/**
 	 * @inheritDoc
@@ -321,6 +346,56 @@ abstract class Extension implements ExtensionInterface
 		$this->issueManager = $this->issueManager ?? IssueManager::make($this);
 
 		return $this->issueManager;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	public function hasSchemasEntry(): bool
+	{
+		if (!isset(self::$allSchemasExtensions))
+		{
+			/** @var DatabaseDriver $db */
+			$db = Factory::getContainer()->get('db');
+			/** @var DatabaseQuery $query */
+			$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+			$query->select($db->quoteName('extension_id'))
+				->from('#__schemas');
+
+			try
+			{
+				self::$allSchemasExtensions = $db->setQuery($query)->loadColumn();
+				self::$allSchemasExtensions = ArrayHelper::toInteger(self::$allSchemasExtensions);
+			}
+			catch (\Throwable)
+			{
+				self::$allSchemasExtensions = [];
+			}
+		}
+
+		return in_array((int) $this->extension_id, self::$allSchemasExtensions, true);
+	}
+
+	/**
+	 * @inheritDoc
+	 * @since 1.0.0
+	 */
+	public function getSchemasErrors(): array
+	{
+		if (isset(self::$schemaErrors))
+		{
+			return self::$schemaErrors;
+		}
+
+		/**
+		 * @var MVCFactoryInterface $mvcFactory
+		 * @var DatabaseModel       $model
+		 */
+		$mvcFactory = Factory::getApplication()->bootComponent('com_installer')->getMVCFactory();
+		$model      = $mvcFactory->createModel('Database', 'Administrator', ['ignore_request' => true]);
+
+		return self::$schemaErrors = @$model->getItems();
 	}
 
 	/**
