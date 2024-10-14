@@ -27,6 +27,19 @@
             <option value="1">JENABLED</option>
         </field>
 
+        <!-- Discovered, Installed -->
+        <field
+                name="state"
+                type="list"
+                label="COM_ONTHOS_ITEMS_LBL_DISCOVERED"
+                class="js-select-submit-on-change"
+                header="COM_ONTHOS_ITEMS_FILTER_HEADER_DISCOVERED"
+        >
+            <option value="0">COM_ONTHOS_ITEMS_LBL_INSTALLED</option>
+            <option value="-1">COM_ONTHOS_ITEMS_LBL_DISCOVERED</option>
+        </field>
+
+
         <!-- Protected (theoretically, whether it's a core extension) -->
         <field
                 name="protected"

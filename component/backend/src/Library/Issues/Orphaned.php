@@ -50,6 +50,12 @@ class Orphaned extends AbstractIssue implements IssueInterface
 			return false;
 		}
 
+		// Discovered extensions do not apply
+		if ($this->extension->state == -1)
+		{
+			return false;
+		}
+
 		// If the extension has an update site it's a top-level extension, therefore not an orphan.
 		if (in_array($this->extension->extension_id, UpdateSitesHelper::get()))
 		{

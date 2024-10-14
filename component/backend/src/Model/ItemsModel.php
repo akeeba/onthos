@@ -250,7 +250,7 @@ class ItemsModel extends ListModel
 
 		// Filter: isCore
 		$isCore = $app->getUserStateFromRequest($this->context . 'filter.isCore', 'filter_isCore', '', 'string');
-		$this->setState('filter.isCore', $isCore === '' ? $state : intval($state));
+		$this->setState('filter.isCore', $isCore === '' ? $isCore : intval($isCore));
 
 		// Filter: issues
 		$issues = $app->getUserStateFromRequest($this->context . 'filter.issues', 'filter_issues', '', 'string');
@@ -340,7 +340,7 @@ class ItemsModel extends ListModel
 				->bind(':client_id', $client_id, ParameterType::INTEGER);
 		}
 
-		// Filter: enabled
+		// Filter: enabled and discovered
 		$enabled = $this->getState('filter.enabled', '');
 
 		if ($enabled !== '')
