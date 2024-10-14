@@ -12,10 +12,8 @@ use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseQuery;
-use Joomla\Database\ParameterType;
 use Joomla\Utilities\ArrayHelper;
 use Psr\Log\LogLevel;
-use Throwable;
 
 defined('_JEXEC') || die;
 
@@ -51,11 +49,13 @@ class MissingTables extends AbstractIssue
 	 */
 	protected function doTest(): bool
 	{
+		// If the extension has a `#__schemas` entry the SchemaOutOfDate issue is more appropriate.
 		if ($this->hasSchemasEntry())
 		{
 			return false;
 		}
 
+		// Make sure I do have some tables
 		$myTables = $this->extension->getTables();
 
 		if (empty($myTables))
@@ -63,14 +63,29 @@ class MissingTables extends AbstractIssue
 			return false;
 		}
 
+		// Check is all my tables are present
 		/** @var DatabaseDriver $db */
-		$db = Factory::getContainer()->get('db');
+		$db       = Factory::getContainer()->get('db');
 		$myTables = array_map([$db, 'replacePrefix'], $myTables);
-		self::$allTables ??= $db->getTableList();
+
+		try
+		{
+			self::$allTables ??= $db->getTableList();
+		}
+		catch (\Throwable)
+		{
+			self::$allTables = [];
+		}
 
 		return !empty(array_diff($myTables, self::$allTables));
 	}
 
+	/**
+	 * Does this extension have a `#__schemas` entry?
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
 	private function hasSchemasEntry(): bool
 	{
 		if (!isset(self::$allSchemasExtensions))
@@ -87,7 +102,7 @@ class MissingTables extends AbstractIssue
 				self::$allSchemasExtensions = $db->setQuery($query)->loadColumn();
 				self::$allSchemasExtensions = ArrayHelper::toInteger(self::$allSchemasExtensions);
 			}
-			catch (\Exception $e)
+			catch (\Throwable)
 			{
 				self::$allSchemasExtensions = [];
 			}
