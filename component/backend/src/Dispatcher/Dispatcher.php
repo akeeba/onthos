@@ -20,6 +20,11 @@ class Dispatcher extends ComponentDispatcher
 	{
 		try
 		{
+			if (!$this->app->getIdentity()?->authorise('core.admin'))
+			{
+				throw new \RuntimeException($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 500);
+			}
+
 			// Check the minimum supported PHP version
 			$minPHPVersion = '8.1.0';
 			$softwareName  = 'Onthos';
