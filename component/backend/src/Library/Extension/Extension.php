@@ -60,17 +60,6 @@ abstract class Extension implements ExtensionInterface
 	use LanguageHandlingTrait;
 
 	/**
-	 * Hardcoded list of extensions Joomla! does not know are its own 🤦🏽
-	 *
-	 * @var   array<array>
-	 * @since 1.0.0
-	 */
-	const JOOMLA_FORGOTTEN_EXTENSIONS = [
-		// type, element, client_id, folder
-		['plugin', 'recaptcha_invisible', '0', 'captcha']
-	];
-
-	/**
 	 * The internal cache of created extension objects.
 	 *
 	 * @var   array<self>
@@ -327,12 +316,6 @@ abstract class Extension implements ExtensionInterface
 	 */
 	final public function isCore(): bool
 	{
-		// Work around Joomla! not knowing some of its own extensions 🤡
-		if (\in_array([$this->type, $this->element, $this->client_id, $this->folder], self::JOOMLA_FORGOTTEN_EXTENSIONS))
-		{
-			return true;
-		}
-
 		return ExtensionHelper::checkIfCoreExtension($this->type, $this->element, $this->client_id, $this->folder);
 	}
 
