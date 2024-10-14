@@ -182,6 +182,22 @@ interface ExtensionInterface
 	public function getSchemasErrors(): array;
 
 	/**
+	 * Returns the update servers of the extension, as defined in its XML manifest.
+	 *
+	 * @return  array<string>
+	 * @since   1.0.0
+	 */
+	public function getCanonicalUpdateServers(): array;
+
+	/**
+	 * Returns the update sites currently configured for this extension in the database.
+	 *
+	 * @return  array<object>
+	 * @since   1.0.0
+	 */
+	public function getUpdateSites(): array;
+
+	/**
 	 * Returns the Issue Manager for this extension.
 	 *
 	 * @return  IssueManager

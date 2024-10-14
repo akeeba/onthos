@@ -63,15 +63,9 @@ Issues
 
     Recommend: Database fix (see option=com_installer&view=database)
 
-NoUpdateSite [fa-arrows-rotate] critical
+✔️ WrongUpdateSite [fa-arrow-rotate-left] error
 
-    The manifest has an update site, but it is currently missing in the database.
-
-    Recommend: regenerate update sites
-
-WrongUpdateSite [fa-arrow-rotate-left] notice
-
-    The manifest has an update site, but the extension has a different update site in the database.
+    The manifest has an update site, but the extension has a different update site in the database marked as enabled.
 
     Recommend: regenerate update sites
 

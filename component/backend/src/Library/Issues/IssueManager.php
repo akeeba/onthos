@@ -59,6 +59,7 @@ final class IssueManager
 			MissingTables::class,
 			MissingChildren::class,
 			NonCoreProtected::class,
+			WrongUpdateSite::class,
 			Orphaned::class,
 			SchemaOutOfDate::class,
 			WrongParent::class,
