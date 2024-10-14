@@ -51,9 +51,11 @@ Issues
 
     The XML manifest is missing
 
-MissingTables [fa-database] critical
+✔️ MissingTables [fa-database] critical
 
-    Only if the extension defines tables. One or more tables are missing.
+    Only if the extension defines tables AND there is no #__schemas entry. One or more tables are missing.
+
+    Recommend: reinstall extension
 
 NoUpdateSite [fa-arrows-rotate] critical
 
@@ -73,7 +75,7 @@ DisabledUpdateSite [fa-ban] error
 
     Recommend: enable update site
 
-SchemaOutOfDate [fa-table-list] warning
+SchemaOutOfDate [fa-database] warning
 
     Only if there is a corresponding #__schemas entry. Joomla! reports one or more database schema issues for the extension.
 

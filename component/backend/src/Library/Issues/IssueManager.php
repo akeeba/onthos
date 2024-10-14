@@ -56,6 +56,7 @@ final class IssueManager
 			CoreForceDisabled::class,
 			Leftover::class,
 			PartiallyInstalled::class,
+			MissingTables::class,
 			MissingChildren::class,
 			NonCoreProtected::class,
 			Orphaned::class,
