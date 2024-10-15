@@ -93,6 +93,7 @@
             <option value="package">COM_INSTALLER_TYPE_PACKAGE</option>
             <option value="plugin">COM_INSTALLER_TYPE_PLUGIN</option>
             <option value="template">COM_INSTALLER_TYPE_TEMPLATE</option>
+            <option value="language">COM_INSTALLER_TYPE_LANGUAGE</option>
         </field>
 
         <!-- Folder -->
