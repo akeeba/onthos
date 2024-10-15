@@ -9,6 +9,7 @@ defined('_JEXEC') || die;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Akeeba\Component\Onthos\Administrator\Library\Issues\IssueInterface;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 /**
@@ -22,7 +23,14 @@ use Joomla\CMS\Language\Text;
 		<?= Text::_('COM_ONTHOS_ISSUES_FIX_REINSTALL_CORE') ?>
 	</p>
 
-	<!-- TODO Link to Joomla! Update -->
+	<form action="index.php?option=com_joomlaupdate&task=update.purge" method="post">
+		<?= HTMLHelper::_('form.token'); ?>
+		<p>
+			<button type="submit" class="btn btn-primary">
+				<?= Text::_('COM_ONTHOS_ISSUES_FIX_JOOMLAUPDATE'); ?>
+			</button>
+		</p>
+	</form>
 
 <?php else: ?>
 	<p>
