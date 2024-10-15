@@ -8,6 +8,7 @@
 namespace Akeeba\Component\Onthos\Administrator\Library\Issues;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Package;
 use Psr\Log\LogLevel;
 
 defined('_JEXEC') || die;
@@ -42,6 +43,12 @@ class Leftover extends AbstractIssue implements IssueInterface
 		if ($this->extension->isDiscovered())
 		{
 			return false;
+		}
+
+		// A package's leftover status depends entirely on the presence of its subextensions
+		if ($this->extension instanceof Package)
+		{
+			return count($this->extension->getSubextensionObjects()) == 0;
 		}
 
 		$dirs  = $this->extension->getDirectories();
