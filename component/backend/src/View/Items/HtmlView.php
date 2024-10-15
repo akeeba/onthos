@@ -279,8 +279,13 @@ class HtmlView extends BaseHtmlView
 		/** @var Toolbar $childBar */
 		$childBar = $dropdown->getChildToolbar();
 
-		$childBar->publish('items.uninstall')
+		$childBar->publish('items.juninstall')
 			->icon('fa fa-trash-can')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_STANDARDUNINSTALL')
+			->listCheck(true);
+
+		$childBar->publish('items.uninstall')
+			->icon('fa fa-hammer')
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNINSTALL')
 			->listCheck(true);
 
@@ -293,12 +298,6 @@ class HtmlView extends BaseHtmlView
 			->icon('fa fa-skull-crossbones')
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_FORCED')
 			->listCheck(true);
-
-		$childBar->publish('items.unrecord')
-			->icon('fa fa-eraser')
-			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNRECORD')
-			->listCheck(true);
-
 
 		ToolbarHelper::preferences('com_onthos');
 

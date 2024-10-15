@@ -129,9 +129,19 @@ class ItemsController extends BaseController
 	}
 
 	/**
-	 * Regular extension uninstallation.
+	 * Regular Joomla! extension uninstallation.
 	 *
-	 * Politeness level: “Please uninstall”.
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function juninstall(): void
+	{
+		$this->doUninstall('joomlaUninstall');
+	}
+
+	/**
+	 * Unprotect and Uninstall.
 	 *
 	 * @return  void
 	 * @throws  Exception
@@ -143,9 +153,7 @@ class ItemsController extends BaseController
 	}
 
 	/**
-	 * Remove the installation script, then uninstall.
-	 *
-	 * Politeness level: “I hope you uninstall”.
+	 * Remove Script and Uninstall.
 	 *
 	 * @return  void
 	 * @throws  Exception
@@ -157,9 +165,7 @@ class ItemsController extends BaseController
 	}
 
 	/**
-	 * Forcibly uninstall the extension.
-	 *
-	 * Politeness level: “I wasn't asking”.
+	 * Forced Uninstall.
 	 *
 	 * @return  void
 	 * @throws  Exception
@@ -168,18 +174,6 @@ class ItemsController extends BaseController
 	public function forced(): void
 	{
 		$this->doUninstall('uninstallForced');
-	}
-
-	/**
-	 * Remove the extension record.
-	 *
-	 * @return  void
-	 * @throws  Exception
-	 * @since   1.0.0
-	 */
-	public function unrecord(): void
-	{
-		$this->doUninstall('removeRecord');
 	}
 
 	/**

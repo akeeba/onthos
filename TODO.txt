@@ -20,6 +20,12 @@ Discovered [fa fa-magnifying-glass] debug
 
     Solution: Either install the extension from Joomla's Discover page, or remove it.
 
+InvalidChildren [fa fa-children] info
+
+    Only for packages. One or more extensions assigned to package that the package claims is not its own.
+
+    Solution: orphan each extension
+
 ObsoleteCore [fa fa-dumpster] debug
 
     This extension used to be shipped with Joomla, but not anymore.

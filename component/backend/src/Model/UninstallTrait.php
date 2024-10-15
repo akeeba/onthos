@@ -31,9 +31,37 @@ defined('_JEXEC') || die;
 trait UninstallTrait
 {
 	/**
-	 * Standard extension uninstallation.
+	 * Regular Joomla! extension uninstallation.
 	 *
-	 * Politeness level: “Please uninstall”.
+	 * @param   ExtensionInterface  $extension
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	public function joomlaUninstall(ExtensionInterface $extension): void
+	{
+		/**
+		 * @var CMSApplication      $app
+		 * @var MVCFactoryInterface $factory
+		 * @var ManageModel         $model
+		 */
+		$app     = Factory::getApplication();
+		$factory = $app->bootComponent('com_installer')->getMVCFactory();
+		$model   = $factory->createModel('Manage', 'Administrator', ['ignore_request' => true]);
+
+		try
+		{
+			$model->remove([$extension->extension_id]);
+		}
+		finally
+		{
+			$this->zapInstallerInstance();
+		}
+	}
+
+	/**
+	 * Unprotect and Uninstall.
 	 *
 	 * Unprotects and unlocks the extension before trying to uninstall it. It will work with most extensions.
 	 *
@@ -70,9 +98,7 @@ trait UninstallTrait
 	}
 
 	/**
-	 * Extension uninstallation ignoring the script.
-	 *
-	 * Politeness level: “I hope you uninstall”.
+	 * Remove Script and Uninstall.
 	 *
 	 * First, it removes the script. Then, it unprotects and unlocks the extension before trying to uninstall it. This
 	 * is designed to work with leftover installed extensions whose script is no longer compatible with the current
@@ -98,9 +124,7 @@ trait UninstallTrait
 	}
 
 	/**
-	 * Forced Extension uninstallation.
-	 *
-	 * Politeness level: “I wasn't asking”.
+	 * Forced Uninstall.
 	 *
 	 * 🚨 DANGER! 🚨 This is the very definition of EXTREMELY DANGEROUS. It should be your last resort, and only ever
 	 * used after taking a backup, testing it works, and keeping three copies of it outside your site.
