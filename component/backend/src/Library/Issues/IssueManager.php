@@ -192,5 +192,11 @@ final class IssueManager
 				$this->issues[] = $issue;
 			}
 		}
+
+		// If we have both Leftover and Orphaned then we only keep Leftover.
+		if ($this->hasIssue('leftover') && $this->hasIssue('orphaned'))
+		{
+			$this->issues = array_filter($this->issues, fn(IssueInterface $issue): bool => !$issue instanceof Orphaned);
+		}
 	}
 }
