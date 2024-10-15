@@ -36,7 +36,8 @@ class Package extends Extension
 	/**
 	 * Get all subextensions, including those not installed, with metadata.
 	 *
-	 * @return  array<object{type: null|string, element: string, folder: null|string, client_id: null|int, extension: null|ExtensionInterface, installed: bool}>
+	 * @return  array<object{type: null|string, element: string, folder: null|string, client_id: null|int, extension:
+	 *                             null|ExtensionInterface, installed: bool}>
 	 * @since   1.0.0
 	 */
 	public function getSubextensionsWithMeta(): array
@@ -202,11 +203,14 @@ class Package extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf(
-					"%s/language/%s/%s",
-					JPATH_SITE,
-					$tag,
-					basename($relativePath)
+				$this->addAlternativeLanguageFiles(
+					'site',
+					sprintf(
+						"%s/language/%s/%s",
+						JPATH_SITE,
+						$tag,
+						basename($relativePath)
+					)
 				);
 			}
 		}

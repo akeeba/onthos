@@ -91,6 +91,7 @@ class Template extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					[0 => 'site', 1 => 'administrator'][$this->client_id] ?? 'site',
 					sprintf("%s/language/%s/%s", $basePath, $tag, basename($relativePath)),
 					sprintf(
 						"%s/%s/%s%s",

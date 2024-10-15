@@ -100,6 +100,7 @@ class Module extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					[0 => 'site', 1 => 'administrator'][$this->client_id] ?? 'site',
 					sprintf(
 						"%s/language/%s/%s",
 						$baseDir,

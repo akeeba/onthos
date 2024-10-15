@@ -133,6 +133,7 @@ class Component extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					'administrator',
 					sprintf(
 						"%s/language/%s/%s", JPATH_ADMINISTRATOR, $tag, basename($relativePath)
 					),
@@ -159,6 +160,7 @@ class Component extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					'api',
 					sprintf("%s/language/%s/%s", JPATH_API, $tag, basename($relativePath)),
 					sprintf(
 						"%s/components/%s/%s%s",
@@ -183,6 +185,7 @@ class Component extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					'site',
 					sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath)),
 					sprintf(
 						"%s/components/%s/%s%s",

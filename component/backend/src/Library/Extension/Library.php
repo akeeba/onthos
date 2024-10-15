@@ -105,6 +105,7 @@ class Library extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					'site',
 					sprintf(
 						"%s/language/%s/%s",
 						JPATH_ROOT,

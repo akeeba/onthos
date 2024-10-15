@@ -95,6 +95,7 @@ class Plugin extends Extension
 				$relativePath = (string) $node;
 
 				$this->addAlternativeLanguageFiles(
+					'administrator',
 					sprintf(
 						"%s/language/%s/%s",
 						JPATH_ADMINISTRATOR,

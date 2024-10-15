@@ -57,7 +57,10 @@ class File extends Extension
 				$tag          = $this->getXMLAttribute($node, 'tag', 'en-GB');
 				$relativePath = (string) $node;
 
-				$this->languageFiles[] = sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath));
+				$this->addAlternativeLanguageFiles(
+					'site',
+					sprintf("%s/language/%s/%s", JPATH_ROOT, $tag, basename($relativePath))
+				);
 			}
 		}
 	}

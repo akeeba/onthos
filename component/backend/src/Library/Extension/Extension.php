@@ -809,8 +809,19 @@ abstract class Extension implements ExtensionInterface
 	 * @return  void
 	 * @since   1.0.0
 	 */
-	final protected function addAlternativeLanguageFiles(string ...$files): void
+	final protected function addAlternativeLanguageFiles(string $client, string ...$files): void
 	{
+		// Automatically remove language files for not installed languages (these files are NOT copied on installation)
+		$languages = $this->getKnownLanguagesByClient($client);
+		$files     = array_filter(
+			$files,
+			fn($file) => array_reduce(
+				$languages,
+				fn(bool $carry, string $language) => $carry || str_contains($file, '/' . $language . '/'),
+				false
+			)
+		);
+
 		$existingFiles = array_filter($files, fn($file) => @is_file($file));
 
 		if (empty($existingFiles))

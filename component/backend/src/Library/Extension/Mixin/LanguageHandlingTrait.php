@@ -17,12 +17,20 @@ defined('_JEXEC') || die;
 trait LanguageHandlingTrait
 {
 	/**
-	 * The known languages installed on the site (front- and back-end)
+	 * The known languages installed on the site (frontend, backend, and the API application)
 	 *
 	 * @var   array
 	 * @since 1.0.0
 	 */
-	private static array $knownLanguages = [];
+	private static array $knownLanguages;
+
+	/**
+	 * The known languages installed on the site, keyed by application area
+	 *
+	 * @var   array
+	 * @since 1.0.0
+	 */
+	private static array $knownLanguagesByClient;
 
 	/**
 	 * Possible language files.
@@ -107,48 +115,85 @@ trait LanguageHandlingTrait
 	/**
 	 * Returns, and optionally populates, the known installed languages on the site.
 	 *
-	 * This returns front- and backend languages. It does NOT return the `overrides` pseudo-tag used by Joomla's
-	 * language override feature.
+	 * This returns frontend, backend and API languages. It does NOT return the `overrides` pseudo-tag used by
+	 * Joomla's language override feature.
 	 *
 	 * @return  array
 	 * @since   1.0.0
 	 */
 	protected function getKnownLanguages(): array
 	{
-		return self::$knownLanguages = self::$knownLanguages
-			?: (function () {
-				$baseDirs = [JPATH_ADMINISTRATOR, JPATH_ROOT, JPATH_API, JPATH_BASE, JPATH_PUBLIC];
-				$baseDirs = array_unique($baseDirs);
-				$result   = [];
+		return $this->getKnownLanguagesByClient();
+	}
 
-				foreach ($baseDirs as $baseDir)
+	/**
+	 * Returns, and optionally populates, the known installed languages on the site for a specific client.
+	 *
+	 * @param   string  $client  The application client: all, administrator, api, site
+	 *
+	 * @return  array
+	 * @since   1.0.0
+	 */
+	protected function getKnownLanguagesByClient(string $client = 'all'): array
+	{
+		if (!isset(self::$knownLanguages) || !isset(self::$knownLanguagesByClient))
+		{
+			self::$knownLanguages         = [];
+			self::$knownLanguagesByClient = [];
+
+			$baseDirs = [JPATH_ADMINISTRATOR, JPATH_ROOT, JPATH_API, JPATH_BASE, JPATH_PUBLIC];
+			$baseDirs = array_unique($baseDirs);
+			$result   = [];
+
+			foreach ($baseDirs as $baseDir)
+			{
+				$path = $baseDir . DIRECTORY_SEPARATOR . 'language';
+
+				if (!@is_dir($path))
 				{
-					$path = $baseDir . DIRECTORY_SEPARATOR . 'language';
+					continue;
+				}
 
-					if (!@is_dir($path))
+				/** @var DirectoryInterface $file */
+				foreach (new \DirectoryIterator($path) as $file)
+				{
+					if (!$file->isDir() || $file->isDot())
 					{
 						continue;
 					}
 
-					/** @var DirectoryInterface $file */
-					foreach (new \DirectoryIterator($path) as $file)
+					if ($file->getFilename() === 'overrides')
 					{
-						if (!$file->isDir() || $file->isDot())
-						{
-							continue;
-						}
-
-						if ($file->getFilename() === 'overrides')
-						{
-							continue;
-						}
-
-						$result[] = $file->getFilename();
+						continue;
 					}
-				}
 
-				return array_unique($result);
-			})();
+					self::$knownLanguages[] = $file->getFilename();
+
+					$key                                = match ($baseDir)
+					{
+						JPATH_ADMINISTRATOR => 'administrator',
+						JPATH_API => 'api',
+						default => 'site'
+					};
+					self::$knownLanguagesByClient[$key][] = $file->getFilename();
+				}
+			}
+
+			self::$knownLanguages                          = array_unique(self::$knownLanguages);
+			self::$knownLanguagesByClient['administrator'] = array_unique(
+				self::$knownLanguagesByClient['administrator']
+			);
+			self::$knownLanguagesByClient['api']           = array_unique(self::$knownLanguagesByClient['api']);
+			self::$knownLanguagesByClient['site']          = array_unique(self::$knownLanguagesByClient['site']);
+		}
+
+		return match ($client)
+		{
+			'all' => self::$knownLanguages,
+			'administrator' => self::$knownLanguagesByClient['administrator'],
+			'api' => self::$knownLanguagesByClient['api'],
+			'site' => self::$knownLanguagesByClient['site'],
+		};
 	}
 
 }
