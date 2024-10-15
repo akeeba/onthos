@@ -9,11 +9,14 @@ namespace Akeeba\Component\Onthos\Administrator\Model;
 
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Package;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\Component\Installer\Administrator\Model\ManageModel;
+use Joomla\Database\DatabaseDriver;
+use Throwable;
 
 defined('_JEXEC') || die;
 
@@ -110,8 +113,42 @@ trait UninstallTrait
 	 */
 	public function uninstallForced(ExtensionInterface $extension): void
 	{
-		// TODO
-		throw new \RuntimeException('This uninstallation method is not yet implemented.');
+		// Packages are special. We first need to remove their contained extensions, then the package itself.
+		if ($extension instanceof Package)
+		{
+			foreach ($extension->getSubextensionObjects() as $subExtension)
+			{
+				$this->uninstallForced($subExtension);
+			}
+		}
+
+		// Remove database tables
+		$this->forcedUninstallDatabaseTables($extension);
+
+		// Remove media files
+		$this->forcedUninstallMediaFiles($extension);
+
+		// Remove language files
+		$this->forcedUninstallLanguageFiles($extension);
+
+		// Remove extension files and directories
+		$this->forcedUninstallFiles($extension);
+		$this->forcedUninstallDirectories($extension);
+
+		// Remove script file
+		if ($extension->getScriptPath())
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $extension->getScriptPath());
+		}
+
+		// Remove the manifest
+		if ($extension->getManifestPath())
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $extension->getManifestPath());
+		}
+
+		// Remove the extensions table record
+		$this->removeRecord($extension);
 	}
 
 	/**
@@ -133,6 +170,151 @@ trait UninstallTrait
 	{
 		// TODO
 		throw new \RuntimeException('This uninstallation method is not yet implemented.');
+	}
+
+	/**
+	 * Remove an extension's files.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension we are working with.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function forcedUninstallFiles(ExtensionInterface $extension): void
+	{
+		$extensionFiles = $extension->getFiles();
+
+		if (empty($extensionFiles))
+		{
+			return;
+		}
+
+		foreach ($extensionFiles as $extensionFile)
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $extensionFile);
+		}
+	}
+
+	/**
+	 * Remove an extension's directories.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension we are working with.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function forcedUninstallDirectories(ExtensionInterface $extension): void
+	{
+		$extensionDirs = $extension->getFiles();
+
+		if (empty($extensionDirs))
+		{
+			return;
+		}
+
+		foreach ($extensionDirs as $extensionDir)
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $extensionDir);
+		}
+	}
+
+	/**
+	 * Remove an extension's language files.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension we are working with.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function forcedUninstallLanguageFiles(ExtensionInterface $extension): void
+	{
+		$languageFiles = $extension->getLanguageFiles();
+
+		if (empty($languageFiles))
+		{
+			return;
+		}
+
+		foreach ($languageFiles as $languageFile)
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $languageFile);
+		}
+	}
+
+	/**
+	 * Remove an extension's media files.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension we are working with.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function forcedUninstallMediaFiles(ExtensionInterface $extension): void
+	{
+		$mediaPaths = $extension->getMediaPaths();
+
+		if (empty($mediaPaths))
+		{
+			return;
+		}
+
+		foreach ($mediaPaths as $mediaPath)
+		{
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $mediaPath);
+		}
+	}
+
+	/**
+	 * Uninstalls an extension's database tables.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension we are working with.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function forcedUninstallDatabaseTables(ExtensionInterface $extension): void
+	{
+		$tables = $extension->getTables();
+
+		if (empty($tables))
+		{
+			return;
+		}
+
+		/** @var DatabaseDriver $db */
+		$db        = $this->getDatabase();
+		$dropTable = match ($db->getServerType())
+		{
+			'mysql' => function (string $tableName) use ($db) {
+				try
+				{
+					$db->setQuery('SET FOREIGN_KEY_CHECKS = 0;')->execute();
+					$db->dropTable($tableName, true);
+				}
+				catch (Throwable)
+				{
+					// We can swallow any errors.
+				}
+				finally
+				{
+					$db->setQuery('SET FOREIGN_KEY_CHECKS = 1;')->execute();
+				}
+			},
+			'postgresql' => function (string $tableName) use ($db) {
+				$query = 'DROP TABLE IF EXISTS ' . $db->quoteName($tableName) . ' CASCADE';
+				$db->setQuery($query)->execute();
+			},
+			default => function (string $tableName) use ($db) {
+				throw new \RuntimeException(
+					Text::sprintf('COM_ONTHOS_ITEM_ERR_UNSUPPORTED_DB_SERVER', $db->getServerType())
+				);
+			}
+		};
+
+		foreach ($tables as $table)
+		{
+			$dropTable($table);
+		}
 	}
 
 	/**
