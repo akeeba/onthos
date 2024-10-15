@@ -34,6 +34,39 @@ class Package extends Extension
 	private array $subExtensions;
 
 	/**
+	 * Get all subextensions, including those not installed, with metadata.
+	 *
+	 * @return  array<object{type: null|string, element: string, folder: null|string, client_id: null|int, extension: null|ExtensionInterface, installed: bool}>
+	 * @since   1.0.0
+	 */
+	public function getSubextensionsWithMeta(): array
+	{
+		$this->populateSubExtensions();
+
+		if (empty($this->subExtensions))
+		{
+			return [];
+		}
+
+		$ret = [];
+
+		for ($i = 0; $i < count($this->subExtensions); $i++)
+		{
+			$o            = (object) [
+				'type'      => $this->subExtensionCriteria[$i][0],
+				'element'   => $this->subExtensionCriteria[$i][1],
+				'folder'    => $this->subExtensionCriteria[$i][2],
+				'client_id' => $this->subExtensionCriteria[$i][3],
+			];
+			$o->extension = $this->subExtensions[$i];
+			$o->installed = !empty($o->extension);
+			$ret[]        = $o;
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Gets the subextensions of a package.
 	 *
 	 * This can be used to re-adopt orphaned extensions without having to re-install the package they came with.
@@ -81,17 +114,6 @@ class Package extends Extension
 	}
 
 	/**
-	 * Utility method to populate the package's sub-extension objects.
-	 *
-	 * @return  void
-	 * @since   1.0.0
-	 */
-	private function populateSubExtensions(): void
-	{
-		$this->subExtensions ??= array_map([$this, 'criteriaToExtension'], $this->subExtensionCriteria);
-	}
-
-	/**
 	 * @inheritDoc
 	 * @since 1.0.0
 	 */
@@ -99,7 +121,7 @@ class Package extends Extension
 	{
 		$this->subExtensionCriteria = [];
 
-		foreach ($xml->xpath('/extension/files/file') as $subExtensionNode)
+		foreach ($xml->xpath('/extension/files/*') as $subExtensionNode)
 		{
 			$element = $this->getXMLAttribute($subExtensionNode, 'id', null);
 
@@ -133,7 +155,6 @@ class Package extends Extension
 
 			$this->subExtensionCriteria[] = [$type, $element, $folder, $client];
 		}
-
 	}
 
 	/**
@@ -209,6 +230,17 @@ class Package extends Extension
 		$bareName = str_starts_with($this->element, 'pkg_') ? substr($this->element, 4) : $this->element;
 
 		return dirname($this->manifestPath) . '/' . $bareName . '/' . $fileName;
+	}
+
+	/**
+	 * Utility method to populate the package's sub-extension objects.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function populateSubExtensions(): void
+	{
+		$this->subExtensions ??= array_map([$this, 'criteriaToExtension'], $this->subExtensionCriteria);
 	}
 
 	/**
