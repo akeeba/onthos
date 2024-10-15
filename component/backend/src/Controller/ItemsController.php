@@ -218,7 +218,7 @@ class ItemsController extends BaseController
 		}
 		catch (\Throwable $e)
 		{
-			$message     = $e->getMessage();
+			$message     = Text::sprintf('COM_ONTHOS_ITEMS_UNINSTALLATION_FAILED', $e->getMessage());
 			$messageType = 'error';
 		}
 		finally
