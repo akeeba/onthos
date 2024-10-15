@@ -47,8 +47,8 @@ class Leftover extends AbstractIssue implements IssueInterface
 		$dirs  = $this->extension->getDirectories();
 		$files = $this->extension->getFiles();
 
-		$existsDirs = empty($dirs)
-		              || array_reduce(
+		$existsDirs = !empty($dirs)
+		              && array_reduce(
 			              $dirs,
 			              fn(bool $carry, string $directory): bool => $carry
 			                                                          || $this->extension->fileReallyExists(
@@ -57,8 +57,8 @@ class Leftover extends AbstractIssue implements IssueInterface
 			              false
 		              );
 
-		$existsFiles = empty($files)
-		               || array_reduce(
+		$existsFiles = !empty($files)
+		               && array_reduce(
 			               $files,
 			               fn(bool $carry, string $file): bool => $carry
 			                                                      || $this->extension->fileReallyExists(

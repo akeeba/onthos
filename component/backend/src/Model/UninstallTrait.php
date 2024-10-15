@@ -205,7 +205,7 @@ trait UninstallTrait
 	 */
 	private function forcedUninstallDirectories(ExtensionInterface $extension): void
 	{
-		$extensionDirs = $extension->getFiles();
+		$extensionDirs = $extension->getDirectories();
 
 		if (empty($extensionDirs))
 		{
@@ -371,6 +371,6 @@ trait UninstallTrait
 		}
 
 		// Finally, delete the folder we started with.
-		return rmdir($fileInfo->getPathname());
+		return rmdir($fileOrDir);
 	}
 }

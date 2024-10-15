@@ -39,7 +39,7 @@ Danger Zone (ItemsController)
 
     Removes the installation script, then calls Joomla's extensions uninstaller.
 
-Forced Uninstall
+✔️ Forced Uninstall
 
     Removes the update sites and TUF metadata, all detected tables (ignoring column relations), files, and directories, then removes the `#__extensions` record. DANGEROUS! MUST BE THE LAST RESORT.
 
