@@ -10,6 +10,7 @@ namespace Akeeba\Component\Onthos\Administrator\Model;
 defined('_JEXEC') || die;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Mixin\FilesystemOperationsTrait;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\Installer;
@@ -23,6 +24,7 @@ class ItemsModel extends ListModel
 {
 	use GetExtensionByIdTrait;
 	use UninstallTrait;
+	use FilesystemOperationsTrait;
 
 	/**
 	 * The total number of available extensions to display after applying all filters.
@@ -265,6 +267,84 @@ class ItemsModel extends ListModel
 		$direction ??= 'asc';
 
 		parent::populateState($ordering, $direction);
+	}
+
+	/**
+	 * Is the string provided one of the known Joomla! core directories?
+	 *
+	 * @param   string  $fileOrDir
+	 *
+	 * @return  bool
+	 * @since   1.0.0
+	 */
+	private function isCoreJoomlaDirectory(string $fileOrDir): bool
+	{
+		static $root;
+		static $coreDirs;
+
+		$coreDirs ??= array_map(
+			fn($x) => $this->normalisePath($x),
+			array_unique(
+				[
+					JPATH_PUBLIC,
+					JPATH_CONFIGURATION,
+					JPATH_ADMINISTRATOR,
+					JPATH_LIBRARIES,
+					JPATH_PLUGINS,
+					JPATH_THEMES,
+					JPATH_CACHE,
+					JPATH_MANIFESTS,
+					JPATH_API,
+					JPATH_CLI,
+					JPATH_ROOT . '/api',
+					JPATH_ROOT . '/cli',
+					JPATH_ROOT . '/components',
+					JPATH_ROOT . '/images',
+					JPATH_ROOT . '/includes',
+					JPATH_ROOT . '/language',
+					JPATH_ROOT . '/layouts',
+					JPATH_ROOT . '/libraries',
+					JPATH_ROOT . '/media',
+					JPATH_ROOT . '/modules',
+					JPATH_ROOT . '/plugins',
+					JPATH_ROOT . '/templates',
+					JPATH_ROOT . '/tmp',
+					JPATH_ADMINISTRATOR . '/cache',
+					JPATH_ADMINISTRATOR . '/components',
+					JPATH_ADMINISTRATOR . '/help',
+					JPATH_ADMINISTRATOR . '/includes',
+					JPATH_ADMINISTRATOR . '/language',
+					JPATH_ADMINISTRATOR . '/logs',
+					JPATH_ADMINISTRATOR . '/manifests',
+					JPATH_ADMINISTRATOR . '/modules',
+					JPATH_ADMINISTRATOR . '/templates',
+				]
+			)
+		);
+		$root     ??= rtrim($this->normalisePath(JPATH_ROOT) . '/');
+
+		// Normalise the path
+		$fileOrDir = rtrim($this->normalisePath($fileOrDir), '/');
+
+		// If it does not exist, or is a file, it's not a core dir.
+		if (!@file_exists($fileOrDir) || !@is_file($fileOrDir))
+		{
+			return false;
+		}
+
+		// If it's the site's root return immediate TRUE. This is to prevent JPATH_ROOT overshooting the next rule.
+		if ($fileOrDir === $root)
+		{
+			return true;
+		}
+
+		// If the path is not under the site's root return immediate FALSE
+		if (!str_starts_with($fileOrDir, $root . '/'))
+		{
+			return false;
+		}
+
+		return in_array($fileOrDir, $coreDirs);
 	}
 
 	/**

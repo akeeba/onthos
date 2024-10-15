@@ -1,7 +1,3 @@
-Item
---------------------------------------------------------------------------------
-Show the Actions and Danger Zone (applying only to the current extension, of course).
-
 Language detection
 --------------------------------------------------------------------------------
 

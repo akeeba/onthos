@@ -687,6 +687,12 @@ trait UninstallTrait
 	 */
 	private function safeRecursiveUnlink(string $fileOrDir): bool
 	{
+		// Make sure we are not removing a core Joomla! directory (trust me, there's a reason!)
+		if ($this->isCoreJoomlaDirectory($fileOrDir))
+		{
+			return true;
+		}
+
 		// Handle symlinks gracefully. Especially important for DIRECTORY symlinks!
 		if (@is_link($fileOrDir))
 		{
