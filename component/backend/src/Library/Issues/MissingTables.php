@@ -49,7 +49,7 @@ class MissingTables extends AbstractIssue
 	 */
 	public function getDetailsTemplate(): string
 	{
-		return 'commontemplates/reinstall';
+		return 'issues/reinstall';
 	}
 
 	/**

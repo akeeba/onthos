@@ -94,7 +94,7 @@ class Orphaned extends AbstractIssue implements IssueInterface
 			// TODO The update site is missing. Rebuild update sites.
 		}
 
-		return 'commontemplates/reinstall';
+		return 'issues/reinstall';
 	}
 
 

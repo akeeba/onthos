@@ -117,7 +117,7 @@ abstract class AbstractIssue implements IssueInterface
 	 */
 	public function getDetailsTemplate(): string
 	{
-		return 'commontemplates/nofixavailable';
+		return 'issues/nofixavailable';
 	}
 
 	/**

@@ -56,6 +56,6 @@ class NoXMLManifest extends AbstractIssue implements IssueInterface
 	 */
 	public function getDetailsTemplate(): string
 	{
-		return 'commontemplates/reinstall';
+		return 'issues/reinstall';
 	}
 }
