@@ -29,3 +29,9 @@ ObsoleteCore [fa fa-dumpster] debug
     Solution: uninstall the extension
 
     Hardcoded list of extensions. Lazy loading plugin, Google CAPTCHA plugins, sample data.
+
+Actions
+--------------------------------------------------------------------------------
+Rebuild backend menu items
+
+    Only for components.

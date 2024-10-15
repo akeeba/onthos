@@ -80,6 +80,14 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 <?= $this->loadAnyTemplate('commontemplates/warning') ?>
 
+<form action="index.php?option=com_onthos" method="post" id="adminForm" name="adminForm">
+	<?= HTMLHelper::_('form.token'); ?>
+	<input type="hidden" name="cid[]" value="<?= $this->item->extension_id ?>">
+	<input type="hidden" name="boxchecked" value="<?= $this->item->extension_id ?>">
+	<input type="hidden" name="task" value="">
+	<input type="hidden" name="redirect" value="<?= base64_encode('index.php?option=com_onthos&view=item&id=' . $this->item->extension_id) ?>">
+</form>
+
 <div class="card">
 	<h2 class="card-header bg-secondary text-white">
 		<?= Text::_('COM_ONTHOS_ITEM_TOP_HEADER') ?> &ndash;

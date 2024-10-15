@@ -12,6 +12,8 @@ defined('_JEXEC') || die;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Akeeba\Component\Onthos\Administrator\Model\ItemModel;
+use Akeeba\Component\Onthos\Administrator\View\ActionsDropdownTrait;
+use Akeeba\Component\Onthos\Administrator\View\DangerZoneDropdownTrait;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseView;
@@ -27,6 +29,8 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
 class HtmlView extends BaseView
 {
 	use ViewLoadAnyTemplateTrait;
+	use ActionsDropdownTrait;
+	use DangerZoneDropdownTrait;
 
 	/**
 	 * The ID of the extension to display.
@@ -87,8 +91,13 @@ class HtmlView extends BaseView
 		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
 
 		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');
-
 		ToolbarHelper::back('JTOOLBAR_BACK', Route::_('index.php?option=com_onthos&view=items', false));
+
+		$this->addActionsDropdownToobarButton(false);
+		$this->addDangerZoneDropdownToobarButton(false);
+
+		ToolbarHelper::preferences('com_onthos');
+
 	}
 
 }

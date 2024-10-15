@@ -210,6 +210,8 @@ class ItemsController extends BaseController
 				}
 
 				$model->{$method}($extension);
+
+				$numExtensions++;
 			}
 
 			$message = Text::plural('COM_ONTHOS_ITEMS_LBL_UNINSTALLED_N', $numExtensions);
