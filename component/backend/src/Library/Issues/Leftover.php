@@ -40,7 +40,8 @@ class Leftover extends AbstractIssue implements IssueInterface
 	 */
 	public function doTest(): bool
 	{
-		if ($this->extension->isDiscovered())
+		// Discovered and Core extensions cannot be Leftover
+		if ($this->extension->isDiscovered() || $this->extension->isCore())
 		{
 			return false;
 		}
