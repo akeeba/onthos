@@ -24,6 +24,7 @@ use Joomla\Component\Installer\Administrator\Model\ManageModel;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
+use SimpleXMLElement;
 use Throwable;
 
 defined('_JEXEC') || die;
@@ -76,6 +77,18 @@ trait UninstallTrait
 		// First, we will unprotect and unlock the extension.
 		$extension->setFieldName('protected', 0);
 		$extension->setFieldName('locked', 0);
+
+		// Remove blockChildUninstall from the package's manifest.
+		if ($extension instanceof Package)
+		{
+			// I am a package; remove my own <blockChildUninstall> tag
+			$this->unblockChildUninstallInPackage($extension);
+		}
+		elseif ($extension->getParentPackage() instanceof Package)
+		{
+			// I belong to a package. Remove the parent package's <blockChildUninstall> tag.
+			$this->unblockChildUninstallInPackage($extension->getParentPackage());
+		}
 
 		// Then, we will call Joomla's ManageModel::remove()
 		/**
@@ -229,6 +242,63 @@ trait UninstallTrait
 		}
 
 		$this->removeExtensionRecord($extension);
+	}
+
+	/**
+	 * Removes the <blockChildUninstall> element from a package.
+	 *
+	 * @param   Package  $package
+	 *
+	 * @return  void
+	 * @throws Exception
+	 * @since   1.0.0
+	 */
+	private function unblockChildUninstallInPackage(Package $package): void
+	{
+		$filePath = $package->getManifestPath();
+
+		if (!@is_file($filePath) || !@is_readable($filePath))
+		{
+			return;
+		}
+
+		$xmlString = @file_get_contents($filePath);
+
+		if ($xmlString === false)
+		{
+			return;
+		}
+
+		$xml          = new SimpleXMLElement($xmlString);
+		$blockElement = $xml->xpath('/extension/blockChildUninstall');
+
+		if (!$blockElement)
+		{
+			return;
+		}
+
+		try
+		{
+			$dom = dom_import_simplexml($xml)->ownerDocument;
+		}
+		catch (Throwable)
+		{
+			return;
+		}
+
+		$nodeToRemove = $dom->getElementsByTagName('blockChildUninstall')->item(0);
+
+		if (!$nodeToRemove)
+		{
+			return;
+		}
+
+		$nodeToRemove->parentNode->removeChild($nodeToRemove);
+
+		$xml       = simplexml_import_dom($dom);
+		$xmlString = $xml->asXML();
+
+		@file_put_contents($filePath, $xmlString);
 	}
 
 	/**
@@ -448,8 +518,8 @@ trait UninstallTrait
 		 * @var DatabaseDriver $db
 		 * @var DatabaseQuery  $query
 		 */
-		$db        = $this->getDatabase();
-		$table     = new \Joomla\CMS\Table\Extension($db, Factory::getApplication()->getDispatcher());
+		$db    = $this->getDatabase();
+		$table = new \Joomla\CMS\Table\Extension($db, Factory::getApplication()->getDispatcher());
 
 		$table->delete($extension->extension_id);
 	}

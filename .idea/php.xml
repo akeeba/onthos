@@ -14,8 +14,6 @@
     <include_path>
       <path value="$PROJECT_DIR$/../../master/joomla5" />
       <path value="/var/www/boot5/configuration.php" />
-      <path value="$PROJECT_DIR$/component/backend/vendor/greenlion/php-sql-parser" />
-      <path value="$PROJECT_DIR$/component/backend/vendor/composer" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
