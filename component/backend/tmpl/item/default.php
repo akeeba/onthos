@@ -10,6 +10,7 @@
  */
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Package;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -159,35 +160,88 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 			<?php endif ?>
 		</div>
 
-		<div class="row row-cols-1 row-cols-md-2">
+		<div class="row row-cols-1 row-cols-md-1">
 			<div class="col">
-				<h4>
-					<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGELINK') ?>
-				</h4>
-				<?php if ($this->item->isCore()): ?>
-					<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE_TOOLTIP') ?>">
-						<span class="fa fa-joomla" aria-hidden="true"></span>
-						<strong>
-							<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
-						</strong>
-					</p>
-				<?php elseif ($this->item->getParentPackage()?->extension_id): ?>
-					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
-						<span class="fa fa-link" aria-hidden="true"></span>
-						<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>"
-						   class="link-info"
-						>
-							<?= $this->escape($this->item->getParentPackage()->getName()) ?>
-						</a>
-						<span class="small muted">
-							(#<?= $this->escape($this->item->getParentPackage()->extension_id) ?>)
-						</span>
-					</p>
+				<?php if (!$this->item instanceof Package): ?>
+					<h4>
+						<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGELINK') ?>
+					</h4>
+					<?php if ($this->item->isCore()): ?>
+						<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE_TOOLTIP') ?>">
+							<span class="fa fa-joomla" aria-hidden="true"></span>
+							<strong>
+								<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
+							</strong>
+						</p>
+					<?php elseif ($this->item->getParentPackage()?->extension_id): ?>
+						<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
+							<span class="fa fa-link" aria-hidden="true"></span>
+							<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>"
+							   class="link-info"
+							>
+								<?= $this->escape($this->item->getParentPackage()->getName()) ?>
+							</a>
+							<span class="small muted">
+								(#<?= $this->escape($this->item->getParentPackage()->extension_id) ?>)
+							</span>
+						</p>
+					<?php else: ?>
+						<p class="text-muted hasTooltip">
+							<span class="fa fa-link-slash" aria-hidden="true"></span>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
+						</p>
+					<?php endif; ?>
 				<?php else: ?>
-					<p class="text-muted hasTooltip">
-						<span class="fa fa-link-slash" aria-hidden="true"></span>
-						<?= Text::_('COM_ONTHOS_ITEM_LBL_NOT_APPLICABLE') ?>
-					</p>
+					<h4>
+						<?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PACKAGECONTENTS') ?>
+					</h4>
+					<?php $subExtensions = $this->item->getSubextensionsWithMeta(); ?>
+					<?php if (empty($subExtensions)): ?>
+						<div class="alert alert-warning" role="alert">
+							<span class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+							<?= Text::_('COM_ONTHOS_ITEM_LBL_NO_PACKAGE_CONTENTS') ?>
+						</div>
+					<?php else: ?>
+						<ul class="list-unstyled">
+						<?php foreach ($subExtensions as $subExtension): ?>
+							<li class="mb-1">
+							<?php if ($subExtension->installed): ?>
+								<span class="fa fa-check-circle fa-fw text-success hasTooltip"
+									  title="<?= Text::_('COM_ONTHOS_ITEMS_LBL_INSTALLED') ?>"
+									  aria-hidden="true"></span>
+								<span class="visually-hidden">
+									<?= Text::_('COM_ONTHOS_ITEMS_LBL_INSTALLED') ?>:
+								</span>
+							<?php else: ?>
+								<span class="fa fa-xmark-circle fa-fw text-danger hasTooltip"
+									  title="<?= Text::_('COM_ONTHOS_ITEMS_LBL_NOTINSTALLED') ?>"
+									  aria-hidden="true"></span>
+								<span class="visually-hidden">
+									<?= Text::_('COM_ONTHOS_ITEMS_LBL_NOTINSTALLED') ?>:
+								</span>
+							<?php endif ?>
+
+							<?php if ($subExtension->client_id !== null && in_array($subExtension->client_id, [0, 1, 2])): ?>
+								<?= Text::_('J' . ([0 => 'site', 1 => 'administrator', 2 => 'api'][$subExtension->client_id])) ?>
+							<?php endif; ?>
+
+							<?php if ($subExtension->folder !== null): ?>
+							<span class="font-monospace"><?= $this->escape($subExtension->folder) ?></span>
+							<?php endif; ?>
+
+							<?= Text::_('COM_INSTALLER_TYPE_' . $subExtension->type) ?>:
+
+							<?php if ($subExtension->installed): ?>
+								<em><?= $subExtension->extension->getName() ?></em>
+							<?php else: ?>
+								<span class="font-monospace">
+									<?= $this->escape($subExtension->element) ?>
+								</span>
+							<?php endif ?>
+							</li>
+						<?php endforeach ?>
+						</ul>
+					<?php endif; ?>
 				<?php endif; ?>
 			</div>
 		</div>
