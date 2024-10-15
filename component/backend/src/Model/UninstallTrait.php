@@ -128,7 +128,11 @@ trait UninstallTrait
 	{
 		$scriptFile = $extension->getScriptPath();
 
-		if (!$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $scriptFile))
+		if (
+			!empty($scriptFile)
+			&& @is_file(JPATH_ROOT . '/' . $scriptFile)
+			&& !$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $scriptFile)
+		)
 		{
 			throw new \RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_CANNOT_DELETE', htmlentities($scriptFile)));
 		}
@@ -187,9 +191,11 @@ trait UninstallTrait
 		}
 
 		// Remove the manifest
-		if ($extension->getManifestPath())
+		$manifestPath = $extension->getManifestPath();
+
+		if (!empty($manifestPath) && @is_file(JPATH_ROOT . '/' . $manifestPath))
 		{
-			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $extension->getManifestPath());
+			$this->safeRecursiveUnlink(JPATH_ROOT . '/' . $manifestPath);
 		}
 
 		// Remove the extensions table record
