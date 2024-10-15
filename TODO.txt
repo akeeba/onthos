@@ -2,6 +2,8 @@ Item
 --------------------------------------------------------------------------------
 Show included extensions for Package extensions **instead of** containing package
 
+Show the Actions and Danger Zone (applying only to the current extension, of course).
+
 Language detection
 --------------------------------------------------------------------------------
 
@@ -27,22 +29,3 @@ ObsoleteCore [fa fa-dumpster] debug
     Solution: uninstall the extension
 
     Hardcoded list of extensions. Lazy loading plugin, Google CAPTCHA plugins, sample data.
-
-Danger Zone (ItemsController)
---------------------------------------------------------------------------------
-
-✔️ Uninstall
-
-    Marks an extension unprotected and unlocked, then calls Joomla's extensions uninstaller.
-
-✔️ No-Script Uninstall
-
-    Removes the installation script, then calls Joomla's extensions uninstaller.
-
-✔️ Forced Uninstall
-
-    Removes the update sites and TUF metadata, all detected tables (ignoring column relations), files, and directories, then removes the `#__extensions` record. DANGEROUS! MUST BE THE LAST RESORT.
-
-Remove Record
-
-    Removes the `#__extensions` record. Only available when NONE of the extension's files and directories is present, including the manifest, script, language, and media files. This is meant to remove leftover records.

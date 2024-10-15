@@ -8,14 +8,22 @@
 namespace Akeeba\Component\Onthos\Administrator\Model;
 
 
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Component;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Library\Extension\Module;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Package;
+use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Factory\MVCFactory;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Component\Fields\Administrator\Table\FieldTable;
+use Joomla\Component\Fields\Administrator\Table\GroupTable;
 use Joomla\Component\Installer\Administrator\Model\ManageModel;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\DatabaseQuery;
+use Joomla\Database\ParameterType;
 use Throwable;
 
 defined('_JEXEC') || die;
@@ -32,7 +40,7 @@ trait UninstallTrait
 	 * @param   ExtensionInterface  $extension
 	 *
 	 * @return  void
-	 * @throws \Exception
+	 * @throws Exception
 	 * @since   1.0.0
 	 */
 	public function uninstall(ExtensionInterface $extension): void
@@ -74,7 +82,7 @@ trait UninstallTrait
 	 * @param   ExtensionInterface  $extension
 	 *
 	 * @return  void
-	 * @throws \Exception
+	 * @throws Exception
 	 * @since   1.0.0
 	 */
 	public function uninstallNoScript(ExtensionInterface $extension): void
@@ -108,7 +116,7 @@ trait UninstallTrait
 	 * @param   ExtensionInterface  $extension
 	 *
 	 * @return  void
-	 * @throws \Exception
+	 * @throws Exception
 	 * @since   1.0.0
 	 */
 	public function uninstallForced(ExtensionInterface $extension): void
@@ -168,8 +176,258 @@ trait UninstallTrait
 	 */
 	public function removeRecord(ExtensionInterface $extension): void
 	{
-		// TODO
-		throw new \RuntimeException('This uninstallation method is not yet implemented.');
+		// Modules: remove all instances of the module
+		if ($extension instanceof Module)
+		{
+			$this->removeModuleInstances($extension);
+		}
+
+		// Component: remove `#__assets` and `#__menu` records.
+		if ($extension instanceof Component)
+		{
+			// Remove field values
+			$this->removeComponentFieldValues($extension);
+
+			// Remove fields
+			$this->removeComponentFields($extension);
+
+			// Remove field groups
+			$this->removeComponentFieldGroups($extension);
+
+			// Remove categories
+			$this->removeComponentCategories($extension);
+
+			// Remove menu records
+			$this->removeComponentMenuRecords($extension);
+
+			// Remove the component's asset
+			$this->removeComponentAsset($extension);
+		}
+
+		$this->removeExtensionRecord($extension);
+	}
+
+	/**
+	 * Removes instances of a given module from the database.
+	 *
+	 * This method identifies and deletes all instances of the module specified by the provided extension object.
+	 *
+	 * @param   Module  $extension  The module extension object containing the criteria for removal.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function removeModuleInstances(Module $extension): void
+	{
+		/**
+		 * @var DatabaseDriver $db
+		 * @var DatabaseQuery  $query
+		 */
+		$db        = $this->getDatabase();
+		$table     = new \Joomla\CMS\Table\Module($db, Factory::getApplication()->getDispatcher());
+		$element   = $extension->element;
+		$client_id = $extension->client_id;
+		$query     = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select($db->quoteName('id'))
+			->from($db->quoteName('#__modules'))
+			->where(
+				[
+					$db->quoteName('module') . ' = :element',
+					$db->quoteName('client_id') . ' = :client_id',
+				]
+			)
+			->bind(':element', $element, ParameterType::STRING)
+			->bind(':client_id', $client_id, ParameterType::INTEGER);
+
+		$moduleIds = $db->setQuery($query)->loadColumn();
+
+		foreach ($moduleIds as $id)
+		{
+			$table->delete($id);
+		}
+	}
+
+	/**
+	 * Removes all field values for fields associated with a specific component.
+	 *
+	 * @param   Component  $extension  The component whose field values need to be removed.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function removeComponentFieldValues(Component $extension): void
+	{
+		$db = $this->getDatabase();
+
+		/**
+		 * @var DatabaseQuery $query
+		 * @var DatabaseQuery $subQuery
+		 */
+		$query    = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$subQuery = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+
+		$subQuery->select('DISTINCT ' . $db->quoteName('id'))
+			->from($db->quoteName('#__fields'))
+			->where($db->quoteName('context') . ' LIKE ' . $db->quote($extension->element . '.%'));
+
+		$query->delete($db->quoteName('#__fields'))
+			->where($db->quoteName('id') . ' IN (' . $subQuery . ')');
+
+		$db->setQuery($query)->execute();
+	}
+
+	/**
+	 * Removes all fields associated with the given component.
+	 *
+	 * @param   Component  $extension  The component whose fields need to be removed.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function removeComponentFields(Component $extension): void
+	{
+		$db    = $this->getDatabase();
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select('DISTINCT ' . $db->quoteName('id'))
+			->from($db->quoteName('#__fields'))
+			->where($db->quoteName('context') . ' LIKE ' . $db->quote($extension->element . '.%'));
+
+		/**
+		 * @var  CMSApplication $app
+		 * @var  MVCFactory     $factory
+		 * @var  FieldTable     $table
+		 */
+		$app      = Factory::getApplication();
+		$factory  = $app->bootComponent('com_fields')->getMVCFactory();
+		$table    = $factory->createTable('Field', 'Administrator');
+		$fieldIds = $db->setQuery($query)->loadColumn() ?: [];
+
+		foreach ($fieldIds as $fieldId)
+		{
+			$table->delete($fieldId);
+		}
+	}
+
+	/**
+	 * Removes all field groups associated with the given component.
+	 *
+	 * @param   Component  $extension  The component whose field groups need to be removed.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function removeComponentFieldGroups(Component $extension): void
+	{
+		$db    = $this->getDatabase();
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select('DISTINCT ' . $db->quoteName('id'))
+			->from($db->quoteName('#__fields_groups'))
+			->where($db->quoteName('context') . ' LIKE ' . $db->quote($extension->element . '.%'));
+
+		/**
+		 * @var  CMSApplication $app
+		 * @var  MVCFactory     $factory
+		 * @var  GroupTable     $table
+		 */
+		$app      = Factory::getApplication();
+		$factory  = $app->bootComponent('com_fields')->getMVCFactory();
+		$table    = $factory->createTable('Group', 'Administrator');
+		$groupIDs = $db->setQuery($query)->loadColumn() ?: [];
+
+		foreach ($groupIDs as $fieldId)
+		{
+			$table->delete($fieldId);
+		}
+	}
+
+	/**
+	 * Removes all categories associated with the specified component extension.
+	 *
+	 * @param   Component  $extension  The component extension whose categories need to be removed.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function removeComponentCategories(Component $extension): void
+	{
+		/** @var DatabaseDriver $db */
+		$db      = $this->getDatabase();
+		$table   = new \Joomla\CMS\Table\Category($db, Factory::getApplication()->getDispatcher());
+		$element = $extension->element;
+		$query   = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select('DISTINCT ' . $db->quoteName('id'))
+			->from($db->quoteName('#__categories'))
+			->where($db->quoteName('extension') . ' = :element')
+			->order($db->quoteName('lft') . ' DESC')
+			->bind(':element', $element, ParameterType::STRING);
+
+		$categoryIDs = $db->setQuery($query)->loadColumn();
+
+		foreach ($categoryIDs as $id)
+		{
+			$table->delete($id);
+		}
+	}
+
+	/**
+	 * Removes all categories associated with the specified component extension.
+	 *
+	 * @param   Component  $extension  The component extension whose categories need to be removed.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function removeComponentMenuRecords(Component $extension): void
+	{
+		/** @var DatabaseDriver $db */
+		$db    = $this->getDatabase();
+		$table = new \Joomla\CMS\Table\Menu($db, Factory::getApplication()->getDispatcher());
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query
+			->select('DISTINCT ' . $db->quoteName('id'))
+			->from($db->quoteName('#__menu'))
+			->where(
+				[
+					$db->quoteName('link') . ' LIKE ' . $db->quote('index.php?option=' . $extension->element . '&%'),
+					$db->quoteName('link') . ' = ' . $db->quote('index.php?option=' . $extension->element),
+				], 'OR'
+			)
+			->order($db->quoteName('lft') . ' DESC');
+
+		$menuItemsIDs = $db->setQuery($query)->loadColumn();
+
+		foreach ($menuItemsIDs as $id)
+		{
+			$table->delete($id);
+		}
+	}
+
+	/**
+	 * Removes the record of the specified extension from the database.
+	 *
+	 * @param   ExtensionInterface  $extension  The extension whose record is to be removed.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 */
+	private function removeExtensionRecord(ExtensionInterface $extension): void
+	{
+		/**
+		 * @var DatabaseDriver $db
+		 * @var DatabaseQuery  $query
+		 */
+		$db        = $this->getDatabase();
+		$table     = new \Joomla\CMS\Table\Extension($db, Factory::getApplication()->getDispatcher());
+
+		$table->delete($extension->extension_id);
 	}
 
 	/**
@@ -281,7 +539,6 @@ trait UninstallTrait
 			return;
 		}
 
-		/** @var DatabaseDriver $db */
 		$db        = $this->getDatabase();
 		$dropTable = match ($db->getServerType())
 		{
@@ -372,5 +629,36 @@ trait UninstallTrait
 
 		// Finally, delete the folder we started with.
 		return rmdir($fileOrDir);
+	}
+
+	/**
+	 * Removes the asset record associated with a given component.
+	 *
+	 * @param   mixed  $extension  The component extension object.
+	 *
+	 * @return  void
+	 * @throws  Exception
+	 * @since   1.0.0
+	 */
+	private function removeComponentAsset(Component $extension): void
+	{
+		/** @var DatabaseDriver $db */
+		$db      = $this->getDatabase();
+		$table   = new \Joomla\CMS\Table\Asset($db, Factory::getApplication()->getDispatcher());
+		$element = $extension->element;
+
+		/** @var DatabaseQuery $query */
+		$query = method_exists($db, 'createQuery') ? $db->createQuery() : $db->getQuery(true);
+		$query->select($db->quoteName('id'))
+			->from($db->quoteName('#__assets'))
+			->where($db->quoteName('name') . ' = :element')
+			->bind(':element', $element, ParameterType::STRING);
+
+		$assetId = $db->setQuery($query)->loadResult() ?: 0;
+
+		if ($assetId > 0)
+		{
+			$table->delete($assetId);
+		}
 	}
 }
