@@ -25,12 +25,16 @@ use Joomla\CMS\Language\Text;
 	<!-- TODO Link to Joomla! Update -->
 
 <?php else: ?>
-<p>
-	<?= Text::_('COM_ONTHOS_ISSUES_FIX_REINSTALL') ?>
+	<p>
+		<?= Text::_('COM_ONTHOS_ISSUES_FIX_REINSTALL') ?>
+	</p>
 	<?php if ($extension->getParentPackage()?->extension_id && !$extension->issues->hasIssue('orphaned') && !$extension->issues->hasIssue('wrongparent')): ?>
-		<?= Text::_('COM_ONTHOS_ISSUES_FIX_UNINSTALL_OPTIONAL_PACKAGE', $extension->getParentPackage()?->getName() ?? '???', $extension->getParentPackage()->extension_id ?? 0) ?>
+		<p>
+			<?= Text::_('COM_ONTHOS_ISSUES_FIX_UNINSTALL_OPTIONAL_PACKAGE', $extension->getParentPackage()?->getName() ?? '???', $extension->getParentPackage()->extension_id ?? 0) ?>
+		</p>
 	<?php else: ?>
-	<?= Text::_('COM_ONTHOS_ISSUES_FIX_UNINSTALL_OPTIONAL') ?>
+		<p>
+		<?= Text::_('COM_ONTHOS_ISSUES_FIX_UNINSTALL_OPTIONAL') ?>
+		</p>
 	<?php endif ?>
-</p>
 <?php endif; ?>
