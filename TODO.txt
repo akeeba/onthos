@@ -10,10 +10,6 @@ Ignore languages with tags not corresponding to currently installed language IF 
 Issues
 --------------------------------------------------------------------------------
 
-Write the solutions view templates
-    Leftover
-    Orphaned
-
 Discovered [fa fa-magnifying-glass] debug
 
     This extension's files exist on your site, but the extension is not installed.

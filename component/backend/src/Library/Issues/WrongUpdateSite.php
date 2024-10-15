@@ -40,9 +40,7 @@ class WrongUpdateSite extends Issues\AbstractIssue
 	 */
 	public function getDetailsTemplate(): string
 	{
-		// TODO Regenerate update sites
-
-		return parent::getDetailsTemplate();
+		return 'issues/rebuild_update_site';
 	}
 
 	/**

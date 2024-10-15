@@ -86,12 +86,12 @@ class Orphaned extends AbstractIssue implements IssueInterface
 
 		if (!empty($this->extension->package_id ?? null))
 		{
-			// TODO The package ID is invalid and cannot be adopted. This is likely a leftover. Uninstall.
+			return 'issues/force_uninstall';
 		}
 
 		if (count($this->extension->getCanonicalUpdateServers()) && !count($this->extension->getUpdateSites()))
 		{
-			// TODO The update site is missing. Rebuild update sites.
+			return 'issues/rebuild_update_site';
 		}
 
 		return 'issues/reinstall';
