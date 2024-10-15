@@ -203,10 +203,9 @@ class Package extends Extension
 				$relativePath = (string) $node;
 
 				$this->languageFiles[] = sprintf(
-					"%s/language/%s/%s%s",
+					"%s/language/%s/%s",
 					JPATH_SITE,
 					$tag,
-					$langFolder,
 					basename($relativePath)
 				);
 			}
