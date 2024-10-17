@@ -15,7 +15,7 @@
 		"ext-dom": "*",
 		"ext-json": "*",
 		"ext-simplexml": "*",
-		"greenlion/php-sql-parser": "^4.6.0",
+		"greenlion/php-sql-parser": "^4.6.0"
 	},
 	"config": {
 		"platform": {
