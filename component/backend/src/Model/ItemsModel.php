@@ -286,7 +286,7 @@ class ItemsModel extends ListModel
 			fn($x) => $this->normalisePath($x),
 			array_unique(
 				[
-					JPATH_PUBLIC,
+					defined('JPATH_PUBLIC') ? JPATH_PUBLIC : JPATH_ROOT,
 					JPATH_CONFIGURATION,
 					JPATH_ADMINISTRATOR,
 					JPATH_LIBRARIES,

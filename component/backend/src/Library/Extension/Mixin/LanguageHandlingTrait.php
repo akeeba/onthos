@@ -141,7 +141,13 @@ trait LanguageHandlingTrait
 			self::$knownLanguages         = [];
 			self::$knownLanguagesByClient = [];
 
-			$baseDirs = [JPATH_ADMINISTRATOR, JPATH_ROOT, JPATH_API, JPATH_BASE, JPATH_PUBLIC];
+			$baseDirs = [
+				JPATH_ADMINISTRATOR,
+				JPATH_ROOT,
+				JPATH_API,
+				JPATH_BASE,
+				defined('JPATH_PUBLIC') ? JPATH_PUBLIC : JPATH_ROOT
+			];
 			$baseDirs = array_unique($baseDirs);
 			$result   = [];
 
