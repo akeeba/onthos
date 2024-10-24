@@ -8,6 +8,7 @@
 defined('_JEXEC') || die;
 
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
 
 if (ComponentHelper::getComponent('com_onthos')->params->get('show_warning', 1) == 0)
 {
@@ -17,15 +18,13 @@ if (ComponentHelper::getComponent('com_onthos')->params->get('show_warning', 1) 
 
 <div class="alert alert-info" role="alert">
 	<h3 class="alert-heading">
-		<span class="fa fa-fw fa-bolt-lightning" aria-hidden="true"></span>
-		With great power comes great responsibility
+		<span class="fa fa-fw fa-bolt" aria-hidden="true"></span>
+		<?= Text::_('COM_ONTHOS_COMMON_GLOBALWARNING_HEAD') ?>
 	</h3>
 	<p>
-		Unlike Joomla! itself, Onthos does not provide any protections against accidentally breaking your site. You are
-		strongly advised to take a backup and keep it off-site, e.g. on your local computer, before applying any action
-		in Onthos.
+		<?= Text::_('COM_ONTHOS_COMMON_GLOBALWARNING_BODY') ?>
 	</p>
 	<p class="text-muted small">
-		This warning can be disabled in the Options page.
+		<?= Text::_('COM_ONTHOS_COMMON_GLOBALWARNING_FOOTER') ?>
 	</p>
 </div>
