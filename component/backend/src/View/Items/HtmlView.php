@@ -14,13 +14,12 @@ use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Akeeba\Component\Onthos\Administrator\Model\ItemsModel;
 use Akeeba\Component\Onthos\Administrator\View\ActionsDropdownTrait;
 use Akeeba\Component\Onthos\Administrator\View\DangerZoneDropdownTrait;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseModel;
 use Joomla\CMS\MVC\View\GenericDataException;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Pagination\Pagination;
-use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\Registry\Registry;
 
@@ -92,7 +91,7 @@ class HtmlView extends BaseHtmlView
 		$model                  = $this->getModel();
 		$this->items            = $model->getItems();
 		$this->pagination       = $model->getPagination();
-		$this->state            = $model->getState();
+		$this->state            = $this->bcStateGetter($model);
 		$this->filterForm       = $model->getFilterForm();
 		$this->activeFilters    = $model->getActiveFilters();
 		$this->isUnreliableCore = array_reduce(
@@ -234,5 +233,27 @@ class HtmlView extends BaseHtmlView
 		ToolbarHelper::preferences('com_onthos');
 
 		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');
+	}
+
+	/**
+	 * Get the state from the model as a Registry object.
+	 *
+	 * This is a backwards compatibility shim to make the extension work on Joomla! 4 despite being written for J! 5+.
+	 *
+	 * @param   BaseModel  $model  The model to get the state from.
+	 *
+	 * @return  Registry
+	 * @since   1.0.0
+	 */
+	private function bcStateGetter(BaseModel $model): Registry
+	{
+		$state = $model->getState();
+
+		if ($state instanceof Registry)
+		{
+			return $state;
+		}
+
+		return new Registry($state);
 	}
 }
