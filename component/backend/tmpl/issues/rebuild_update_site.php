@@ -22,10 +22,9 @@ defined('_JEXEC') || die;
 	<?= Text::_('COM_ONTHOS_ISSUES_FIX_REBUILD_UPDATE_SITE') ?>
 </p>
 
-<form action="index.php?option=com_joomlaupdate&task=update.purge" method="post">
+<form action="index.php?option=com_installer&view=updatesites&task=updatesites.rebuild" method="post">
 	<?= HTMLHelper::_('form.token'); ?>
-	<a href="index.php?option=com_installer&view=updatesites&task=updatesites.rebuild"
-	   class="btn btn-primary">
+	<button type="submit" class="btn btn-primary">
 		<?= Text::_('COM_ONTHOS_ISSUES_LBL_REBUILD_UPDATE_SITE') ?>
-	</a>
+	</button>
 </form>
