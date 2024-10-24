@@ -18,11 +18,6 @@
     <description>COM_ONTHOS_XML_DESCRIPTION</description>
     <namespace path="src">Akeeba\Component\Onthos</namespace>
 
-    <files folder="frontend">
-        <filename>.htaccess</filename>
-        <filename>web.config</filename>
-    </files>
-
     <administration>
         <menu view="items">COM_ONTHOS</menu>
 
@@ -33,10 +28,8 @@
             <folder>src</folder>
             <folder>tmpl</folder>
 
-            <filename>.htaccess</filename>
             <filename>access.xml</filename>
             <filename>config.xml</filename>
-            <filename>web.config</filename>
         </files>
 
         <languages folder="backend/language">

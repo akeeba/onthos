@@ -29,6 +29,7 @@
 		<include name="mod_*.zip" />
 		<include name="plg_*.zip" />
 		<include name="lib_*.zip" />
+		<include name="pkg_*.xml" />
 		<include name="language/**"/>
 		<include name="script.onthos.php" />
 	</fileset>
