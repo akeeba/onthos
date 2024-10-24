@@ -176,7 +176,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					</h4>
 					<?php if ($this->item->isCore()): ?>
 						<p class="text-info hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE_TOOLTIP') ?>">
-							<span class="fa fa-joomla" aria-hidden="true"></span>
+							<span class="fa fab fa-joomla" aria-hidden="true"></span>
 							<strong>
 								<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>
 							</strong>

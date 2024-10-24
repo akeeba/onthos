@@ -130,7 +130,7 @@ $i         = 0;
 					<td>
 						<div class="mb-1 pb-1 border-bottom">
 							<?php if ($item->isCore()): ?>
-							<span class="fa fa-joomla fa-fw me-1 text-secondary hasTooltip" aria-hidden="true"
+							<span class="fa fab fa-joomla fa-fw me-1 text-secondary hasTooltip" aria-hidden="true"
 								  title="<?= Text::_('COM_ONTHOS_ITEM_LBL_CORE') ?>"
 							></span>
 							<?php endif; ?>
