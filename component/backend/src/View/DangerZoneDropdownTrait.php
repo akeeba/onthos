@@ -17,7 +17,16 @@ trait DangerZoneDropdownTrait
 	protected function addDangerZoneDropdownToobarButton(bool $listCheck = true): void
 	{
 		/** @var Toolbar $toolbar */
-		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
+		try
+		{
+			// The Joomla! 5 way
+			$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
+		}
+		catch (\Throwable)
+		{
+			// Joomla! 4 fallback
+			$toolbar = Toolbar::getInstance('toolbar');
+		}
 
 		// Danger Zone drop-down
 		$dropdown = $toolbar->dropdownButton('dangerzone-group')

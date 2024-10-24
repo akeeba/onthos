@@ -17,7 +17,16 @@ trait ActionsDropdownTrait
 	protected function addActionsDropdownToobarButton(bool $listCheck = true): void
 	{
 		/** @var Toolbar $toolbar */
-		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
+		try
+		{
+			// The Joomla! 5 way
+			$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
+		}
+		catch (\Throwable)
+		{
+			// Joomla! 4 fallback
+			$toolbar = Toolbar::getInstance('toolbar');
+		}
 
 		// Actions drop-down
 		$dropdown = $toolbar->dropdownButton('status-group')
