@@ -170,12 +170,14 @@ class HtmlView extends BaseHtmlView
 	 */
 	protected function getTypeIcon(ExtensionInterface $item): string
 	{
+		$isJoomla5 = version_compare(JVERSION, '4.999.999', 'gt');
+
 		return match ($item->type)
 		{
 			'component' => 'fa-puzzle-piece',
 			'file' => 'fa-file-alt',
 			'library' => 'fa-book',
-			default => 'fa-boxes-packing',
+			default => $isJoomla5 ? 'fa-boxes-packing' : 'fa-boxes',
 			'plugin' => 'fa-plug',
 			'module' => 'fa-cube',
 			'template' => 'fa-paint-brush',

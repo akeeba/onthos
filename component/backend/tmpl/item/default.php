@@ -9,7 +9,6 @@
  * @var  \Akeeba\Component\Onthos\Administrator\View\Item\HtmlView $this
  */
 
-use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
 use Akeeba\Component\Onthos\Administrator\Library\Extension\Package;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -222,7 +221,7 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 									<?= Text::_('COM_ONTHOS_ITEMS_LBL_INSTALLED') ?>:
 								</span>
 							<?php else: ?>
-								<span class="fa fa-xmark-circle fa-fw text-danger hasTooltip"
+								<span class="fa <?= $isJoomla5Plus ? 'fa-circle-xmark' : 'fa-times-circle' ?> fa-fw text-danger hasTooltip"
 									  title="<?= Text::_('COM_ONTHOS_ITEMS_LBL_NOTINSTALLED') ?>"
 									  aria-hidden="true"></span>
 								<span class="visually-hidden">
