@@ -87,9 +87,6 @@ class HtmlView extends BaseView
 	 */
 	protected function addToolbar(): void
 	{
-		/** @var Toolbar $toolbar */
-		$toolbar = Factory::getApplication()->getDocument()->getToolbar('toolbar');
-
 		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');
 		ToolbarHelper::back('JTOOLBAR_BACK', Route::_('index.php?option=com_onthos&view=items', false));
 
@@ -97,7 +94,6 @@ class HtmlView extends BaseView
 		$this->addDangerZoneDropdownToobarButton(false);
 
 		ToolbarHelper::preferences('com_onthos');
-
 	}
 
 }
