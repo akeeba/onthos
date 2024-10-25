@@ -20,24 +20,25 @@ use Joomla\Database\DatabaseInterface;
 HTMLHelper::_('bootstrap.tooltip', '.hasTooltip');
 
 $issues = $this->item?->issues?->getIssues() ?? [];
+$isJoomla5Plus = version_compare(JVERSION, '4.999.999', 'gt');
 
-$getFilePrintable = function ($value): string {
+$getFilePrintable = function ($value) use ($isJoomla5Plus): string {
 	$exists       = @file_exists(JPATH_ROOT . '/' . $value);
 	$reallyExists = $this->item?->fileReallyExists(JPATH_ROOT . '/' . $value);
 
 	if ($reallyExists)
 	{
-		$icon  = 'fa-circle-check';
+		$icon  = $isJoomla5Plus ? 'fa-circle-check' : 'fa-check-circle';
 		$class = 'text-success';
 	}
 	elseif ($exists)
 	{
-		$icon  = 'fa-link-slash';
+		$icon  = $isJoomla5Plus ? 'fa-link-slash' : 'fa-unlink';
 		$class = 'text-warning';
 	}
 	else
 	{
-		$icon  = 'fa-circle-xmark';
+		$icon  = $isJoomla5Plus ? 'fa-circle-xmark' : 'fa-times-circle';
 		$class = 'text-danger';
 	}
 
@@ -259,12 +260,12 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<h4><?= Text::_('COM_ONTHOS_ITEMS_FIELD_STATE') ?></h4>
 				<?php if ($this->item?->enabled): ?>
 					<p class="text-success">
-						<span class="fa fa-circle-check" aria-hidden="true"></span>
+						<span class="fa <?= $isJoomla5Plus ? 'fa-circle-check' : 'fa-check-circle' ?> " aria-hidden="true"></span>
 						<strong><?= Text::_('JENABLED') ?></strong>
 					</p>
 				<?php else: ?>
 					<p class="text-danger">
-						<span class="fa fa-circle-xmark" aria-hidden="true"></span>
+						<span class="fa <?= $isJoomla5Plus ? 'fa-circle-xmark' : 'fa-times-circle' ?>" aria-hidden="true"></span>
 						<strong><?= Text::_('JDISABLED') ?></strong>
 					</p>
 				<?php endif ?>
@@ -386,9 +387,9 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<li>
 						<span class="font-monospace">
 							<?php if ($exists): ?>
-							<span class="fa fa-circle-check" aria-hidden="true"></span>
+							<span class="fa <?= $isJoomla5Plus ? 'fa-circle-check' : 'fa-check-circle' ?>" aria-hidden="true"></span>
 							<?php else: ?>
-							<span class="fa-circle-xmark text-danger" aria-hidden="true"></span>
+								<span class="fa <?= $isJoomla5Plus ? 'fa-circle-xmark' : 'fa-times-circle' ?>  text-danger" aria-hidden="true"></span>
 							<?php endif ?>
 							<?= $this->escape($table) ?>
 						</span>
@@ -452,12 +453,12 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 							<?php foreach($this->item?->getUpdateSites() as $updateSite): ?>
 								<li class="<?= $updateSite->enabled ? '' : 'text-danger' ?>">
 									<?php if ($updateSite->enabled): ?>
-										<span class="fa fa-circle-check hasTooltip" aria-hidden="true"
+										<span class="fa <?= $isJoomla5Plus ? 'fa-circle-check' : 'fa-check-circle' ?> hasTooltip" aria-hidden="true"
 											  title="<?= Text::_('JENABLED') ?>"
 										></span>
 										<span class="visually-hidden"><?= Text::_('JENABLED') ?></span>
 									<?php else: ?>
-										<span class="fa fa-circle-xmark hasTooltip" aria-hidden="true"
+										<span class="fa <?= $isJoomla5Plus ? 'fa-circle-xmark' : 'fa-times-circle' ?> hasTooltip" aria-hidden="true"
 											  title="<?= Text::_('JDISABLED') ?>"
 										></span>
 										<span class="visually-hidden"><?= Text::_('JDISABLED') ?></span>
