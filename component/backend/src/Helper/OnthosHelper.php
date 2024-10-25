@@ -78,24 +78,28 @@ abstract class OnthosHelper
 		int $value, int $i, bool $enabled = true, string $checkbox = 'cb', ?string $formId = 'adminForm'
 	): string
 	{
+		$isJoomla5OrLater = version_compare(JVERSION, '4.999.999', 'gt');
+		$iconProtected    = $isJoomla5OrLater ? 'fa-shield' : 'fa-door-closed';
+		$iconUnprotected  = $isJoomla5OrLater ? 'fa-shield-halved' : 'fa-door-open';
+
 		$states = [
-			0  => [
+			0 => [
 				'task'           => 'protect',
 				'text'           => 'COM_ONTHOS_ITEM_LBL_TOOLBAR_PROTECT',
 				'active_title'   => 'COM_ONTHOS_ITEM_LBL_UNPROTECTED',
 				'inactive_title' => 'COM_ONTHOS_ITEM_LBL_UNPROTECTED',
 				'tip'            => true,
-				'active_class'   => ' fa-shield-halved text-success border-success',
-				'inactive_class' => ' fa-shield-halved text-success border-success',
+				'active_class'   => ' ' . $iconUnprotected . ' text-success border-success',
+				'inactive_class' => ' ' . $iconUnprotected . ' text-success border-success',
 			],
-			1  => [
+			1 => [
 				'task'           => 'unprotect',
 				'text'           => 'COM_ONTHOS_ITEM_LBL_TOOLBAR_UNPROTECT',
 				'active_title'   => 'COM_ONTHOS_ITEM_LBL_PROTECTED',
 				'inactive_title' => 'COM_ONTHOS_ITEM_LBL_PROTECTED',
 				'tip'            => true,
-				'active_class'   => ' fa-shield text-danger border-danger',
-				'inactive_class' => ' fa-shield text-danger border-danger',
+				'active_class'   => ' ' . $iconProtected . ' text-danger border-danger',
+				'inactive_class' => ' ' . $iconProtected . ' text-danger border-danger',
 			],
 		];
 
@@ -119,7 +123,7 @@ abstract class OnthosHelper
 	): string
 	{
 		$states = [
-			0  => [
+			0 => [
 				'task'           => 'lock',
 				'text'           => 'COM_ONTHOS_ITEM_LBL_TOOLBAR_LOCK',
 				'active_title'   => 'COM_ONTHOS_ITEM_LBL_UNLOCKED',
@@ -128,7 +132,7 @@ abstract class OnthosHelper
 				'active_class'   => ' fa-lock-open text-success border-success',
 				'inactive_class' => ' fa-lock-open text-success border-success',
 			],
-			1  => [
+			1 => [
 				'task'           => 'unlock',
 				'text'           => 'COM_ONTHOS_ITEM_LBL_TOOLBAR_UNLOCK',
 				'active_title'   => 'COM_ONTHOS_ITEM_LBL_LOCKED',

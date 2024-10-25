@@ -49,13 +49,15 @@ trait ActionsDropdownTrait
 			->text('JTOOLBAR_DISABLE')
 			->listCheck($listCheck);
 
+		$icon = version_compare(JVERSION, '4.999.999', 'gt') ? 'fa-shield' : 'fa-door-closed';
 		$childBar->publish('items.protect')
-			->icon('fa fa-shield')
+			->icon('fa ' . $icon)
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_PROTECT')
 			->listCheck($listCheck);
 
+		$icon = version_compare(JVERSION, '4.999.999', 'gt') ? 'fa-shield-halved' : 'fa-door-open';
 		$childBar->publish('items.unprotect')
-			->icon('fa fa-shield-halved')
+			->icon('fa ' . $icon)
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNPROTECT')
 			->listCheck($listCheck);
 

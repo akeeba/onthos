@@ -287,12 +287,12 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 				<h4><?= Text::_('COM_ONTHOS_ITEM_SUBHEAD_PROTECTED') ?></h4>
 				<?php if ($this->item?->protected): ?>
 					<p class="text-danger hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED_TOOLTIP') ?>">
-						<span class="fa fa-shield" aria-hidden="true"></span>
+						<span class="fa <?= version_compare(JVERSION, '4.999.999', 'gt') ? 'fa-shield' : 'fa-door-closed' ?>" aria-hidden="true"></span>
 						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_PROTECTED') ?></strong>
 					</p>
 				<?php else: ?>
 					<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_UNPROTECTED_TOOLTIP') ?>">
-						<span class="fa fa-shield-halved" data-fa-transform="shrink-6" aria-hidden="true"></span>
+						<span class="fa <?= version_compare(JVERSION, '4.999.999', 'gt') ? 'fa-shield-halved' : 'fa-door-open' ?>" data-fa-transform="shrink-6" aria-hidden="true"></span>
 						<strong><?= Text::_('COM_ONTHOS_ITEM_LBL_UNPROTECTED') ?></strong>
 					</p>
 				<?php endif ?>
