@@ -371,8 +371,8 @@ trait UninstallTrait
 			->from($db->quoteName('#__fields'))
 			->where($db->quoteName('context') . ' LIKE ' . $db->quote($extension->element . '.%'));
 
-		$query->delete($db->quoteName('#__fields'))
-			->where($db->quoteName('id') . ' IN (' . $subQuery . ')');
+		$query->delete($db->quoteName('#__fields_values'))
+			->where($db->quoteName('field_id') . ' IN (' . $subQuery . ')');
 
 		$db->setQuery($query)->execute();
 	}
