@@ -197,7 +197,7 @@ class HtmlView extends BaseHtmlView
 		return match ($item->client_id)
 		{
 			default => 'fa-globe',
-			1 => 'fa-black-tie',
+			1 => version_compare(JVERSION, '4.999.999', 'gt') ? 'fa-black-tie' : 'fa-user-tie',
 			3 => 'fa-code',
 		};
 	}
