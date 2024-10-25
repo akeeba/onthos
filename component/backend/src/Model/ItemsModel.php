@@ -141,10 +141,18 @@ class ItemsModel extends ListModel
 		}
 
 		// Apply pagination and return
-		$offset = min(max($this->getState('list.start'), 0), count($this->extensions) - 1);
-		$length = max($this->getState('list.limit'), 5);
+		$limitStart = max($this->getState('list.start'), 0);
+		$length     = max($this->getState('list.limit'), 5);
 
-		return array_slice($this->extensions, $offset, $length);
+		if ($limitStart >= count($this->extensions))
+		{
+
+			$limitStart = intdiv(count($this->extensions), $length) * $length;
+
+			$this->setState('list.start', $limitStart);
+		}
+
+		return array_slice($this->extensions, $limitStart, $length);
 	}
 
 	/**
