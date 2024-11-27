@@ -33,4 +33,17 @@
 		<include name="language/**"/>
 		<include name="script.onthos.php" />
 	</fileset>
+
+	<target name="git" description="Makes only packages, not the documentation"
+			depends="new-release,setup-properties,compile-css,component-packages">
+	</target>
+
+	<target name="compile-css" description="Compile SCSS to minified CSS">
+		<exec executable="sass" dir="${dirs.component}/media/css" checkreturn="true" passthru="true">
+			<arg value="${dirs.component}/media/css:${dirs.component}/media/css" />
+			<arg value="-s" />
+			<arg value="compressed" />
+		</exec>
+	</target>
+
 </project>
