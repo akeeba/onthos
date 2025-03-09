@@ -184,13 +184,17 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 					<?php elseif ($this->item->getParentPackage()?->extension_id): ?>
 						<p class="text-success hasTooltip" title="<?= Text::_('COM_ONTHOS_ITEM_LBL_LINKED_TOOLTIP') ?>">
 							<span class="fa fa-link" aria-hidden="true"></span>
-							<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>"
+							<a href="<?= Route::_('index.php?option=com_onthos&view=item&id=' . $this->item->getParentPackage()->extension_id) ?>"
 							   class="link-info"
 							>
 								<?= $this->escape($this->item->getParentPackage()->getName()) ?>
 							</a>
 							<span class="small muted">
 								(#<?= $this->escape($this->item->getParentPackage()->extension_id) ?>)
+								–
+								<a href="<?= Route::_('index.php?option=com_onthos&view=items&filter[package_id]=' . $this->item->getParentPackage()->extension_id) ?>">
+									<?= Text::_('COM_ONTHOS_ITEM_LBL_LIST_ALL_IN_PACKAGE') ?>
+								</a>
 							</span>
 						</p>
 					<?php else: ?>
@@ -239,6 +243,10 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 
 							<?= Text::_('COM_INSTALLER_TYPE_' . $subExtension->type) ?>:
 
+							<?php if ($subExtension->installed): ?><a href="<?= Route::_('index.php?option=com_onthos&view=item&id=' . $subExtension->extension->extension_id) ?>"
+								   class="link-info"
+								><?php endif; ?>
+
 							<?php if ($subExtension->installed): ?>
 								<em><?= $subExtension->extension->getName() ?></em>
 							<?php else: ?>
@@ -246,6 +254,11 @@ $unknownText = Text::_('COM_ONTHOS_ITEM_APP_UNKNOWN');
 									<?= $this->escape($subExtension->element) ?>
 								</span>
 							<?php endif ?>
+
+							<?php if ($subExtension->installed): ?></a><?php endif; ?>
+
+							<small class="text-muted">(#<?= $subExtension->extension->extension_id ?>)</small>
+
 							</li>
 						<?php endforeach ?>
 						</ul>
