@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/onthos.iml" filepath="$PROJECT_DIR$/.idea/onthos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Onthos.iml" filepath="$PROJECT_DIR$/.idea/Onthos.iml" />
     </modules>
   </component>
 </project>

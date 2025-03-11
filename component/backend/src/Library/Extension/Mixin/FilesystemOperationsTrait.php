@@ -40,7 +40,34 @@ trait FilesystemOperationsTrait
 			return true;
 		}
 
-		return @file_exists(@readlink($file));
+		$linkTarget = @readlink($file);
+
+		if ($linkTarget === false)
+		{
+			return false;
+		}
+
+		if (@file_exists($linkTarget))
+		{
+			return true;
+		}
+
+		if (
+			// Absolute UNIX path
+			str_starts_with($linkTarget, '/')
+			// Windows fully qualified local path, with drive letter
+			|| (IS_WIN && str_contains(substr($linkTarget, 0, 3), ':'))
+			// Windows UNC path
+			|| (IS_WIN && str_starts_with($linkTarget, '\\') || str_starts_with($linkTarget, '\\\\'))
+		)
+		{
+			return false;
+		}
+
+		// If we are here, we PROBABLY have a relative path.
+		$linkTarget = $this->normalisePath(dirname($file) . '/' . $linkTarget);
+
+		return @file_exists($linkTarget);
 	}
 
 	/**
