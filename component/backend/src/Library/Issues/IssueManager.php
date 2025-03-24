@@ -68,6 +68,7 @@ final class IssueManager
 			NoScript::class,
 			MissingLanguage::class,
 			MissingMedia::class,
+			Discovered::class,
 		];
 	}
 

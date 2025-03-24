@@ -2,12 +2,12 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="joomla.datasource" uuid="543dd24b-e69a-4bd9-938f-46c932083a1f">
-      <driver-ref>mariadb</driver-ref>
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
       <remarks>/var/www/boot5/configuration.php</remarks>
-      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://localhost:3306/boot5</jdbc-url>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/boot5</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
     <data-source source="LOCAL" name="boot@localhost" uuid="e7dc49e0-fdbf-4722-83de-a8b0a9c2d5d3">
