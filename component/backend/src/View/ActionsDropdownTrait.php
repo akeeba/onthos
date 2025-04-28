@@ -14,7 +14,7 @@ use Joomla\CMS\Toolbar\Toolbar;
 
 trait ActionsDropdownTrait
 {
-	protected function addActionsDropdownToobarButton(bool $listCheck = true): void
+	protected function addActionsDropdownToobarButton(bool $listCheck = true): Toolbar
 	{
 		/** @var Toolbar $toolbar */
 		try
@@ -71,5 +71,11 @@ trait ActionsDropdownTrait
 			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_UNLOCK')
 			->listCheck($listCheck);
 
+		$childBar->publish('items.menuRebuild')
+			->icon('fa fa-trowel-bricks')
+			->text('COM_ONTHOS_ITEM_LBL_TOOLBAR_REBUILD_MENU')
+			->listCheck($listCheck);
+
+		return $childBar;
 	}
 }

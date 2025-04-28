@@ -90,7 +90,16 @@ class HtmlView extends BaseView
 		ToolbarHelper::title(Text::_('COM_ONTHOS'), 'fa fa-poo-storm');
 		ToolbarHelper::back('JTOOLBAR_BACK', Route::_('index.php?option=com_onthos&view=items', false));
 
-		$this->addActionsDropdownToobarButton(false);
+		$actionsBar = $this->addActionsDropdownToobarButton(false);
+
+		// Non-component: Remove Rebuild Menu item
+		if ($this->item->type !== 'component')
+		{
+			$items = $actionsBar->getItems();
+			array_pop($items);
+			$actionsBar->setItems($items);
+		}
+
 		$this->addDangerZoneDropdownToobarButton(false);
 
 		ToolbarHelper::preferences('com_onthos');

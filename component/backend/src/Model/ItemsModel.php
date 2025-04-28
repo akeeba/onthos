@@ -19,6 +19,7 @@ use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\DatabaseQuery;
 use Joomla\Database\ParameterType;
 use Throwable;
+use Joomla\CMS\Language\Text;
 
 class ItemsModel extends ListModel
 {
@@ -190,6 +191,71 @@ class ItemsModel extends ListModel
 		{
 			return 0;
 		}
+	}
+
+	/**
+	 * Rebuilds the administrator menu items of a component.
+	 *
+	 * This is useful if you experienced an error while installing / updating a component, and now you have a fully
+	 * installed component without any way to access it in the backend.
+	 *
+	 * It is also incredibly useful for us developers when we update the menu structure in the XML manifests. We can
+	 * then run this on our dev sites to immediately see the results of those changes. No need to build a package and
+	 * install it.
+	 *
+	 * @param   ExtensionInterface|null  $extension
+	 *
+	 * @return  void
+	 * @throws \ReflectionException
+	 * @since   1.0.0
+	 */
+	public function rebuildMenu(?ExtensionInterface $extension = null): void
+	{
+		// This only works for components
+		if ($extension->type !== 'component')
+		{
+			throw new \RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_NOT_A_COMPONENT'), 403);
+		}
+
+		// Make sure I can find a manifest file
+		$manifestPath = $extension->getManifestPath();
+
+		if ($manifestPath === null)
+		{
+			throw new \RuntimeException(Text::_('COM_ONTHOS_ISSUES_LBL_NOXMLMANIFEST'), 403);
+		}
+
+		// Create a parent installer object. This is just to satisfy dependencies; it has no practical use.
+		$parentInstaller = Installer::getInstance();
+		$parentInstaller->setOverwrite(true);
+
+		// Create the ComponentAdapter object. This has the admin menu methods I need.
+		$installerAdapter = $parentInstaller->loadAdapter('component', [
+			'currentExtensionId' => $extension->extension_id,
+		]);
+
+		// Get the manifest as a SimpleXMLElement object, and push it to the componend installation adapter object.
+		$manifest = @$parentInstaller->isManifest(JPATH_ROOT . '/' . ltrim($manifestPath, '/'));
+
+		if (!$manifest instanceof \SimpleXMLElement)
+		{
+			throw new \RuntimeException(Text::_('COM_ONTHOS_ISSUES_LBL_NOXMLMANIFEST'), 403);
+		}
+
+		$installerAdapter->setManifest($manifest);
+
+		// And now, let's use Reflection to use the otherwise protected admin menu handling methods.
+		$refAdapter = new \ReflectionObject($installerAdapter);
+
+		// Explicitly remove existing menu items. Otherwise _buildAdminMenus gets confused.
+		$refMethod  = $refAdapter->getMethod('_removeAdminMenus');
+		$refMethod->setAccessible(true);
+		$refMethod->invoke($installerAdapter, $extension->extension_id);
+
+		// Rebuild the menu items.
+		$refMethod  = $refAdapter->getMethod('_buildAdminMenus');
+		$refMethod->setAccessible(true);
+		$refMethod->invoke($installerAdapter, $extension->extension_id);
 	}
 
 	/**

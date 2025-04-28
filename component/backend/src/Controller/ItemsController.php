@@ -176,6 +176,54 @@ class ItemsController extends BaseController
 		$this->doUninstall('uninstallForced');
 	}
 
+	public function menuRebuild(): void
+	{
+		$this->checkToken('post');
+
+		$cid           = (array) $this->input->get('cid', [], 'int');
+		$cid           = ArrayHelper::toInteger(array_filter($cid));
+		$redirectUri   = $this->getRedirection();
+		$messageType   = null;
+		$numExtensions = 0;
+
+		try
+		{
+			/** @var ItemModel $model */
+			$model = $this->getModel();
+
+			foreach ($cid as $eid)
+			{
+				$extension = $model->getExtensionById($eid);
+
+				if (!$extension)
+				{
+					throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_INVALID_ID'), 404);
+				}
+
+				if ($extension->type !== 'component')
+				{
+					throw new RuntimeException(Text::_('COM_ONTHOS_ITEM_ERR_NOT_A_COMPONENT'), 403);
+				}
+
+				$model->rebuildMenu($extension);
+
+				$numExtensions++;
+			}
+
+			$message = Text::plural('COM_ONTHOS_ITEMS_LBL_REBUILT_MENU_N', $numExtensions);
+		}
+		catch (\Throwable $e)
+		{
+			$message     = Text::sprintf('COM_ONTHOS_ITEMS_ERR_REBUILD_MENU_FAILED', $e->getMessage());
+			$messageType = 'error';
+		}
+		finally
+		{
+			$this->setRedirect($redirectUri, $message, $messageType);
+		}
+	}
+
+
 	/**
 	 * Perform the actual uninstallation.
 	 *
