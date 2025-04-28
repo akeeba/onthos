@@ -252,6 +252,36 @@ abstract class Extension implements ExtensionInterface
 		return $this->manifestPath;
 	}
 
+	/** @inheritDoc */
+	final public function getManifest(): ?\SimpleXMLElement
+	{
+		if (empty($this->manifestPath))
+		{
+			return null;
+		}
+
+		$manifestPath = JPATH_ROOT . '/' . $this->manifestPath;
+
+		if (!@is_file($manifestPath) || !@is_readable($manifestPath))
+		{
+			return null;
+		}
+
+		$xml = @simplexml_load_file($manifestPath);
+
+		if (!$xml)
+		{
+			return null;
+		}
+
+		if ($xml->getName() !== 'extension')
+		{
+			return null;
+		}
+
+		return $xml;
+	}
+
 	/**
 	 * @inheritDoc
 	 * @since 1.0.0

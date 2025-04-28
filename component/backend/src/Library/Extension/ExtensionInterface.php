@@ -148,6 +148,14 @@ interface ExtensionInterface
 	public function getManifestPath(): ?string;
 
 	/**
+	 * Get the SimpleXMLElement object representation of the XML manifest file. NULL if the manifest is invalid.
+	 *
+	 * @return  \SimpleXMLElement|null
+	 * @since   1.0.0
+	 */
+	public function getManifest(): ?\SimpleXMLElement;
+
+	/**
 	 * Get the path to the script file. NULL if not applicable.
 	 *
 	 * Used for clean-up purposes only.

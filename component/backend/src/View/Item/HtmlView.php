@@ -57,6 +57,18 @@ class HtmlView extends BaseView
 	public array $existingTables;
 
 	/**
+	 * The XML manifest keys which are used for extension metadata, in the order we will present them.
+	 *
+	 * @var   string[]
+	 * @since 1.0.0
+	 * @link  https://manual.joomla.org/docs/building-extensions/install-update/installation/manifest/
+	 */
+	public const MANIFEST_METADATA_FIELDS = [
+		'name', 'author', 'creationDate', 'copyright', 'license', 'authorEmail', 'authorUrl', 'version',
+		'description', 'element', 'namespace'
+	];
+
+	/**
 	 * @inheritdoc
 	 * @sice 1.0.0
 	 */
