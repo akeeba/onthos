@@ -247,6 +247,10 @@ class ItemsModel extends ListModel
 		// And now, let's use Reflection to use the otherwise protected admin menu handling methods.
 		$refAdapter = new \ReflectionObject($installerAdapter);
 
+		$refProp = $refAdapter->getProperty('element');
+		$refProp->setAccessible(true);
+		$refProp->setValue($installerAdapter, $installerAdapter->getElement());
+
 		// Explicitly remove existing menu items. Otherwise _buildAdminMenus gets confused.
 		$refMethod  = $refAdapter->getMethod('_removeAdminMenus');
 		$refMethod->setAccessible(true);
