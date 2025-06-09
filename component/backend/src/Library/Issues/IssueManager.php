@@ -58,6 +58,7 @@ final class IssueManager
 			PartiallyInstalled::class,
 			MissingTables::class,
 			MissingChildren::class,
+			InvalidChildren::class,
 			NonCoreProtected::class,
 			WrongUpdateSite::class,
 			DisabledUpdateSite::class,

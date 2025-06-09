@@ -95,6 +95,22 @@ class Package extends Extension
 		return !empty(array_filter($this->subExtensions, fn(?ExtensionInterface $extension) => empty($extension)));
 	}
 
+	public function hasInvalidChildren(): bool
+	{
+		$this->populateSubExtensions();
+
+		$subextensionIDs = array_map(
+			fn(ExtensionInterface $extension) => $extension->extension_id,
+			array_filter($this->subExtensions)
+		);
+		$invalidChildren = array_filter(
+			$this->getChildrenExtensionsInDatabase(),
+			fn(ExtensionInterface $extension) => !in_array($extension->extension_id, $subextensionIDs)
+		);
+
+		return count($invalidChildren) > 0;
+	}
+
 	/**
 	 * Do some extensions of this package have no, or the wrong package ID?
 	 *
@@ -298,6 +314,40 @@ class Package extends Extension
 		}
 
 		return self::make($extensionInfo);
+	}
+
+	/**
+	 * Returns all extensions claiming to be subextensions of this package, as per the `#__extensions` table records.
+	 *
+	 * @return  array<Extension>
+	 * @since   1.0.0
+	 */
+	private function getChildrenExtensionsInDatabase(): array
+	{
+		/** @var DatabaseDriver $db */
+		$db    = Factory::getContainer()->get('db');
+		$eid   = $this->extension_id;
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->quoteName('#__extensions'))
+			->where($db->quoteName('parent_id') . ' = :parent_id')
+			->bind(':parent_id', $eid, ParameterType::INTEGER);
+
+		try
+		{
+			$extensionInfo = $db->setQuery($query)->loadObject() ?? null;
+
+			if (empty($extensionInfo))
+			{
+				return [];
+			}
+		}
+		catch (\Exception $e)
+		{
+			return [];
+		}
+
+		return array_map([self::class, 'make'], $extensionInfo);
 	}
 
 }
