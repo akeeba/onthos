@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @package   onthos
  * @copyright Copyright (c) 2024-2025 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license   GNU General Public License version 3, or later
@@ -14,11 +14,9 @@ use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Akeeba\Component\Onthos\Administrator\Model\ItemModel;
 use Akeeba\Component\Onthos\Administrator\View\ActionsDropdownTrait;
 use Akeeba\Component\Onthos\Administrator\View\DangerZoneDropdownTrait;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseView;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 
 /**
@@ -69,8 +67,32 @@ class HtmlView extends BaseView
 	];
 
 	/**
+	 * CSS class for the card wrapper DIV.
+	 *
+	 * @var   string
+	 * @since 1.0.0
+	 */
+	public string $cardWrapperClass = 'card mb-2';
+
+	/**
+	 * CSS class for the card header H3
+	 *
+	 * @var   string
+	 * @since 1.0.0
+	 */
+	public string $cardHeaderClass = 'card-header bg-secondary text-white';
+
+	/**
+	 * CSS class for the card body DIV.
+	 *
+	 * @var   string
+	 * @since 1.0.0
+	 */
+	public string $cardBodyClass = 'card-body';
+
+	/**
 	 * @inheritdoc
-	 * @sice 1.0.0
+	 * @since 1.0.0
 	 */
 	public function display($tpl = null)
 	{
