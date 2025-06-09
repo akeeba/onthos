@@ -10,6 +10,7 @@ namespace Akeeba\Component\Onthos\Administrator\View\Item;
 defined('_JEXEC') || die;
 
 use Akeeba\Component\Onthos\Administrator\Library\Extension\ExtensionInterface;
+use Akeeba\Component\Onthos\Administrator\Mixin\ManagementLinkTrait;
 use Akeeba\Component\Onthos\Administrator\Mixin\ViewLoadAnyTemplateTrait;
 use Akeeba\Component\Onthos\Administrator\Model\ItemModel;
 use Akeeba\Component\Onthos\Administrator\View\ActionsDropdownTrait;
@@ -29,6 +30,28 @@ class HtmlView extends BaseView
 	use ViewLoadAnyTemplateTrait;
 	use ActionsDropdownTrait;
 	use DangerZoneDropdownTrait;
+	use ManagementLinkTrait;
+
+	/**
+	 * The XML manifest keys which are used for extension metadata, in the order we will present them.
+	 *
+	 * @var   string[]
+	 * @since 1.0.0
+	 * @link  https://manual.joomla.org/docs/building-extensions/install-update/installation/manifest/
+	 */
+	public const MANIFEST_METADATA_FIELDS = [
+		'name',
+		'author',
+		'creationDate',
+		'copyright',
+		'license',
+		'authorEmail',
+		'authorUrl',
+		'version',
+		'description',
+		'element',
+		'namespace',
+	];
 
 	/**
 	 * The ID of the extension to display.
@@ -53,18 +76,6 @@ class HtmlView extends BaseView
 	 * @since 1.0.0
 	 */
 	public array $existingTables;
-
-	/**
-	 * The XML manifest keys which are used for extension metadata, in the order we will present them.
-	 *
-	 * @var   string[]
-	 * @since 1.0.0
-	 * @link  https://manual.joomla.org/docs/building-extensions/install-update/installation/manifest/
-	 */
-	public const MANIFEST_METADATA_FIELDS = [
-		'name', 'author', 'creationDate', 'copyright', 'license', 'authorEmail', 'authorUrl', 'version',
-		'description', 'element', 'namespace'
-	];
 
 	/**
 	 * CSS class for the card wrapper DIV.
@@ -133,6 +144,8 @@ class HtmlView extends BaseView
 			array_pop($items);
 			$actionsBar->setItems($items);
 		}
+
+		$this->addManagementDropdownToobarButton();
 
 		$this->addDangerZoneDropdownToobarButton(false);
 
