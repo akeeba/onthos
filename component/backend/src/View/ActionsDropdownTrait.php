@@ -25,6 +25,7 @@ trait ActionsDropdownTrait
 		catch (\Throwable)
 		{
 			// Joomla! 4 fallback
+			/** @noinspection PhpDeprecationInspection */
 			$toolbar = Toolbar::getInstance('toolbar');
 		}
 

@@ -29,7 +29,6 @@ $user      = $app->getIdentity();
 $userId    = $user->id;
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
-$nullDate  = Factory::getDbo()->getNullDate();
 $baseUri   = Uri::root();
 $i         = 0;
 ?>
