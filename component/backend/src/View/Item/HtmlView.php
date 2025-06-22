@@ -138,7 +138,7 @@ class HtmlView extends BaseView
 		$actionsBar = $this->addActionsDropdownToobarButton(false);
 
 		// Non-component: Remove Rebuild Menu item
-		if ($this->item->type !== 'component')
+		if ($this->item?->type !== 'component')
 		{
 			$items = $actionsBar->getItems();
 			array_pop($items);
