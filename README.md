@@ -8,7 +8,7 @@ Onthos is an advanced, powerful extensions introspection and management tool for
 
 Onthos not only lists your installed extensions, but also detects problems in their installation, proposes solutions, and offers actions to resolve those issues. It can uninstall extensions that Joomla's own extensions manager won't let you, including a Forced Uninstall option which bypasses Joomla entirely and can even remove ghost extension database entries.
 
-Onthos' primary use case is allowing power users and professional site maintainers perform deep cleanup of leftover extensions which accumulate over time on your site. In the past, this kind of deep cleaning involved arcane knowledge of the internal workings of Joomla, direct manipulation of the database, and even writing custom code. Not anymore!
+Onthos' primary use case is allowing power users and professional site maintainers to perform deep clean-up of leftover extensions which accumulate over time on your site. In the past, this kind of deep cleaning involved arcane knowledge of Joomla's internal workings, direct manipulation of the database, and even writing custom code. Not any more!
 
 Onthos is very powerful, but with great power comes great responsibility. It is easy to go too far and break your site. We always recommend taking a backup of your site with our free-of-charge [Akeeba Backup CORE](https://extensions.joomla.org/extension/akeeba-backup/) extension before taking any actions on it with Onthos, and keep that backup safely somewhere _outside your site's server_.
 
@@ -34,4 +34,4 @@ This is an Ancient Greek word (ὄνθος) which means animal dung, muck.
 
 According to the legend, one of Hercules' feats was cleaning the dung from the stables of Augeas. The stables of Augeas were populated by immortal cattle which produced copious amounts of dung and had never been cleaned.
 
-This component aims to clean the copious amounts of dung produced by a lifetime of updates, downgrades, and real world complications which are hard to imagine and even harder to reproduce in the clean lab environment used by Joomla! core maintainers when writing the extensions manager shipped with Joomla! itself. A Herculean task, indeed.
+This component aims to clean the copious amounts of dung produced by a lifetime of updates, downgrades, and real-world complications which are hard to imagine and even harder to reproduce in the clean lab environment used by Joomla! core maintainers when writing the extensions manager shipped with Joomla! itself. A Herculean task, indeed.
